@@ -7,17 +7,21 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Socle MOS2
+name=Socle-MOS
 qgisMinimumVersion=2.0
-description=Ce plugin permet la création de socle MOS en fonction des données édigeo, bd parcellaire, fichiers fonciers, bd_topo passés en paramètres
-version=0.1
-author=al
-email=sirs@sirs-fr.com
+qgisMaximumVersion=2.99
+description=Outil de génération et de croisement de modes d'occupation du sol
+version=0.4
+author=Corentin Falcon (SIRS) 
+email=corentin.falcone@sirs-fr.com
 
-about=Version 0.1 du plugin de création de Socle MOS
+about=Ce plugin propose 3 grandes fonctionnalités : 
+	- Constitution d'un socle de mode d'occupation des sols à l'échelle parcellaire (t0)
+	- Mise à jour géométrique et attributaire (t+1) sur un socle
+	- Création d'un millésime attributaire sur une date antérieure (t-1)existant
 
-tracker=github.com
-repository=github.com
+tracker=http://projet.sirs-fr.com/project/nicolasrochard-adeupa/issues
+repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 # End of mandatory metadata
 
 # Recommended items:
@@ -26,9 +30,9 @@ repository=github.com
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=
+tags=socle, mos, ocs, parcelle, processing, postgis
 
-homepage=
+homepage=https://www.sirs-fr.com/ 
 category=Plugins
 icon=./icons/icon.png
 # experimental flag

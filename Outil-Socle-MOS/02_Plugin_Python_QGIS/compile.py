@@ -18,11 +18,6 @@ for rc in rc_files:
     print "pyrcc4.exe -o {}_rc.py {}".format(name, rc)
     subprocess.call(["pyrcc4.exe", "-o", "{}_rc.py".format(name), rc])
 
-ui_files = glob.glob('forms/*.ui')
-for ui in ui_files:
-    (name, ext) = os.path.splitext(ui)
-    print "pyuic4 -o {}.py {}".format(name, ui)
-    subprocess.call(["pyuic4.bat", "-o", "{}.py".format(name), ui])
 
 rc_files = glob.glob('forms/*.qrc')
 for rc in rc_files:
