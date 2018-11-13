@@ -34,7 +34,7 @@ class RepairSocle(QDialog, Ui_interface_repair):
 
 
         self.connect(self.pb_connect, SIGNAL("clicked()"), self.chargeSchema)
-        self.connect(self.cb_schema, SIGNAL("currentIndexChanged(int)"), self.chargeTable)
+        self.connect(self.cb_schema, SIGNAL("activated(int)"), self.chargeTable)
         self.connect(self.pb_repair, SIGNAL("clicked()"), self.repairGeom)
       
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
@@ -131,7 +131,7 @@ class RepairSocle(QDialog, Ui_interface_repair):
             #Initialisation vide des combobox
         self.cb_schema.clear()
         self.cb_table.clear()
-        
+        self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
         db = self.connexion()
 
             #Connexion à la base de données
@@ -147,8 +147,9 @@ class RepairSocle(QDialog, Ui_interface_repair):
             querySchema.prepare("Select distinct table_schema from information_schema.tables where table_schema not in ('pg_catalog', 'information_schema') order by table_schema;")
             if querySchema.exec_():
                 while querySchema.next():
-                    self.cb_schema.addItem(querySchema.value(0))
                     self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
+                    self.cb_schema.addItem(querySchema.value(0))
+                    
 
     def chargeTable(self):
         self.cb_table.clear()
