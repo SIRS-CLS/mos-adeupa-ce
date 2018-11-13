@@ -918,6 +918,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         group by tt.geom, tt.nature
                     ;
 
+                    delete from vm_temp_veget where st_area(geom) < 150;
+
 
                     insert into t_socle_nc (geom, nature, type_ajout, code_insee) 
                         select ipli.geom::geometry(Polygon, 2154), 
