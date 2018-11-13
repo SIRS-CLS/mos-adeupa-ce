@@ -361,6 +361,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
             #self.le_destination.setText('mos_guimgamp')
             
+            #self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('sandbox.emprise_g1_bdtopo'))
+            #self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('sandbox.emprise_g1_parc'))
 
             """
                 #A décommenter /!\
@@ -443,7 +445,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
         cur = self.conn.cursor()
             #Execution de la suite de requête de création du socle
-        cur.execute(u"""           
+        cur.execute(u""" 
+                        --Récupération des subdivisions de l'emprise avec leur numéro de section          
                     drop table if exists vm_subdfisc;
                     create temporary table vm_subdfisc as
                     Select row_number() over() as gid, *
@@ -454,7 +457,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         Join {0} p on St_Within(St_PointOnSurface(s.geom), p.geom)
                         Join {11} sec on sec.geo_section = p.geo_section
                     )tt;
-
+                        
+                        --Création de subdivisions supplémentaire (découpage des geo_parcelle par les geo_subdfisc)
                     drop table if exists vm_parc_h_subd cascade;
                     create temporary table vm_parc_h_subd as 
                     Select row_number() over() as gid, * From (
@@ -464,7 +468,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     Join {11} s on s.geo_section = parc.geo_section
                     Group by parc.geom, parc.idu, s.tex)tt;
 
-
+                        --Récupération des parcelles + subdivisions
                     drop table if exists v_temp_parc_subparc cascade;
                     create temporary table v_temp_parc_subparc As 
                     Select ROW_NUMBER() OVER() as unique_id, *
@@ -505,12 +509,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         Join {2} c292 on St_within(St_PointOnSurface(vmhs.geom), c292.geom)) 
                     ) tt;
             create index idx_parc_subparc_2 on v_temp_parc_subparc using gist(geom);
-        
+                        
+                        --Attribution des lettres 'zzz' pour les subdivisions créées par requête
                     update v_temp_parc_subparc 
                         set tex = 'zzz',
                             num_parc = idu || 'zzz'
                         Where tex = '';
-
+                        
+                        --Découpage des parcelles par l'emprise BD Parcellaire en ne récupérant que les entités découpées
                     drop table if exists vm_cut_on_com;
                     create temporary table vm_cut_on_com as 
                         Select * From (
@@ -541,6 +547,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                 Group By unique_id Having count(unique_id) = 1);
                      create index idx_cut_com_2 on vm_cut_on_com using gist(geom);
                                 
+                        --Récupération des nouvelles géométries 
                     drop table if exists vm_temp_exclusion;
                     create temporary table vm_temp_exclusion as 
                     Select vmt2.uq_gid, vmt2.unique_id, vmt2.code_insee, vmps.idu, vmps.num_parc, vmps.tex, (st_dump(st_collectionextract(vmt2.geom,3))).geom::geometry(polygon, 2154), section
@@ -551,6 +558,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                             {2} bdpc
                                         Where st_within(st_pointonsurface(vm.geom), bdpc.geom)
                                         AND vm.code_insee = bdpc.code_insee );
+
+                        --Récupération des géométries exclues à fusionner avec les parcelles de la commune voisine
                     drop table if exists vm_temp_exclus;
                     create temporary table vm_temp_exclus as 
                     Select  vmcoc.uq_gid, vmcoc.unique_id, vmcoc.code_insee, vmps.idu, vmps.num_parc, vmps.tex, (st_dump(st_collectionextract(vmcoc.geom,3))).geom::geometry(Polygon, 2154), st_area(vmcoc.geom) as surf_area, dd.code_insee as new_insee, section
@@ -558,7 +567,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     Join v_temp_parc_subparc vmps on vmps.unique_id = vmcoc.unique_id
                     Join {2} dd on St_within(st_pointonsurface(vmcoc.geom), dd.geom )
                     Where vmcoc.uq_gid not in (Select uq_gid From vm_temp_exclusion);
-
+                        
+                        --Récupération de toutes les parcelles avec les géométries modifiées
                     drop table if exists vm_temp_parc;
                     create temporary table vm_temp_parc as 
                     Select ROW_NUMBER() over() as un_idd, * FROM( 
@@ -574,6 +584,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     create index idx_temp_parc_2 on vm_temp_parc using gist(geom);
 
+                        --Fonction de fusion des entités qui ont été découpées par le contour commune
                     Create or replace function public.fun_fusion(i_origine text, i_fuse text) 
                         Returns void AS
                     $BODY$
@@ -691,7 +702,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         LANGUAGE 'plpgsql';
 
                     select public.fun_fusion('vm_temp_parc', 'vm_temp_exclus');
-
+                        
+                        --Création d'une première partie socle cadastré
                     drop table if exists vm_socle_c;
                     create temporary table vm_socle_c as 
                     Select ROW_NUMBER() over() as gid, * FROM( 
@@ -706,8 +718,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     ))tt;
 
                     create index idx_socle_c_2 on vm_socle_c using gist(geom);
-
-
+                
+                        --Création d'une première partie socle non cadastré
                     drop table if exists vm_socle_nc;
                     Create temporary table vm_socle_nc as
                     with tmp as (
@@ -724,8 +736,9 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     From tmp2;
                     
                     create index idx_vm_socle_nc on vm_socle_nc using gist(geom);
-        
+                
 
+                        --Découpage du socle cadastré par le contour commune de la BD Topo
                     drop table if exists vm_nc_lito cascade;
                     create temporary table vm_nc_lito as
                     Select ROW_NUMBER() OVEr() as gid, *
@@ -738,7 +751,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         Group By vmnc.geom, vmnc.code_insee
                     )tt;
                     create index idx_lito_2 on vm_nc_lito using gist(geom);
-
+                    
+                        --Récupération du buffer des routes primaires contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_primaire;
                     create temporary table vm_primaire as
                     Select ROW_NUMBER() OVEr() as gid, st_union(geom) as geom, nature
@@ -752,7 +766,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     Group By nature;
 
                     create index idx_primaire_2 on vm_primaire using gist(geom);
-                    
+                        
+                        --Récupération du buffer des routes secondaires contenue dans l'emprise BD Parcellaire
                     drop table if exists vm_secondaire;
                     create temporary table vm_secondaire as
                     Select ROW_NUMBER() OVEr() as gid,  geom, nature
@@ -768,7 +783,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     Group by nature) tt2;
 
                     create index idx_secondaire_2 on vm_secondaire using gist(geom);
-
+                    
+                        --Récupération du buffer des chemins contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_chemin;
                     create temporary table vm_chemin as
                     Select ROW_NUMBER() OVEr() as gid,  geom, nature
@@ -783,20 +799,28 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     group By nature)tt2 ;
 
                     create index idx_chemin_2 on vm_chemin using gist(geom);
-
+                        
+                        --Récupération des zones végétation contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_veget;
                     create temporary table vm_veget as
-                    Select ROW_NUMBER() OVEr() as gid, st_union(geom)::geometry(MultiPolygon,2154) as geom, nature
-                    From (
-                            Select (st_dump(st_collectionextract(st_safe_intersection(vz.{10}, vmnc.geom),3))).geom::geometry(Polygon, 2154) as geom, 'veget'::character varying as nature
-                            From {4} vz
-                            Join vm_nc_lito vmnc on st_intersects(vz.{10}, vmnc.geom)
-                        ) tt2
-                    Where st_area(tt2.geom) > 400
-                    Group by nature;
-
+                    with tmp as (
+                        Select b.gid, st_union(a.{10}) as geom
+                        From vm_nc_lito b
+                        Join {4} a on st_intersects(a.{10}, b.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                        Select (st_dump(st_collectionextract(st_safe_intersection(t.geom, b.geom),3))).geom::geometry(polygon,2154) as geom, 'veget'::character varying as nature
+                        From vm_nc_lito b 
+                        LEFT join tmp t on b.gid = t.gid
+                        )
+                    Select row_number() over() as gid, (st_dump(st_collectionextract(st_union(geom),3))).geom as geom, nature
+                        From tmp2
+                        Where st_area(geom) > 400
+                        group by nature
+                    ;
                     create index idx_veget_2 on vm_veget using gist(geom);
-
+                        
+                        --Récupération des surface en eau contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_hydro;
                     create temporary table vm_hydro as
                     Select ROW_NUMBER() OVEr() as gid, st_union(geom)::geometry(MultiPolygon,2154) as geom, nature
@@ -809,117 +833,189 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     Group by nature;
 
                     create index idx_hyro_2 on vm_hydro using gist(geom);
-
+                        
+                        --Récupération des parcelles agricoles contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_rpga;
                     create temporary table vm_rpga as
-                    Select ROW_NUMBER() OVER() as gid, st_union(geom)::geometry(MultiPolygon,2154) as geom, nature
-                    From (
-                        Select (st_dump(st_collectionextract(st_safe_intersection(rpga.geom, vmnc.geom),3))).geom::geometry(Polygon, 2154), 'agricole'::character varying as nature
-                         From {6} rpga
-                         Join vm_nc_lito vmnc on st_intersects(rpga.geom, vmnc.geom)
-                    )tt
-                    Where st_area(tt.geom) >= 200
-                    Group by nature;
+                    with tmp as (
+                        Select b.gid, st_union(a.geom) as geom
+                        From vm_nc_lito b
+                        Join {6} a on st_intersects(a.geom, b.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                        Select (st_dump(st_collectionextract(st_safe_intersection(t.geom, b.geom),3))).geom::geometry(polygon,2154) as geom, 'agricole'::character varying as nature
+                        From vm_nc_lito b 
+                        LEFT join tmp t on b.gid = t.gid
+                    )
+                    Select row_number() over() as gid, (st_dump(st_collectionextract(st_union(geom),3))).geom as geom, nature
+                        From tmp2
+                        Where st_area(geom) >= 200
+                        group by nature
+                    ;
 
                     create index idx_rpga_2 on vm_rpga using gist(geom);
-
+                        
+                        --Création du socle non cadastré connu par intersection avec les données précédentes
                     drop table if exists t_socle_nc;
                     create temporary table t_socle_nc (
                         gid serial,
                         geom geometry(Polygon,2154),
                         nature character varying,
                         type_ajout character varying,
+                        code_insee character varying,
                         Constraint pk_socle_nc primary key (gid)
                     );
                     create index idx_socle_nc_geom on t_socle_nc using gist(geom);
                         
-                    insert into t_socle_nc (geom, nature, type_ajout) 
+                    insert into t_socle_nc (geom, nature, type_ajout, code_insee) 
                         select (st_dump(st_collectionextract(st_safe_intersection(vmnc.geom, ipli.geom),3))).geom::geometry(Polygon, 2154), 
                                     ipli.ocsol,
-                                    'plage'
+                                    'plage',
+                                    vmnc.code_insee
                                 From {7} ipli
                                 Join vm_nc_lito vmnc on st_intersects(ipli.geom, vmnc.geom)
                                 Where usage in (30, 32);
 
 
-                    insert into t_socle_nc (geom, nature, type_ajout) 
-                        select (st_dump(st_collectionextract(st_safe_difference(st_safe_intersection(vmnc.geom, ipli.geom), st_union(vsocle.geom)),3))).geom::geometry(Polygon, 2154), 
-                                    ipli.nature,
-                                    'route1'
-                                From vm_primaire ipli, t_socle_nc vsocle, vm_nc_lito vmnc
-                                Where st_intersects(ipli.geom, vmnc.geom)
-                                Group by vmnc.geom, ipli.geom, ipli.nature;
+                    insert into t_socle_nc (geom, nature, type_ajout, code_insee)
+                    With tmp as(
+                        Select b.gid, st_union(a.geom) as geom
+                        From vm_primaire b
+                        Join t_socle_nc a on st_intersects(b.geom, a.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                            Select b.gid, b.nature, a.code_insee, st_safe_intersection(a.geom, b.geom) as geom
+                            From vm_primaire b
+                            Join vm_nc_lito a on st_intersects(a.geom, b.geom)
+                    )
+                    Select (st_dump(st_collectionextract(st_safe_difference(b.geom,coalesce(a.geom, 'GEOMETRYCOLLECTION EMPTY'::geometry)),3))).geom::geometry(Polygon,2154), 
+                        b.nature, 
+                        'route1', 
+                        b.code_insee
+                        From tmp2 b
+                        left join tmp a on b.gid = a.gid
+                    ;
 
 
-                    insert into t_socle_nc (geom, nature, type_ajout) 
-                        select (st_dump(st_collectionextract(st_safe_difference(st_safe_intersection(vmnc.geom, ipli.geom), st_union(vsocle.geom)),3))).geom::geometry(Polygon, 2154), 
-                                    ipli.nature,
-                                    'secondaire'
-                                From vm_secondaire ipli, t_socle_nc vsocle, vm_nc_lito vmnc
-                                Where st_intersects(ipli.geom, vmnc.geom)
-                                Group by vmnc.geom, ipli.geom, ipli.nature;
+                    insert into t_socle_nc(geom, nature, type_ajout, code_insee)
+                    With tmp as(
+                        Select b.gid, st_union(a.geom) as geom
+                        From vm_secondaire b
+                        Join t_socle_nc a on st_intersects(b.geom, a.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                        Select b.gid, b.nature, a.code_insee, st_safe_intersection(a.geom, b.geom) as geom
+                        From vm_secondaire b
+                        Join vm_nc_lito a on st_intersects(a.geom, b.geom)
+                    )
+                    Select (st_dump(st_collectionextract(st_safe_difference(b.geom,coalesce(a.geom, 'GEOMETRYCOLLECTION EMPTY'::geometry)),3))).geom::geometry(Polygon,2154), 
+                        b.nature, 
+                        'secondaire', 
+                        b.code_insee
+                        From tmp2 b
+                        left join tmp a on b.gid = a.gid
+                    ;
+
+                    delete from t_socle_nc where st_area(geom) < 150;
+
+
+                    insert into t_socle_nc (geom, nature, type_ajout, code_insee) 
+                    With tmp as(
+                        Select b.gid, st_union(a.geom) as geom
+                        From vm_chemin b
+                        Join t_socle_nc a on st_intersects(b.geom, a.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                        Select b.gid, b.nature, a.code_insee, st_safe_intersection(a.geom, b.geom) as geom
+                        From vm_chemin b
+                        Join vm_nc_lito a on st_intersects(a.geom, b.geom)
+                    )
+                    Select (st_dump(st_collectionextract(st_safe_difference(b.geom,coalesce(a.geom, 'GEOMETRYCOLLECTION EMPTY'::geometry)),3))).geom::geometry(Polygon,2154), 
+                        b.nature, 
+                        'chemin', 
+                        b.code_insee
+                        From tmp2 b
+                        left join tmp a on b.gid = a.gid
+                    ;
+
 
                     delete from t_socle_nc where st_area(geom) < 150;
 
-                    insert into t_socle_nc (geom, nature, type_ajout) 
-                        select (st_dump(st_collectionextract(st_safe_difference(st_safe_intersection(vmnc.geom, ipli.geom), st_union(vsocle.geom)),3))).geom::geometry(Polygon, 2154), 
-                                    ipli.nature,
-                                    'chemin'
-                                From vm_chemin ipli, t_socle_nc vsocle, vm_nc_lito vmnc
-                                Where st_intersects(ipli.geom, vmnc.geom)
-                                Group by vmnc.geom, ipli.geom, ipli.nature;
+                    insert into t_socle_nc (geom, nature, type_ajout, code_insee)
+                    With tmp as(
+                        Select b.gid, st_union(a.geom) as geom
+                        From vm_hydro b
+                        Join t_socle_nc a on st_intersects(b.geom, a.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                        Select b.gid, b.nature, a.code_insee, st_safe_intersection(a.geom, b.geom) as geom
+                        From vm_hydro b
+                        Join vm_nc_lito a on st_intersects(a.geom, b.geom)
+                    )
+                    Select (st_dump(st_collectionextract(st_safe_difference(b.geom,coalesce(a.geom, 'GEOMETRYCOLLECTION EMPTY'::geometry)),3))).geom::geometry(Polygon,2154), 
+                        b.nature, 
+                        'hydro', 
+                        b.code_insee
+                        From tmp2 b
+                        left join tmp a on b.gid = a.gid
+                    ;
+
+                    delete from t_socle_nc where st_area(geom) < 150;
+
+                    insert into t_socle_nc (geom, nature, type_ajout, code_insee)
+                    With tmp as(
+                        Select b.gid, st_union(a.geom) as geom
+                        From vm_rpga b
+                        Join t_socle_nc a on st_intersects(b.geom, a.geom)
+                        group by b.gid
+                    ), tmp2 as (
+                        Select b.gid, b.nature, a.code_insee, st_safe_intersection(a.geom, b.geom) as geom
+                        From vm_rpga b
+                        Join vm_nc_lito a on st_intersects(a.geom, b.geom)
+                    )
+                    Select (st_dump(st_collectionextract(st_safe_difference(b.geom,coalesce(a.geom, 'GEOMETRYCOLLECTION EMPTY'::geometry)),3))).geom::geometry(Polygon,2154), 
+                        b.nature, 
+                        'rpga', 
+                        b.code_insee
+                        From tmp2 b
+                        left join tmp a on b.gid = a.gid
+                    ;
 
 
                     delete from t_socle_nc where st_area(geom) < 150;
 
-                    insert into t_socle_nc (geom, nature, type_ajout) 
-                        select (st_dump(st_collectionextract(st_safe_difference(st_safe_intersection(vmnc.geom, ipli.geom), st_union(vsocle.geom)),3))).geom::geometry(Polygon, 2154), 
-                                    ipli.nature,
-                                    'hydro'
-                                From vm_hydro ipli, t_socle_nc vsocle, vm_nc_lito vmnc
-                                Where st_intersects(ipli.geom, vmnc.geom)
-                                Group by vmnc.geom, ipli.geom, ipli.nature;
-
-
-                    delete from t_socle_nc where st_area(geom) < 150;
-
-                    insert into t_socle_nc (geom, nature, type_ajout) 
-                        select (st_dump(st_collectionextract(st_safe_difference(ipli.geom, st_union(vsocle.geom)),3))).geom::geometry(Polygon, 2154), 
-                                    ipli.nature,
-                                    'rpga'
-                                From vm_rpga ipli, t_socle_nc vsocle, vm_nc_lito vmnc
-                                Where st_intersects(ipli.geom, vmnc.geom)
-                                Group by vmnc.geom, ipli.geom, ipli.nature;
-
-
-                    delete from t_socle_nc where st_area(geom) < 150;
 
                     drop table if exists vm_temp_veget;
                     create temporary table vm_temp_veget as
-                            with tmp as (
-                    Select b.gid, st_union(a.geom) as geom
-                    From vm_veget b
-                    Join t_socle_nc a on st_area(st_intersection(b.geom, a.geom)) > 1
-                    group by b.gid
-                            ), tmp2 as(
-                    Select st_safe_difference(b.geom, t.geom) as geom, b.nature
-                                From vm_veget b
-                                left Join tmp t on b.gid = t.gid
-                            )
-                            Select ROW_number() over() as gid, st_union(geom), * 
-                    From tmp2 tt
-                            group by tt.geom, tt.nature ;
+                    with tmp as (
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
+                            From vm_veget b
+                            Join t_socle_nc a on st_area(st_intersection(b.geom, a.geom)) > 1
+                            group by b.gid
+                    ), tmp2 as(
+                        Select st_safe_difference(b.geom, t.geom) as geom, b.nature
+                            From vm_veget b
+                            left Join tmp t on b.gid = t.gid
+                    )
+                    Select ROW_number() over() as gid, (st_dump(st_collectionextract(st_union(st_buffer(geom,0.001)),3))).geom::geometry(polygon,2154), 
+                        nature
+                        From tmp2 tt
+                        group by tt.geom, tt.nature
+                    ;
 
 
-                    insert into t_socle_nc (geom, nature, type_ajout) 
-                        select (st_dump(st_collectionextract(ipli.geom,3))).geom::geometry(Polygon, 2154), 
+                    insert into t_socle_nc (geom, nature, type_ajout, code_insee) 
+                        select ipli.geom::geometry(Polygon, 2154), 
                                     ipli.nature,
-                                    'veget'
-                                From vm_temp_veget ipli, t_socle_nc vsocle
-                                Group by ipli.geom, ipli.nature;
+                                    'veget', 
+                                    a.code_insee
+                                From vm_temp_veget ipli
+                                Join vm_nc_lito a on st_intersects(a.geom, ipli.geom)
+                                Group by ipli.geom, ipli.nature, a.code_insee;
 
                     delete from t_socle_nc where st_area(geom) < 150;
-
+                        
+                        --Création du cadastre connu : parcelles, subdivision et routes, rpga, végétation
                     drop table if exists vm_scv1;
                     Create  temporary table vm_scv1 as
                         Select ROW_NUMBER() OVER() as gid, *
@@ -927,12 +1023,12 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             (Select code_insee, idu, num_parc, tex, geom, section
                             From vm_socle_c)
                             UNION
-                            (Select 'NC','NC', 'NC', nature, geom, 'NC'
+                            (Select code_insee,'NC', 'NC', nature, geom, 'NC'
                             From t_socle_nc)
                             )tt;
                      create index idx_sdb_scv1_2 on vm_scv1 using gist(geom);
 
-
+                        --Création du cadastre non connu (parties réstantes dans l'emprise n'étant pas concerné par les données précédentes)
                     drop table if exists vm_nc_v2;
                     Create temporary table vm_nc_v2 as
                     with tmp as (
@@ -950,7 +1046,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
     
 
                     create index idx_ncv2_2 on vm_nc_v2 using gist(geom);
-
+                        --Création du socle géométrique final
                     drop table if exists socle_temp cascade;
                     Create  table socle_temp as 
                         Select ROW_NUMBER() OVER() as gid, *
@@ -958,7 +1054,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             (Select code_insee, idu, num_parc, tex, geom, section
                             From vm_scv1)
                             UNION
-                            (Select CASE when vmnc.code_insee = 'NC' THEN vmtt.code_insee ELSE vmnc.code_insee END as code_insee,'NC', 'NC', 'NC', (st_dump(st_collectionextract(st_intersection(st_union(vmtt.geom), vmnc.geom), 3))).geom::geometry(polygon,2154) as geom, 'NC'
+                            (Select vmnc.code_insee,'NC', 'NC', 'NC', (st_dump(st_collectionextract(st_intersection(st_union(vmtt.geom), vmnc.geom), 3))).geom::geometry(polygon,2154) as geom, 'NC'
                             From vm_nc_v2 vmnc, {8} vmtt
                             Group by vmnc.code_insee, vmnc.geom,vmtt.code_insee)
                             )tt;
@@ -1024,6 +1120,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                             i_bati_indif text
                                             )
                 Returns void AS
+                --Fonction de calcul des aménagements présents sur les parcelles
+                --Met en correlation de nombreuses données recouvrant ou non une parcelle en indiquant la surface de recouvrement, ou si une présence est constaté
             $BODY$
                 DECLARE
                     v_geom geometry(polygon,2154); -- Géométrie du socle
@@ -1071,7 +1169,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     v_mfonction character varying;-- Type de bâtiment sur la parcelle
                     v_probjardin integer; --Probabilité de présence de jardin 0|1|2
                 BEGIN
-
+                        --Récupération des routes secondaires qui seront corrélées dans nos calculs
                     Execute format('Create temporary table tt_secondaire as
                         Select ROW_NUMBER() OVEr() as gid, *
                             From (select (st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(polygon,2154) as geom, nature
@@ -1085,7 +1183,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             Group by nature) tt2;
                             Create index idx_tt_secondaire on tt_secondaire using gist(geom);', i_route_sec, i_emprise);
                     
-
+                        --Création de la table qui sera le socle MOS final
                     Drop table if exists {30}.{31};
                     Create table {30}.{31} (
                         to_milit integer,
@@ -1133,10 +1231,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                                                             
                     );
                     Create index idx_{31}_geom on {30}.{31} using gist(geom);
-                    
+
+                        --Parcours de toutes les parcelles pour affecter les calcul de présence qui lui sont propre
+                        -- Les calculs sont stockés dans des variables puis insérés en fin de boucle dans la table
                     For v_geom, v_insee, v_idu, v_num_parc, v_tex, v_gid, v_section, v_surf_mos, v_peri_mos IN execute format('Select geom, code_insee, idu, num_parc, tex, gid, section, st_area(geom), st_perimeter(geom) From %1$s sc;', i_socle_c) LOOP
                         if v_idu != 'NC' then
+                            --Seul les données cadastrés sont calculés pour cette étape
                     --Ajout des colonnes taux
+                        --Calcul du taux de bâtiment militaire
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                             From %2$s pm
                                             Where st_intersects(''%3$s'', pm.{33}) 
@@ -1146,72 +1248,82 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                             Where p2.nature = ''Enceinte militaire'')
                                         ', i_surf_acti, i_pai_milit, v_geom)
                     into v_tomilit;
+                            --Calcul du taux de bâtiment présent sur la parcelle
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.geom) 
                                         ', i_bati, v_geom)
                     into v_tobati;
-
+                            --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.{33}) 
                                         ', i_bati_indif, v_geom)
                     into v_tobatimaison;
+                            --Calcul du taux de présence de bâtiment remarquable
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_bati_rem, v_geom)
                     into v_tobatire;
+                            --Calcul du taux de présence de bâtiments agricole
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.nature in (''Bâtiment agricole'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_bati_indus, v_geom)
                     into v_tobatagri;
+                            --Calcul du taux de présence de serres
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.nature in (''Serre'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_bati_indus, v_geom)
                     into v_toserre;
+                            --Calcul du taux de présence de bâtiments industriel
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.nature in (''Bâtiment industriel'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_bati_indus, v_geom)
                     into v_toindust;
+                            --Calcul du taux de présence de bâtiments commerciaux
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.nature in (''Bâtiment commercial'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_bati_indus, v_geom)
                     into v_tocomer;
+                            --Calcul du taux de présence de bâtiments industriels ou commerciaux
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.categorie in (''Industriel ou commercial'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_surf_acti, v_geom)
                     into v_tozic;
+                            --Calcul du taux de présence d'équipement de transport
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where pm.categorie in (''Transport'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_surf_acti, v_geom)
                     into v_totransp;
+                            --Calcul du taux de présence de voies férrées
                         execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 3 * pm.nb_voies,''endcap=flat join=round'')), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.{33}) 
                                         ', i_voie_ferre, v_geom)
                     into v_tovoiefer;
                     if v_tovoiefer in (null) or v_tovoiefer <1 THEN
+                            --Si pas de voie férrées détéctées, recherche avec les aires de triage
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.{33}) 
                                         ', i_aire_tri, v_geom)
                     into v_tovoiefer;
                     END IF;
-
+                            --Calcul du taux de présence de carrières
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%3$s'', pm.{33}) 
@@ -1221,11 +1333,13 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                             Where p2.nature = ''Carrière'' )
                                         ',i_surf_acti,  i_pai_indus_com, v_geom)
                     into v_tocarrier;
+                            --Calcul du taux de présence de cimetières
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.{33}) 
                                         ', i_cime, v_geom)
                     into v_tocime;
+                            --Calcul du taux de présence d'équipement sportif
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where categorie = ''Sport''
@@ -1233,12 +1347,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                         ', i_surf_acti, v_geom)
                     into v_tosport;
                     IF v_tosport in (null) or v_tosport < 1 THEN
+                                --Si pas d'équipement trouvés, on recherche avec les données IGN terrain de sport
                                     execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.{33}) 
                                         ', i_terrain_sport, v_geom)
                     into v_tosport;
                     END IF;
+                            --Calcul du taux de présence d'aménagement loisir
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%3$s'', pm.{33})
@@ -1248,12 +1364,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                             Where p2.nature in (''Village de vacances'', ''Camping'', ''Parc de loisirs'', ''Parc zoologique'', ''parc des expositions'' ))
                                         ', i_surf_acti, i_pai_cul_lois, v_geom)
                     into v_toloisir;
+                            --Calcul du taux de présence des parcelles agricoles
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where st_intersects(''%2$s'', pm.geom) 
                                         ', i_rpga, v_geom)
                     into v_toagri;
                         If v_toagri in (null) or v_toagri < 1 Then
+                                --Si pas de correspondance, on recherche aussi avec les zone de végétation peupleraies et verger
                             execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where nature in (''Verger'', ''Peupleraie'') 
@@ -1262,46 +1380,53 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     into v_toagri;
                         END IF;
 
-                        
+                            --Calcul du taux de présence de végétation qui ne sont pas verger ou peupleraie
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where nature not in (''Verger'', ''Peupleraie'') 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_zveget, v_geom)
                     into v_toveget;
+                            --Calcul de présence des surface en eau permanentes
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where regime = ''Permanent'' 
                                             AND st_intersects(''%2$s'', pm.{33}) 
                                         ', i_surf_eau, v_geom)
                     into v_toeau;
+                            --Calcul du taux de présence de l'eau des données edigeoo geo_tronfluv
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where  st_intersects(''%2$s'', pm.geom) 
                                         ', i_tronfluv, v_geom)
                     into v_temp_toeau;
                     if v_temp_toeau > v_toeau Then
+                            --Si les données édigéos apportent plus de valeur, on garde cette données qui écrase les surface en eau IGN
                         v_toeau = v_temp_toeau;
                     End if;
+                            --Calcul du taux de présence de l'eau des données edigeo geo_tsurf
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where  st_intersects(''%2$s'', pm.geom) 
                                         ', i_tsurf, v_geom)
                     into v_temp_toeau;
                     if v_temp_toeau > v_toeau Then
+                        --Si les données tsurf sont plus importantes que les autres, on écrases les gardes
                         v_toeau = v_temp_toeau;
                     End if;
-
+                        --Calcul du taux de présence des routes secondaire
                     Select ((st_area(st_safe_intersection(st_union(pm.geom), v_geom))*100)/st_area(v_geom))::integer
                                             From tt_secondaire pm
                                             Where  st_intersects(v_geom, pm.geom)       
                     into v_toroute;
+                            --Calcul du taux de présence des routes edigeo geo_tronroute
                         execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                             From %1$s pm
                                             Where  st_intersects(''%2$s'', pm.geom) 
                                         ', i_tronroute, v_geom)
                     into v_temp_route;
                     if v_toroute < v_temp_route Then
+                        --Si les données edigeo sont plus impotantes, on les gardes
                         v_toroute = v_temp_route;
                     end if;
                     
@@ -1325,13 +1450,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             v_prescol = 0;
                         end if;
                     end if;
+
                         --Sante
                         execute format ('Select 1
                                             From %1$s pm
                                             Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
                                         ', i_pai_sante, v_geom)
                     into v_presante;
-
+        
                     if v_presante != 1 Then 
                         execute format ('Select 1
                                             From %1$s pm
@@ -1351,6 +1477,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             end if;
                         end if;
                     end if;
+
                         --Administration
                         execute format ('Select count(*)
                                             From %1$s pm
@@ -1379,6 +1506,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             end if;
                         end if;
                     end if;
+
                         --Eau, énergie
                         execute format ('Select count(*)
                                             From %1$s pm
@@ -1406,16 +1534,18 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             end if;
                         end if;
                     end if;
+
                         --Transport
                         execute format ('Select 1
                                             From %1$s pm
-                                            Where nature in (''Gare (routière, fre, ou voyageur)'', ''Parking'')
+                                            Where nature in (''Gare routière'',''Gare voyageurs et fret'', ''Gare voyageurs uniquement'', ''Parking'')
                                             AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
                                         ', i_pai_transp, v_geom)
                     into v_pretransp;
                     If v_pretransp != 1 Then 
                         v_pretransp = 0;
                     end if;
+
                         --Sport, loisir
                         execute format ('Select 1
                                             From %1$s pm
@@ -1456,6 +1586,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                             and (pm.dcnt09 > 1 or pm.dcnt11 > 1)
                                         ', i_foncier,  v_geom)
                     into v_probjardin;
+                    --Récupération de l'identifiant unique
                     v_id_mos = left(v_insee,2) || v_num_parc;
 
                         else
