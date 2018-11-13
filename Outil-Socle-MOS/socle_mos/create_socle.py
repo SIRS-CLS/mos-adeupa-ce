@@ -719,7 +719,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     drop table if exists vm_veget;
                     create temporary table vm_veget as
                     with tmp as (
-                        Select b.gid, st_union(a.{10}) as geom
+                        Select b.gid, st_union(st_buffer(a.{10},0.001)) as geom
                         From vm_nc_lito b
                         Join {4} a on st_intersects(a.{10}, b.geom)
                         group by b.gid
@@ -728,7 +728,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         From vm_nc_lito b 
                         LEFT join tmp t on b.gid = t.gid
                         )
-                    Select row_number() over() as gid, (st_dump(st_collectionextract(st_union(geom),3))).geom as geom, nature
+                    Select row_number() over() as gid, (st_dump(st_collectionextract(st_union(st_buffer(geom,0.001)),3))).geom as geom, nature
                         From tmp2
                         Where st_area(geom) > 400
                         group by nature
@@ -738,7 +738,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         --Récupération des surface en eau contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_hydro;
                     create temporary table vm_hydro as
-                    Select ROW_NUMBER() OVEr() as gid, st_union(geom)::geometry(MultiPolygon,2154) as geom, nature
+                    Select ROW_NUMBER() OVEr() as gid, st_union(st_buffer(geom,0.001))::geometry(MultiPolygon,2154) as geom, nature
                     From (
                             Select (st_dump(st_collectionextract(st_safe_intersection(st_force2D(se.{10}), vmnc.geom),3))).geom::geometry(Polygon, 2154), 'hydro'::character varying as nature
                             From {5} se
@@ -753,7 +753,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     drop table if exists vm_rpga;
                     create temporary table vm_rpga as
                     with tmp as (
-                        Select b.gid, st_union(a.geom) as geom
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                         From vm_nc_lito b
                         Join {6} a on st_intersects(a.geom, b.geom)
                         group by b.gid
@@ -762,7 +762,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         From vm_nc_lito b 
                         LEFT join tmp t on b.gid = t.gid
                     )
-                    Select row_number() over() as gid, (st_dump(st_collectionextract(st_union(geom),3))).geom as geom, nature
+                    Select row_number() over() as gid, (st_dump(st_collectionextract(st_union(st_buffer(geom,0.001)),3))).geom as geom, nature
                         From tmp2
                         Where st_area(geom) >= 200
                         group by nature
@@ -794,7 +794,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     insert into t_socle_nc (geom, nature, type_ajout, code_insee)
                     With tmp as(
-                        Select b.gid, st_union(a.geom) as geom
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                         From vm_primaire b
                         Join t_socle_nc a on st_intersects(b.geom, a.geom)
                         group by b.gid
@@ -814,7 +814,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     insert into t_socle_nc(geom, nature, type_ajout, code_insee)
                     With tmp as(
-                        Select b.gid, st_union(a.geom) as geom
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                         From vm_secondaire b
                         Join t_socle_nc a on st_intersects(b.geom, a.geom)
                         group by b.gid
@@ -836,7 +836,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     insert into t_socle_nc (geom, nature, type_ajout, code_insee) 
                     With tmp as(
-                        Select b.gid, st_union(a.geom) as geom
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                         From vm_chemin b
                         Join t_socle_nc a on st_intersects(b.geom, a.geom)
                         group by b.gid
@@ -858,7 +858,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     insert into t_socle_nc (geom, nature, type_ajout, code_insee)
                     With tmp as(
-                        Select b.gid, st_union(a.geom) as geom
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                         From vm_hydro b
                         Join t_socle_nc a on st_intersects(b.geom, a.geom)
                         group by b.gid
@@ -879,7 +879,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     insert into t_socle_nc (geom, nature, type_ajout, code_insee)
                     With tmp as(
-                        Select b.gid, st_union(a.geom) as geom
+                        Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                         From vm_rpga b
                         Join t_socle_nc a on st_intersects(b.geom, a.geom)
                         group by b.gid
@@ -969,7 +969,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             (Select code_insee, idu, num_parc, tex, geom, section
                             From vm_scv1)
                             UNION
-                            (Select vmnc.code_insee,'NC', 'NC', 'NC', (st_dump(st_collectionextract(st_intersection(st_union(vmtt.geom), vmnc.geom), 3))).geom::geometry(polygon,2154) as geom, 'NC'
+                            (Select vmnc.code_insee,'NC', 'NC', 'NC', (st_dump(st_collectionextract(st_intersection(st_union(st_buffer(vmtt.geom,0.001)), vmnc.geom), 3))).geom::geometry(polygon,2154) as geom, 'NC'
                             From vm_nc_v2 vmnc, {8} vmtt
                             Group by vmnc.code_insee, vmnc.geom,vmtt.code_insee)
                             )tt;
