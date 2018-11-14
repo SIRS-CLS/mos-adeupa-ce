@@ -236,7 +236,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
 
     def start(self):
         #Fonction de lancement du programme
-        self.lbl_etape.setText(u'Etape 1/3')
+        self.lbl_etape.setText(u'Etape 1/1')
         self.pb_start.setEnabled(False)
         self.pb_avancement.setValue(0)
 

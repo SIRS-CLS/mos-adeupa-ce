@@ -28,7 +28,7 @@ class socle_mos:
         QObject.connect(self.compareSocle, SIGNAL("triggered()"), self.gereActionCompare)
 
         iconanalyse = QIcon(os.path.dirname(__file__) + "/analyse.png")
-        self.analyseSocle = QAction(iconanalyse, u"Réparer les géométries", self.interface.mainWindow())
+        self.analyseSocle = QAction(iconanalyse, u"Réaliser une rétroévolution", self.interface.mainWindow())
         QObject.connect(self.analyseSocle, SIGNAL("triggered()"), self.gereActionAnalyse)
 
         self.menuSocle = QMenu(u"Socle MOS")
