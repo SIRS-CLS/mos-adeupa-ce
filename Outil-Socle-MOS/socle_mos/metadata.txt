@@ -29,18 +29,18 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 # Uncomment the following line and add your changelog:
 changelog=  
   Version 0.4.1
-  * Correction du crash de chargement des données de l'interface de réparation (Prérequis : champ 'geom' de type Polygon)
-  * Import - Utilisation de buffer de 0.001m pour palier les exception topologiques "unary unions"
+  	* Correction du crash de chargement des données de l'interface de réparation (Prérequis : champ 'geom' de type Polygon)
+  	* Import - Utilisation de buffer de 0.001m pour palier les exception topologiques "unary unions"
   Version 0.4
-  * Correction - Prise en compte des limites communales BDParcellaire
-  * Correction - Prise en compte des fichiers fonciers plutôt que des données brutes MAJIC
-  * Import - Interface de création de socle MOS par sélection de couches dans une base de données
-  * Import - Interface de réparation de géométrie sur des couches de Polygones avec un champ géométrie nommé 'geom'
-  * Import - Automatisation de la méthode de génération de socle pour l'ADEUPA
-  * Import - Conversion des processus ArcGIS vers PostGIS
-  * Import - Ajout de nouvelles fonctions PostGIS
-  * Import - Optimisation de la pertinence du codage automatique
-  * Import - Optimisation du temps de traitements
+  	* Correction - Prise en compte des limites communales BDParcellaire
+  	* Correction - Prise en compte des fichiers fonciers plutôt que des données brutes MAJIC
+  	* Import - Interface de création de socle MOS par sélection de couches dans une base de données
+  	* Import - Interface de réparation de géométrie sur des couches de Polygones avec un champ géométrie nommé 'geom'
+  	* Import - Automatisation de la méthode de génération de socle pour l'ADEUPA
+  	* Import - Conversion des processus ArcGIS vers PostGIS
+  	* Import - Ajout de nouvelles fonctions PostGIS
+  	* Import - Optimisation de la pertinence du codage automatique
+  	* Import - Optimisation du temps de traitements
 
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis

@@ -6,6 +6,8 @@ import os
 import resources
 from create_socle import *
 from repair_socle import *
+from analyse_socle import *
+from compare_socle import *
 
 class socle_mos:
     def __init__(self, iface):
@@ -21,17 +23,29 @@ class socle_mos:
         self.repairSocle = QAction(iconRepair, u"Réparer les géométries", self.interface.mainWindow())
         QObject.connect(self.repairSocle, SIGNAL("triggered()"), self.gereActionRepair)
 
+        iconCompare = QIcon(os.path.dirname(__file__) + "/compare.png")
+        self.compareSocle = QAction(iconCompare, u"Comparer les socles", self.interface.mainWindow())
+        QObject.connect(self.compareSocle, SIGNAL("triggered()"), self.gereActionCompare)
+
+        iconanalyse = QIcon(os.path.dirname(__file__) + "/analyse.png")
+        self.analyseSocle = QAction(iconanalyse, u"Réparer les géométries", self.interface.mainWindow())
+        QObject.connect(self.analyseSocle, SIGNAL("triggered()"), self.gereActionAnalyse)
+
         self.menuSocle = QMenu(u"Socle MOS")
         self.menuSocle.setIcon(QIcon(os.path.dirname(__file__) + "/icon.png"))
         self.menuSocle.addAction(self.createSocle)
         self.menuSocle.addAction(self.repairSocle)
+        self.menuSocle.addAction(self.compareSocle)
+        self.menuSocle.addAction(self.analyseSocle)
         self.interface.pluginMenu().addMenu(self.menuSocle)
 
 
         self.toolbarSocle = self.interface.addToolBar(u"socle_mos");
         self.toolbarSocle.setObjectName("barreOutilsocle__mos")
-        self.toolbarSocle.addAction(self.createSocle)        
+        self.toolbarSocle.addAction(self.createSocle)
         self.toolbarSocle.addAction(self.repairSocle)
+        self.toolbarSocle.addAction(self.compareSocle)
+        self.toolbarSocle.addAction(self.analyseSocle)
 
     def unload(self):
         self.interface.mainWindow().menuBar().removeAction(self.menuSocle.menuAction())
@@ -51,3 +65,16 @@ class socle_mos:
         if result:
             pass
 
+    def gereActionCompare(self):
+        dlg = Compare_mos(self.interface)
+        # dlg.show() # ligne à mettre en commentaire pour avoir une fenêtre modale
+        result = dlg.exec_()
+        if result:
+            pass
+
+    def gereActionAnalyse(self):
+        dlg = Analyse_mos(self.interface)
+        # dlg.show() # ligne à mettre en commentaire pour avoir une fenêtre modale
+        result = dlg.exec_()
+        if result:
+            pass
