@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'interface_repair.ui'
 #
-# Created: Fri Nov  9 10:02:47 2018
-#      by: PyQt4 UI code generator 4.10.4
+# Created: Wed Nov 14 17:11:00 2018
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -103,10 +103,10 @@ class Ui_interface_repair(object):
 
     def retranslateUi(self, interface_repair):
         interface_repair.setWindowTitle(_translate("interface_repair", "Réparation des géométries invalides", None))
-        self.label.setText(_translate("interface_repair", "Sélectionner la connexion à la base de donnée", None))
+        self.label.setText(_translate("interface_repair", "Sélectionner la connexion à la base de données", None))
         self.pb_connect.setText(_translate("interface_repair", "Connecter", None))
         self.label_6.setText(_translate("interface_repair", "Sélectionner le schéma", None))
-        self.label_13.setText(_translate("interface_repair", "Sélectionner la table", None))
+        self.label_13.setText(_translate("interface_repair", "Sélectionner la couche", None))
         self.pb_repair.setText(_translate("interface_repair", "Réparer", None))
         self.lbl_etat.setText(_translate("interface_repair", "TextLabel", None))
 

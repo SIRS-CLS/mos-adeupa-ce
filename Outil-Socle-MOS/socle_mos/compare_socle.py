@@ -29,6 +29,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
         self.database = None
         self.username = None
         self.pwd = None
+        self.subdi_sirs = []
 
         self.geom = None
 
@@ -47,14 +48,14 @@ class Compare_mos(QDialog, Ui_interface_compare):
 
         self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.chargeSchema)
 
-        self.connect(self.cb_schema_t0, SIGNAL("activated(int)"), self.chargeTable0)
-        self.connect(self.cb_schema_t1, SIGNAL("activated(int)"), self.chargeTable1)
+        self.connect(self.cb_schema_t1, SIGNAL("activated(int)"), self.chargeTable0)
+        self.connect(self.cb_schema_t0, SIGNAL("activated(int)"), self.chargeTable1)
       
             #Déclenchement de la vérification de la totalité des champs rentrés pour lancer le programme
-        self.connect(self.cb_schema_t1, SIGNAL("activated(int)"), self.canStart)
         self.connect(self.cb_schema_t0, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_table_t0, SIGNAL("activated(int)"), self.canStart)
+        self.connect(self.cb_schema_t1, SIGNAL("activated(int)"), self.canStart)
         self.connect(self.cb_table_t1, SIGNAL("activated(int)"), self.canStart)
+        self.connect(self.cb_table_t0, SIGNAL("activated(int)"), self.canStart)
 
 
     def connexion(self):
@@ -147,13 +148,13 @@ class Compare_mos(QDialog, Ui_interface_compare):
         #initialise les combo box avec la liste des schema + table de la base
 
             #Initialisation vide des combobox
-        self.cb_schema_t0.clear()
         self.cb_schema_t1.clear()
+        self.cb_schema_t0.clear()
         self.cb_schema_desti.clear()
-        self.cb_table_t0.clear()
         self.cb_table_t1.clear()
-        self.cb_schema_t0.setCurrentIndex(self.cb_schema_t0.findText(None))
+        self.cb_table_t0.clear()
         self.cb_schema_t1.setCurrentIndex(self.cb_schema_t1.findText(None))
+        self.cb_schema_t0.setCurrentIndex(self.cb_schema_t0.findText(None))
         self.cb_schema_desti.setCurrentIndex(self.cb_schema_desti.findText(None))
         db = self.connexion()
 
@@ -170,43 +171,23 @@ class Compare_mos(QDialog, Ui_interface_compare):
             querySchema.prepare("Select distinct table_schema from information_schema.tables where table_schema not in ('pg_catalog', 'information_schema') order by table_schema;")
             if querySchema.exec_():
                 while querySchema.next():
-                    self.cb_schema_t0.setCurrentIndex(self.cb_schema_t0.findText(None))
-                    self.cb_schema_t0.addItem(querySchema.value(0))
                     self.cb_schema_t1.setCurrentIndex(self.cb_schema_t1.findText(None))
                     self.cb_schema_t1.addItem(querySchema.value(0))
+                    self.cb_schema_t0.setCurrentIndex(self.cb_schema_t0.findText(None))
+                    self.cb_schema_t0.addItem(querySchema.value(0))
                     self.cb_schema_desti.setCurrentIndex(self.cb_schema_desti.findText(None))
                     self.cb_schema_desti.addItem(querySchema.value(0))
 
             self.cb_schema_desti.setCurrentIndex(self.cb_schema_desti.findText('sandbox'))
             self.le_table_desti.setText('test_comparaison_1')
-            self.cb_schema_t1.setCurrentIndex(self.cb_schema_t1.findText('livrables'))
-            self.cb_table_t1.setCurrentIndex(self.cb_table_t1.findText('mos_pdm_2015_3com'))
-            self.cb_schema_t0.setCurrentIndex(self.cb_schema_t0.findText('sandbox'))
-            self.cb_table_t0.setCurrentIndex(self.cb_table_t0.findText('morlaix_2018_clean'))
+            self.cb_schema_t0.setCurrentIndex(self.cb_schema_t0.findText('livrables'))
+            self.cb_table_t0.setCurrentIndex(self.cb_table_t0.findText('mos_pdm_2015_3com'))
+            self.cb_schema_t1.setCurrentIndex(self.cb_schema_t1.findText('sandbox'))
+            self.cb_table_t1.setCurrentIndex(self.cb_table_t1.findText('morlaix_2018_clean'))
                     
 
     def chargeTable0(self):
-        self.cb_table_t0.clear()
-        db = self.connexion()
-            #Connexion à la base de données
-        if (not db.open()):
-            QMessageBox.critical(self, "Erreur", u"Impossible de se connecter à la base de données principale ...",
-                                 QMessageBox.Ok)
-        else:
-
-                    #Initialisation de la combo box schema avec la liste des schemas de la base
-            queryTable = QSqlQuery(db)
-            wschema = self.cb_schema_t0.currentText()
-            queryTable.prepare("Select distinct table_name from information_schema.tables where table_schema = '" + wschema + "' order by table_name;")
-            if queryTable.exec_():
-                print (self.cb_schema_t0.currentText())
-                while queryTable.next():
-                    self.cb_table_t0.addItem(queryTable.value(0))
-
-    def chargeTable1(self):
         self.cb_table_t1.clear()
-
-
         db = self.connexion()
             #Connexion à la base de données
         if (not db.open()):
@@ -223,11 +204,31 @@ class Compare_mos(QDialog, Ui_interface_compare):
                 while queryTable.next():
                     self.cb_table_t1.addItem(queryTable.value(0))
 
+    def chargeTable1(self):
+        self.cb_table_t0.clear()
+
+
+        db = self.connexion()
+            #Connexion à la base de données
+        if (not db.open()):
+            QMessageBox.critical(self, "Erreur", u"Impossible de se connecter à la base de données principale ...",
+                                 QMessageBox.Ok)
+        else:
+
+                    #Initialisation de la combo box schema avec la liste des schemas de la base
+            queryTable = QSqlQuery(db)
+            wschema = self.cb_schema_t0.currentText()
+            queryTable.prepare("Select distinct table_name from information_schema.tables where table_schema = '" + wschema + "' order by table_name;")
+            if queryTable.exec_():
+                print (self.cb_schema_t0.currentText())
+                while queryTable.next():
+                    self.cb_table_t0.addItem(queryTable.value(0))
+
 
 
     def canStart(self):
         #Fonction analysant si le programme peu être exécuté (tous les champs sont remplis) ou non
-        if self.cb_table_t1.currentText() == '' or self.cb_table_t0.currentText() == ''  or self.cb_schema_desti.currentText() == '' or  self.le_table_desti.text() == '':
+        if self.cb_table_t0.currentText() == '' or self.cb_table_t1.currentText() == ''  or self.cb_schema_desti.currentText() == '' or  self.le_table_desti.text() == '':
             self.pb_start.setEnabled(False)
         else:
             self.pb_start.setEnabled(True)
@@ -244,6 +245,75 @@ class Compare_mos(QDialog, Ui_interface_compare):
 
         temp = QTimer
             #Appel de la fonction avec un délai de 100ms pour permettre l'affichage        
+        temp.singleShot(100, self.detectionChamps)
+
+    def detectionChamps(self):
+        
+        cur = self.conn.cursor()
+        cur.execute(u"""Select column_name
+                        from information_schema.columns 
+                        where table_schema||'.'||table_name  = '{0}.{1}'  
+                        and column_name like '%sub%sirs%'
+                        order by column_name 
+
+                    """.format(self.cb_schema_t0.currentText(),
+                                self.cb_table_t0.currentText()
+                                )
+                    )
+        if cur.rowcount > 0:
+            self.subdi_sirs = cur.fetchone()
+        else:
+            self.subdi_sirs.append('null')
+
+        cur.close();
+
+        cur = self.conn.cursor()
+        cur.execute(u"""Select column_name
+                        from information_schema.columns 
+                        where table_schema||'.'||table_name  = '{0}.{1}'  
+                        and column_name like 'code4%' 
+                        order by column_name desc 
+
+                    """.format(self.cb_schema_t0.currentText(),
+                                self.cb_table_t0.currentText()
+                                )
+                    )
+        self.code4 = cur.fetchone()
+        cur.close();
+
+        cur = self.conn.cursor()
+        cur.execute(u"""Select column_name
+                        from information_schema.columns 
+                        where table_schema||'.'||table_name  = '{0}.{1}'  
+                        and column_name like 'lib4%' 
+                        order by column_name desc
+
+                    """.format(self.cb_schema_t0.currentText(),
+                                self.cb_table_t0.currentText()
+                                )
+                    )
+        self.lib4 = cur.fetchone()
+        cur.close();
+
+        cur = self.conn.cursor()
+        cur.execute(u"""Select column_name
+                        from information_schema.columns 
+                        where table_schema||'.'||table_name  = '{0}.{1}'  
+                        and column_name like 'remarque%' 
+                        order by column_name 
+
+                    """.format(self.cb_schema_t0.currentText(),
+                                self.cb_table_t0.currentText()
+                                )
+                    )
+        self.remarque = cur.fetchone()
+        cur.close();
+
+
+        self.conn.commit();
+        self.lbl_etape.setText(u'Etape 2/2')
+        self.pb_avancement.setValue(20)
+        temp = QTimer       
         temp.singleShot(100, self.compareSocle)
 
 
@@ -255,13 +325,13 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
                         and column_name like 'code4%' 
-                        order by column_name 
+                        order by column_name desc
 
-                    """.format(self.cb_schema_t0.currentText(),
-                                self.cb_table_t0.currentText()
+                    """.format(self.cb_schema_t1.currentText(),
+                                self.cb_table_t1.currentText()
                                 )
                     )
-        yearCode_t0 = cur.fetchone()
+        yearCode_t1 = cur.fetchone()
         cur.close();
 
 
@@ -270,136 +340,364 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
                         and column_name like 'code4%' 
-                        order by column_name 
-
-                    """.format(self.cb_schema_t1.currentText(),
-                                self.cb_table_t1.currentText()
-                                )
-                    )
-        yearCode_t1 = cur2.fetchone()
-        cur2.close();
-
-        cur3 = self.conn.cursor()
-        cur3.execute(u"""Select column_name 
-                        from information_schema.columns 
-                        where table_schema||'.'||table_name  =  '{0}.{1}'
-                        and column_name like 'id_mos%' 
-                        order by column_name 
-
-                    """.format(self.cb_schema_t1.currentText(),
-                                self.cb_table_t1.currentText()
-                            )
-                    )
-        idmos_t1 = cur3.fetchone()
-        cur3.close();
-
-        cur4 = self.conn.cursor()
-        cur4.execute(u"""Select column_name 
-                        from information_schema.columns 
-                        where table_schema||'.'||table_name  =  '{0}.{1}'
-                        and column_name like 'id_mos%' 
-                        order by column_name 
+                        order by column_name desc
 
                     """.format(self.cb_schema_t0.currentText(),
                                 self.cb_table_t0.currentText()
-                            )
+                                )
                     )
-        idmos_t0 = cur4.fetchone()
-        cur4.close();
+        yearCode_t0 = cur2.fetchone()
+        cur2.close();
+
+        cur = self.conn.cursor()
+        cur.execute(u"""Select data_type
+                        from information_schema.columns 
+                        where table_schema||'.'||table_name  = '{0}.{1}'  
+                        and column_name like 'code4_{2}' 
+                        order by column_name
+
+                    """.format(self.cb_schema_t0.currentText(),
+                                self.cb_table_t0.currentText(),
+                                yearCode_t0[0]
+                                )
+                    )
+        dType = cur.fetchone()
+        cur.close();
+        if dType[0] == 'integer':
+            tonumber_debut = ' '
+            tonumber_fin = ' '
+            tonummfinbis = ' '
+        else:
+            tonumber_debut = "to_number("
+            tonumber_fin = ", '9999')"
+            tonummfinbis = ", ''9999'')"
+
+
+        
 
         cur5 = self.conn.cursor()
         cur5.execute(u"""
+                drop table if exists {6}.{7};
+                Create table {6}.{7} (
+                        to_milit integer,
+                        to_bati integer,
+                        to_batire integer,
+                        to_batagri integer, 
+                        to_serre integer, 
+                        to_indust integer,
+                        to_comer integer,
+                        to_zic integer,
+                        to_transp integer,
+                        to_voiefer integer,
+                        to_carrier integer,
+                        to_cime integer,
+                        to_sport integer,
+                        to_loisir integer,
+                        to_agri integer,
+                        to_veget integer,
+                        to_eau integer,
+                        to_route integer,
+                        to_batimaison integer,
+                        pre_scol integer,
+                        pre_sante integer,
+                        pre_eqadmi integer,
+                        pre_o_nrj integer,
+                        pre_transp integer,
+                        pre_sploi integer,
+                        prob_jardin integer,
+                        m_fonction character varying,
+                        idu character varying,
+                        num_parc character varying,
+                        tex character varying,
+                        section character varying,
+                        code_insee character varying,
+                        nom_commune character varying,
+                        gid serial,
+                        geom geometry(Polygon,2154),
+                        id_mos character varying,
+                        subdi_sirs character varying,
+                        gid_t0 integer,                                         
+                        
+                        constraint pk_{6}_{7} PRIMARY KEY (gid)
+                );
+
                 drop table if exists vm_temp_compare cascade;
                 Create temporary table vm_temp_compare as 
                 Select row_number() over() as gid, * ,
-                                case when code4_{1} = to_number(code4_{0}, '9999') Then false::boolean
+                                case when code4_{1} = {12}code4_{0}{13} Then false::boolean
                                 else true::boolean
                                 end as evolution_{0}_{1}
                 From (
                     Select (st_dump(st_collectionextract(st_safe_intersection(mos.geom, p.geom),3))).geom::geometry(Polygon,2154) as geom,
-                        p.to_milit,
-                        p.to_bati,
-                        p.to_batire,
-                        p.to_batagri,
-                        p.to_serre,
-                        p.to_indust,
-                        p.to_comer,
-                        p.to_zic,
-                        p.to_transp,
-                        p.to_voiefer,
-                        p.to_carrier,
-                        p.to_cime,
-                        p.to_sport,
-                        p.to_loisir,
-                        p.to_agri,
-                        p.to_veget,
-                        p.to_eau,
-                        p.to_route,
-                        p.to_batimaison,
-                        p.pre_scol,
-                        p.pre_sante,
-                        p.pre_eqadmi,
-                        p.pre_o_nrj,
-                        p.pre_transp,
-                        p.pre_sploi,
-                        p.m_fonction,
-                        p.prob_jardin,
-                        mos.section as section_{0},
-                        p.section as section_{1},
-                        mos.idu as idu_{0},
-                        p.idu as idu_{1},
-                        mos.dc as code_insee_{0},
-                        p.code_insee as code_insee_{1},
-                        mos.{6} as id_mos_{0},
-                        p.{7} as id_mos_{1},
-                        mos.perimetre as perimetre_{0},
-                        p.perimetre as perimetre_{1},
-                        mos.surface_m2 as surface_m2_{0},
-                        p.surface_m2 as surface_m2_{1},
-                        mos.code4_{0},
+                        mos.gid as gid_t0,
+                        p.to_milit as to_milit,
+                        p.to_bati as to_bati,
+                        p.to_batire as to_batire,
+                        p.to_batagri as to_batagri,
+                        p.to_serre as to_serre,
+                        p.to_indust as to_indust,
+                        p.to_comer as to_comer,
+                        p.to_zic as to_zic,
+                        p.to_transp as to_transp,
+                        p.to_voiefer as to_voiefer,
+                        p.to_carrier as to_carrier,
+                        p.to_cime as to_cime,
+                        p.to_sport as to_sport,
+                        p.to_loisir as to_loisir,
+                        p.to_agri as to_agri,
+                        p.to_veget as to_veget,
+                        p.to_eau as to_eau,
+                        p.to_route as to_route,
+                        p.to_batimaison as to_batimaison,
+                        p.pre_scol as pre_scol,
+                        p.pre_sante as pre_sante,
+                        p.pre_eqadmi as pre_eqadmi,
+                        p.pre_o_nrj as pre_o_nrj,
+                        p.pre_transp as pre_transp,
+                        p.pre_sploi as pre_sploi,
+                        p.m_fonction as m_fonction,
+                        p.prob_jardin as prob_jardin,
+                        p.idu,
+                        p.num_parc,
+                        p.tex,
+                        p.section,
+                        p.code_insee,
+                        --p.nom_commune as nom_commune,
+                        mos.{8} as subdi_sirs,
+                        left(p.code_insee,2) || p.num_parc || coalesce(mos.{8}, '')::character varying as id_mos,
+                        mos.{9} as code4_{0},
+                        mos.{10} as lib4_{0},
+                        mos.{11} as remarque_{0},
                         p.code4_{1},
-                        mos.lib4_{0},
                         p.lib4_{1},
-                        mos.remarque as remarque_{0},
-                        p.remarque_{1}
+                        p.remarque_{1} as remarque_{1}
                     From {4}.{5} p
                     left Join {2}.{3} mos on st_intersects(p.geom,mos.geom)
                 ) tt;
 
-                drop table if exists {8}.{9};
-                Create table {8}.{9} as
+                DO 
+                LANGUAGE plpgsql
+                $BODY$
+                    DECLARE
+                        v_annee character varying;
+                        v_datatype character varying;
+                    BEGIN
+                        For v_annee, v_datatype in Select right(column_name,4), data_type from information_schema.columns where table_schema||'.'||table_name  = '{2}.{3}' and column_name like 'code4%' order by column_name asc LOOP
+                            execute format('Alter table {6}.{7} add column code4_%1$s integer;
+                                            Alter table {6}.{7} add column lib4_%1$s character varying;
+                                            Alter table {6}.{7} add column remarque_%1$s character varying;', v_annee);
+                        END LOOP;
+                        Alter table {6}.{7} add column code4_{1} character varying;
+                        Alter table {6}.{7} add column lib4_{1} character varying;
+                        Alter table {6}.{7} add column remarque_{1} character varying;
+
+                        Alter table {6}.{7} add column surface_m2 double precision;                        
+                        Alter table {6}.{7} add column perimetre double precision;
+                    END;
+                $BODY$;
+
+
+
+
+                insert into {6}.{7} (
+                            gid_t0,
+                            to_milit, 
+                            to_bati, 
+                            to_batire, 
+                            to_batagri, 
+                            to_serre, 
+                            to_indust, 
+                            to_comer, 
+                            to_zic, 
+                            to_transp, 
+                            to_voiefer, 
+                            to_carrier, 
+                            to_cime, 
+                            to_sport,
+                            to_loisir,
+                            to_agri,
+                            to_veget,
+                            to_eau,
+                            to_route,
+                            to_batimaison,
+                            pre_scol,
+                            pre_sante,
+                            pre_eqadmi,
+                            pre_o_nrj,
+                            pre_transp,
+                            pre_sploi,
+                            m_fonction,
+                            prob_jardin,
+                            idu,
+                            num_parc,
+                            tex,
+                            section,
+                            code_insee,
+                            --nom_commune
+                            subdi_sirs,
+                            id_mos, 
+                            code4_{0}, 
+                            code4_{1}, 
+                            lib4_{0}, 
+                            lib4_{1}, 
+                            remarque_{0}, 
+                            remarque_{1}, 
+                            geom                            
+                ) 
                 with tmp as (
-                    Select left(code_insee_{1},2)||'NC'|| row_number() over() as id_mos_{1},code_insee_{1}, array_to_string(array_agg(distinct (code4_{0})), ',') as code4_{0}, code_insee_{0} ,code4_{1}, lib4_{1} ,(st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(Polygon,2154) as geom, array_agg(id_mos_{1}) as agg_idmos
-                        From vm_temp_compare mos
-                        Group by code4_{1}, code_insee_{0}, code_insee_{1}, lib4_{1}
-                        Having code4_{1} in (1224, 1222, 1226, 1221, 1223, 1225)
+                    Select 
+                        left(code_insee,2)||'NC'|| row_number() over() as id_mos,
+                        code_insee, 
+                        array_to_string(array_agg(distinct (code4_{0})), ',') as code4_{0},
+                        array_to_string(array_agg(distinct (lib4_{0})), ',') as lib4_{0},
+                        array_to_string(array_agg(distinct (remarque_{0})), ',') as remarque_{0},
+                        code4_{1}, 
+                        lib4_{1},
+                        remarque_{1},
+                        (st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(Polygon,2154) as geom
+                    From vm_temp_compare mos
+                    Group by code4_{1}, code_insee, lib4_{1}, remarque_{1}
+                    Having code4_{1} in (1224, 1222, 1226, 1221, 1223, 1225)
                 ), tmpunion as(
                     Select row_number() over() as gid, *
                         from tmp
                 ), tmp3 as (
-                (Select to_milit, to_bati, to_batire, to_batagri, to_serre, to_indust, to_comer, to_zic, to_transp, to_voiefer, to_carrier, to_cime, to_sport, to_loisir, to_agri, to_veget, to_eau, to_route, to_batimaison, pre_scol, pre_sante, pre_eqadmi, pre_o_nrj, pre_transp, pre_sploi, prob_jardin,
-                section_{0}, section_{1}, idu_{0}, idu_{1}, code_insee_{0}, code_insee_{1}, id_mos_{0}, id_mos_{1}, perimetre_{0}, perimetre_{1}, surface_m2_{0}, surface_m2_{1}, code4_{0}, code4_{1}, lib4_{0}, lib4_{1}, remarque_{0}, remarque_{1}, geom
-                    From vm_temp_compare mos
-                    where code4_{1} not in (1224, 1222, 1226, 1221, 1223, 1225)
+                (Select
+                    gid_t0, 
+                    to_milit, 
+                    to_bati, 
+                    to_batire, 
+                    to_batagri, 
+                    to_serre, 
+                    to_indust, 
+                    to_comer, 
+                    to_zic, 
+                    to_transp, 
+                    to_voiefer, 
+                    to_carrier, 
+                    to_cime, 
+                    to_sport, 
+                    to_loisir, 
+                    to_agri, 
+                    to_veget, 
+                    to_eau,
+                    to_route, 
+                    to_batimaison, 
+                    pre_scol, 
+                    pre_sante, 
+                    pre_eqadmi, 
+                    pre_o_nrj, 
+                    pre_transp, 
+                    pre_sploi,
+                    m_fonction, 
+                    prob_jardin,
+                    idu,
+                    num_parc,
+                    tex,
+                    section,
+                    code_insee,
+                    --nom_commune,
+                    subdi_sirs,
+                    id_mos, 
+                    {12}code4_{0}{13}, 
+                    code4_{1}, 
+                    lib4_{0}, 
+                    lib4_{1}, 
+                    remarque_{0}, 
+                    remarque_{1}, 
+                    geom
+                From vm_temp_compare mos
+                where code4_{1} not in (1224, 1222, 1226, 1221, 1223, 1225)
                 )
                 UNION
-                (Select null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                'NC', 'NC', 'NC', 'NC', code_insee_{0}, code_insee_{1}, null, id_mos_{1}, null, st_perimeter(geom), null, st_area(geom), code4_{0}, code4_{1}, null, lib4_{1}, null, 'Unification des routes', geom
-                from tmpunion))
-                    Select row_number() over() as gid, *
-                    From tmp3
+                (Select 
+                    null::integer as gid_t0,
+                    null as to_milit,
+                    null as to_bati,
+                    null as to_batire,
+                    null as to_batagri,
+                    null as to_serre,
+                    null as to_indust,
+                    null as to_comer,
+                    null as to_zic,
+                    null as to_transp,
+                    null as to_voiefer,
+                    null as to_carrier,
+                    null as to_cime,
+                    null as to_sport,
+                    null as to_loisir,
+                    null as to_agri,
+                    null as to_veget,
+                    null as to_eau,
+                    null as to_route,
+                    null as to_batimaison,
+                    null as pre_scol,
+                    null as pre_sante,
+                    null as pre_eqadmi,
+                    null as pre_o_nrj,
+                    null as pre_transp,
+                    null as pre_sploi,
+                    null as m_fonction,
+                    null as prob_jardin,
+                    'NC' as idu,
+                    'NC' as num_parc,
+                    'NC' as tex, 
+                    'NC' as section, 
+                    code_insee as code_insee,
+                    --nom_commune as nom_commune,
+                    null as subdi_sirs,
+                    id_mos as id_mos,  
+                    {12}code4_{0}{13} as code4_{0}, 
+                    code4_{1} as code4_{1}, 
+                    lib4_{0} as lib4_{0}, 
+                    lib4_{1} as lib4_{1}, 
+                    null as remarque_{0}, 
+                    'Unification des routes' as remarque_{1}, 
+                    geom
+                from tmpunion)
+                )
+                    Select  *
+                    From tmp3;
+
+                DO 
+                LANGUAGE plpgsql
+                $BODY$
+                    DECLARE
+                        v_gid_t0 integer;
+                        v_annee character varying;
+                        v_code integer;
+                        v_rem character varying;
+                        v_lib character varying;
+                    BEGIN
+                        For v_annee in Select right(column_name,4) from information_schema.columns where table_schema||'.'||table_name  = '{2}.{3}' and column_name like 'code4%' order by column_name asc LOOP
+                            execute format('Update {6}.{7} x Set 
+                                                code4_%1$s = {12}y.code4_%1$s{14},
+                                                lib4_%1$s = y.lib4_%1$s,
+                                                surface_m2 = st_area(x.geom),
+                                                perimetre = st_perimeter(x.geom)
+                                                From {2}.{3} y
+                                                Where gid_t0 = y.gid;
+                                            ', v_annee);
+                        END LOOP;
+                    END;
+                $BODY$;
 
                     """.format(
-                        yearCode_t1[0],
-                        yearCode_t0[0],
-                        self.cb_schema_t1.currentText(),
-                        self.cb_table_t1.currentText(),
-                        self.cb_schema_t0.currentText(),
-                        self.cb_table_t0.currentText(),
-                        idmos_t1[0],
-                        idmos_t0[0],
-                        self.cb_schema_desti.currentText(),
-                        self.le_table_desti.text()
+                        yearCode_t0[0],#0
+                        yearCode_t1[0],#1
+                        self.cb_schema_t0.currentText(),#2
+                        self.cb_table_t0.currentText(),#3
+                        self.cb_schema_t1.currentText(),#4
+                        self.cb_table_t1.currentText(),#5
+                        self.cb_schema_desti.currentText(),#6
+                        self.le_table_desti.text(),#7
+                        self.subdi_sirs[0],#8
+                        self.code4[0],#9
+                        self.lib4[0],#10
+                        self.remarque[0],#11
+                        tonumber_debut,#12
+                        tonumber_fin,#13
+                        tonummfinbis#14
                         )
                     )
 

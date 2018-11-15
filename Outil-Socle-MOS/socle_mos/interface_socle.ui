@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Création de MOS</string>
+   <string>Création d'un socle (t0)</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -40,7 +40,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Sélectionner la connexion à la base de donnée</string>
+        <string>Sélectionner la connexion à la base de données</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -83,7 +83,7 @@
      <item>
       <widget class="QLabel" name="label_13">
        <property name="text">
-        <string>Table destination</string>
+        <string>Couche destination</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -138,8 +138,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>658</width>
-        <height>709</height>
+        <width>657</width>
+        <height>618</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_analyse.ui'
 #
-# Created: Wed Nov 14 16:22:37 2018
+# Created: Wed Nov 14 17:11:52 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -237,8 +237,8 @@ class Ui_interface_analyse(object):
         QtCore.QMetaObject.connectSlotsByName(interface_analyse)
 
     def retranslateUi(self, interface_analyse):
-        interface_analyse.setWindowTitle(_translate("interface_analyse", "Création de MOS", None))
-        self.label.setText(_translate("interface_analyse", "Sélectionner la connexion à la base de donnée", None))
+        interface_analyse.setWindowTitle(_translate("interface_analyse", "Comparaison de données antérieures (t-1)", None))
+        self.label.setText(_translate("interface_analyse", "Sélectionner la connexion à la base de données", None))
         self.pb_dbConnect.setText(_translate("interface_analyse", "Connecter", None))
         self.groupBox_2.setTitle(_translate("interface_analyse", "Destination", None))
         self.label_3.setText(_translate("interface_analyse", "Schéma destination", None))

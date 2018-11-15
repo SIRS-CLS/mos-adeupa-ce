@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'interface_socle.ui'
 #
-# Created: Fri Nov  9 10:02:47 2018
-#      by: PyQt4 UI code generator 4.10.4
+# Created: Wed Nov 14 17:11:02 2018
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -96,7 +96,7 @@ class Ui_interface_socle(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 658, 709))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 657, 618))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_2 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -451,11 +451,11 @@ class Ui_interface_socle(object):
         QtCore.QMetaObject.connectSlotsByName(interface_socle)
 
     def retranslateUi(self, interface_socle):
-        interface_socle.setWindowTitle(_translate("interface_socle", "Création de MOS", None))
-        self.label.setText(_translate("interface_socle", "Sélectionner la connexion à la base de donnée", None))
+        interface_socle.setWindowTitle(_translate("interface_socle", "Création d\'un socle (t0)", None))
+        self.label.setText(_translate("interface_socle", "Sélectionner la connexion à la base de données", None))
         self.pb_dbConnect.setText(_translate("interface_socle", "Connecter", None))
         self.label_6.setText(_translate("interface_socle", "Schema destination", None))
-        self.label_13.setText(_translate("interface_socle", "Table destination", None))
+        self.label_13.setText(_translate("interface_socle", "Couche destination", None))
         self.label_2.setText(_translate("interface_socle", "Année", None))
         self.groupBox_5.setTitle(_translate("interface_socle", "Emprise", None))
         self.label_14.setText(_translate("interface_socle", "Emprise bd_topo", None))
