@@ -200,7 +200,6 @@ class Compare_mos(QDialog, Ui_interface_compare):
             wschema = self.cb_schema_t1.currentText()
             queryTable.prepare("Select distinct table_name from information_schema.tables where table_schema = '" + wschema + "' order by table_name;")
             if queryTable.exec_():
-                print (self.cb_schema_t1.currentText())
                 while queryTable.next():
                     self.cb_table_t1.addItem(queryTable.value(0))
 
@@ -220,7 +219,6 @@ class Compare_mos(QDialog, Ui_interface_compare):
             wschema = self.cb_schema_t0.currentText()
             queryTable.prepare("Select distinct table_name from information_schema.tables where table_schema = '" + wschema + "' order by table_name;")
             if queryTable.exec_():
-                print (self.cb_schema_t0.currentText())
                 while queryTable.next():
                     self.cb_table_t0.addItem(queryTable.value(0))
 
@@ -312,7 +310,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
 
         self.conn.commit();
         self.lbl_etape.setText(u'Etape 2/2')
-        self.pb_avancement.setValue(20)
+        self.pb_avancement.setValue(5)
         temp = QTimer       
         temp.singleShot(100, self.compareSocle)
 
@@ -417,9 +415,9 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         id_mos character varying,
                         subdi_sirs character varying,
                         gid_t0 integer,                                         
-                        
                         constraint pk_{6}_{7} PRIMARY KEY (gid)
                 );
+                create index idx_{6}_{7} on {6}.{7} using gist(geom);
 
                 drop table if exists vm_temp_compare cascade;
                 Create temporary table vm_temp_compare as 
@@ -487,7 +485,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                             Alter table {6}.{7} add column lib4_%1$s character varying;
                                             Alter table {6}.{7} add column remarque_%1$s character varying;', v_annee);
                         END LOOP;
-                        Alter table {6}.{7} add column code4_{1} character varying;
+                        Alter table {6}.{7} add column code4_{1} integer;
                         Alter table {6}.{7} add column lib4_{1} character varying;
                         Alter table {6}.{7} add column remarque_{1} character varying;
 
@@ -547,7 +545,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                 with tmp as (
                     Select 
                         left(code_insee,2)||'NC'|| row_number() over() as id_mos,
-                        code_insee, 
+                        code_insee,
+                        --nom_commune, 
                         array_to_string(array_agg(distinct (code4_{0})), ',') as code4_{0},
                         array_to_string(array_agg(distinct (lib4_{0})), ',') as lib4_{0},
                         array_to_string(array_agg(distinct (remarque_{0})), ',') as remarque_{0},
@@ -556,11 +555,17 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         remarque_{1},
                         (st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(Polygon,2154) as geom
                     From vm_temp_compare mos
-                    Group by code4_{1}, code_insee, lib4_{1}, remarque_{1}
-                    Having code4_{1} in (1224, 1222, 1226, 1221, 1223, 1225)
+                    where {12}code4_{0}{13} in (1224, 1222, 1221, 1223, 1225, 1226)
+                    Group by code4_{1}, code_insee, lib4_{1}, remarque_{1} , subdi_sirs --,nom_commune
+                    Having code4_{1} in (1224, 1222, 1221, 1223, 1225, 1226) and subdi_sirs is null 
                 ), tmpunion as(
                     Select row_number() over() as gid, *
                         from tmp
+                ), tmp1 as (
+                    Select gid
+                    From vm_temp_compare
+                    where {12}code4_{0}{13} in (1224, 1222, 1221, 1223, 1225, 1226)
+                    and (code4_{1} in (1224, 1222, 1221, 1223, 1225, 1226) and subdi_sirs is null )
                 ), tmp3 as (
                 (Select
                     gid_t0, 
@@ -606,8 +611,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     remarque_{0}, 
                     remarque_{1}, 
                     geom
-                From vm_temp_compare mos
-                where code4_{1} not in (1224, 1222, 1226, 1221, 1223, 1225)
+                From vm_temp_compare mos 
+                Where mos.gid not in (Select gid from tmp1)
                 )
                 UNION
                 (Select 
@@ -651,7 +656,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     code4_{1} as code4_{1}, 
                     lib4_{0} as lib4_{0}, 
                     lib4_{1} as lib4_{1}, 
-                    null as remarque_{0}, 
+                    remarque_{0} as remarque_{0}, 
                     'Unification des routes' as remarque_{1}, 
                     geom
                 from tmpunion)
@@ -665,20 +670,61 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     DECLARE
                         v_gid_t0 integer;
                         v_annee character varying;
-                        v_code integer;
-                        v_rem character varying;
-                        v_lib character varying;
+                        v_remarque integer;
                     BEGIN
                         For v_annee in Select right(column_name,4) from information_schema.columns where table_schema||'.'||table_name  = '{2}.{3}' and column_name like 'code4%' order by column_name asc LOOP
-                            execute format('Update {6}.{7} x Set 
-                                                code4_%1$s = {12}y.code4_%1$s{14},
-                                                lib4_%1$s = y.lib4_%1$s,
-                                                surface_m2 = st_area(x.geom),
-                                                perimetre = st_perimeter(x.geom)
-                                                From {2}.{3} y
-                                                Where gid_t0 = y.gid;
-                                            ', v_annee);
+                            execute format('select count(*) from information_schema.columns where table_schema||''.''||table_name  = ''{2}.{3}'' and column_name like ''remarque_%1$s'' ', v_annee) into v_remarque;
+                            if v_remarque > 0 then
+                                execute format('Update {6}.{7} x Set 
+                                                    code4_%1$s = {12}y.code4_%1$s{14},
+                                                    lib4_%1$s = y.lib4_%1$s,
+                                                    remarque_%1$s = y.remarque_%1$s,
+                                                    surface_m2 = st_area(x.geom),
+                                                    perimetre = st_perimeter(x.geom)
+                                                    From {2}.{3} y
+                                                    Where gid_t0 = y.gid;
+                                                ', v_annee);
+                            else
+                                execute format('Update {6}.{7} x Set 
+                                                    code4_%1$s = {12}y.code4_%1$s{14},
+                                                    lib4_%1$s = y.lib4_%1$s,
+                                                    surface_m2 = st_area(x.geom),
+                                                    perimetre = st_perimeter(x.geom)
+                                                    From {2}.{3} y
+                                                    Where gid_t0 = y.gid;
+                                                ', v_annee);
+
+                            end if;
+                                execute format('Update {6}.{7} x Set 
+                                                    code4_%1$s = code4_{1},
+                                                    lib4_%1$s = lib4_{1},
+                                                    surface_m2 = st_area(x.geom),
+                                                    perimetre = st_perimeter(x.geom)
+                                                    Where gid_t0 is null
+                                                ', v_annee);
                         END LOOP;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where subdi_sirs is not null;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where (code4_{1} = 1412 and  code4_{0} in (1112, 1113, 1114, 1115)) or (code4_{1} = 1112 and  code4_{0} = 1412);
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 1226 and  code4_{0} != 1226;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{0} in (1112, 1113,1114,1115,1122,1131) and  (to_char(code4_{1}, '9999') like ' 5%' 
+                                                                                        or to_char(code4_{1}, '9999') like ' 3%'
+                                                                                        or to_char(code4_{1}, '9999') like ' 2%'
+                                                                                        or to_char(code4_{1}, '9999') like ' 13%'
+                                                                                        or to_char(code4_{1}, '9999') like ' 12%');
+
+                        Alter table {6}.{7} drop column gid_t0;
                     END;
                 $BODY$;
 

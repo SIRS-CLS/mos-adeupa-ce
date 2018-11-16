@@ -918,7 +918,8 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                                 {39} as surface_m2,
                                                 {40} as perimetre
                                             From %1$s   
-                                    )
+                                    );
+                                    create index idx_{41}_{42} on {41}.{42} using gist(geom);
                             ', i_socle_c);
 
                             For v_geom, v_gid, v_id_mos, v_code4, v_lib4, v_tobati IN execute format('Select geom, gid, {34}, {36}, {37}, {8} From %1$s sc;', i_socle_c) LOOP

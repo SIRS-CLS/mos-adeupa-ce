@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_socle.ui'
 #
-# Created: Wed Nov 14 17:11:02 2018
+# Created: Fri Nov 16 12:33:40 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_interface_socle(object):
     def setupUi(self, interface_socle):
         interface_socle.setObjectName(_fromUtf8("interface_socle"))
-        interface_socle.resize(694, 576)
+        interface_socle.resize(815, 576)
         interface_socle.setMaximumSize(QtCore.QSize(16777215, 16777215))
         interface_socle.setSizeGripEnabled(True)
         self.verticalLayout = QtGui.QVBoxLayout(interface_socle)
@@ -96,7 +96,7 @@ class Ui_interface_socle(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 657, 618))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 778, 618))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_2 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -458,8 +458,8 @@ class Ui_interface_socle(object):
         self.label_13.setText(_translate("interface_socle", "Couche destination", None))
         self.label_2.setText(_translate("interface_socle", "Année", None))
         self.groupBox_5.setTitle(_translate("interface_socle", "Emprise", None))
-        self.label_14.setText(_translate("interface_socle", "Emprise bd_topo", None))
-        self.label_60.setText(_translate("interface_socle", "Emprise BD Parcellaire", None))
+        self.label_14.setText(_translate("interface_socle", "Limite communes BD Topo", None))
+        self.label_60.setText(_translate("interface_socle", "Limite communes BD Parcellaire", None))
         self.groupBox.setTitle(_translate("interface_socle", "Edigeo", None))
         self.label_7.setText(_translate("interface_socle", "Parcelles", None))
         self.label_8.setText(_translate("interface_socle", "Sous-parcelles", None))

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
+    <width>815</width>
     <height>576</height>
    </rect>
   </property>
@@ -138,7 +138,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>657</width>
+        <width>778</width>
         <height>618</height>
        </rect>
       </property>
@@ -160,7 +160,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_14">
               <property name="text">
-               <string>Emprise bd_topo</string>
+               <string>Limite communes BD Topo</string>
               </property>
              </widget>
             </item>
@@ -179,7 +179,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Emprise BD Parcellaire</string>
+               <string>Limite communes BD Parcellaire</string>
               </property>
              </widget>
             </item>
