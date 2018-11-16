@@ -11,7 +11,7 @@ name=Socle-MOS
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Outil de génération et de croisement de modes d'occupation du sol
-version=0.4.1
+version=0.5
 author=Corentin Falcon (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
