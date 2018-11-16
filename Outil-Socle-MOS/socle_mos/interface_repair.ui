@@ -28,7 +28,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Sélectionner la connexion à la base de donnée</string>
+        <string>Sélectionner la connexion à la base de données</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -87,7 +87,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Sélectionner la table</string>
+        <string>Sélectionner la couche</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

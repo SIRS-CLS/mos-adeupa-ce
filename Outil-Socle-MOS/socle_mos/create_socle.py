@@ -1221,6 +1221,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         tex character varying,
                         section character varying,
                         code_insee character varying,
+                        nom_commune character varying,
                         gid serial,
                         geom geometry(Polygon,2154),
                         id_mos character varying,
@@ -2126,6 +2127,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     END;
                 $BODY$;
+
+                Drop table if exists socle_temp;
                 """.format(
                         self.cb_schema.currentText(),
                         self.le_destination.text(),

@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>interface_socle</class>
+ <widget class="QDialog" name="interface_socle">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>694</width>
+    <height>576</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Création de MOS</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Sélectionner la connexion à la base de donnée</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cb_connexion"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pb_dbConnect">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Connecter</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Schema destination</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cb_schema"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Table destination</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_destination">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Année</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_annee">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>658</width>
+        <height>709</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetNoConstraint</enum>
+         </property>
+         <item>
+          <widget class="QGroupBox" name="groupBox_5">
+           <property name="title">
+            <string>Emprise</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_14">
+              <property name="text">
+               <string>Emprise bd_topo</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cb_parcelle_bdtopo"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="cb_parcellaire"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_60">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Emprise BD Parcellaire</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="title">
+            <string>Edigeo</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Parcelles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cb_parcelle">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Sous-parcelles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="cb_subparc">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="cb_tronroute"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Tronçon Route</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Tronçon fleuve</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="cb_tronfluv"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Tsurf</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="cb_tsurf">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QComboBox" name="cb_geobati"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Bâtiments</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="cb_section"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Sections</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="title">
+            <string>Autre</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <item row="6" column="1">
+             <widget class="QComboBox" name="cb_res_sport"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>IPLI</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="cb_ipli"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_57">
+              <property name="text">
+               <string>FINESS</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_58">
+              <property name="text">
+               <string>RES sportif</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="cb_finess"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_61">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>FF pnb10_parcelle</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="cb_ff_parcelle"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_56">
+              <property name="text">
+               <string>RPGA</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cb_rpga">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetNoConstraint</enum>
+         </property>
+         <item>
+          <widget class="QGroupBox" name="groupBox_4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="title">
+            <string>IGN</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <item row="0" column="0" colspan="2">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Champ geom</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="rb_geom">
+                <property name="text">
+                 <string>geom</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">btgr_geom</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="rb_the_geom">
+                <property name="text">
+                 <string>the_geom</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">btgr_geom</string>
+                </attribute>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_26">
+              <property name="text">
+               <string>PAI culture/loisirs</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cb_pai_cult"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>PAI transport</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="cb_paitransp"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_28">
+              <property name="text">
+               <string>PAI sante</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="cb_paisante"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_29">
+              <property name="text">
+               <string>PAI religieux</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="cb_pairel"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>PAI militaire</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="cb_paimilit"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>PAI science/enseignement</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QComboBox" name="cb_paiens"/>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="label_24">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>PAI indust/commer</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QComboBox" name="cb_paicom"/>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>PAI sport</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QComboBox" name="cb_paisport"/>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="label_53">
+              <property name="text">
+               <string>Poste transformation</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QComboBox" name="cb_paitransfo"/>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="label_54">
+              <property name="text">
+               <string>Cimetiere</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="QComboBox" name="cb_cime"/>
+            </item>
+            <item row="11" column="0">
+             <widget class="QLabel" name="label_55">
+              <property name="text">
+               <string>Terrain sport</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="1">
+             <widget class="QComboBox" name="cb_terrainsport"/>
+            </item>
+            <item row="12" column="0">
+             <widget class="QLabel" name="label_59">
+              <property name="text">
+               <string>Zone végétation</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="1">
+             <widget class="QComboBox" name="cb_zoneveget"/>
+            </item>
+            <item row="13" column="0">
+             <widget class="QLabel" name="label_15">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Routes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QComboBox" name="cb_route"/>
+            </item>
+            <item row="14" column="0">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Bâti remarquable</string>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="1">
+             <widget class="QComboBox" name="cb_remarquable"/>
+            </item>
+            <item row="15" column="0">
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>Bâti industriel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="1">
+             <widget class="QComboBox" name="cb_indust"/>
+            </item>
+            <item row="16" column="0">
+             <widget class="QLabel" name="label_21">
+              <property name="text">
+               <string>Bâti indiferencie</string>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="1">
+             <widget class="QComboBox" name="cb_indif"/>
+            </item>
+            <item row="17" column="0">
+             <widget class="QLabel" name="label_30">
+              <property name="text">
+               <string>Surface eau</string>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="1">
+             <widget class="QComboBox" name="cb_surf_eau"/>
+            </item>
+            <item row="18" column="0">
+             <widget class="QLabel" name="label_31">
+              <property name="text">
+               <string>Point eau</string>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="1">
+             <widget class="QComboBox" name="cb_pt_eau"/>
+            </item>
+            <item row="19" column="0">
+             <widget class="QLabel" name="label_50">
+              <property name="text">
+               <string>Surface activité</string>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="1">
+             <widget class="QComboBox" name="cb_surf_acti"/>
+            </item>
+            <item row="20" column="0">
+             <widget class="QLabel" name="label_51">
+              <property name="text">
+               <string>Aitre triage</string>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="1">
+             <widget class="QComboBox" name="cb_triage"/>
+            </item>
+            <item row="21" column="0">
+             <widget class="QLabel" name="label_52">
+              <property name="text">
+               <string>Voie ferré</string>
+              </property>
+             </widget>
+            </item>
+            <item row="21" column="1">
+             <widget class="QComboBox" name="cb_voiefer"/>
+            </item>
+           </layout>
+           <zorder>label_23</zorder>
+           <zorder>cb_paicom</zorder>
+           <zorder>label_29</zorder>
+           <zorder>cb_paitransp</zorder>
+           <zorder>label_59</zorder>
+           <zorder>cb_paiens</zorder>
+           <zorder>cb_pai_cult</zorder>
+           <zorder>label_24</zorder>
+           <zorder>cb_cime</zorder>
+           <zorder>cb_pairel</zorder>
+           <zorder>cb_paimilit</zorder>
+           <zorder>label_55</zorder>
+           <zorder>cb_zoneveget</zorder>
+           <zorder>label_54</zorder>
+           <zorder>label_27</zorder>
+           <zorder>cb_paisport</zorder>
+           <zorder>cb_paitransfo</zorder>
+           <zorder>label_22</zorder>
+           <zorder>cb_paisante</zorder>
+           <zorder>label_28</zorder>
+           <zorder>label_26</zorder>
+           <zorder>label_25</zorder>
+           <zorder>cb_terrainsport</zorder>
+           <zorder>label_53</zorder>
+           <zorder>cb_route</zorder>
+           <zorder>label_15</zorder>
+           <zorder>cb_remarquable</zorder>
+           <zorder>label_19</zorder>
+           <zorder>cb_indust</zorder>
+           <zorder>label_20</zorder>
+           <zorder>cb_indif</zorder>
+           <zorder>label_21</zorder>
+           <zorder>cb_surf_eau</zorder>
+           <zorder>label_30</zorder>
+           <zorder>cb_pt_eau</zorder>
+           <zorder>label_31</zorder>
+           <zorder>cb_surf_acti</zorder>
+           <zorder>label_50</zorder>
+           <zorder>cb_triage</zorder>
+           <zorder>label_51</zorder>
+           <zorder>cb_voiefer</zorder>
+           <zorder>label_52</zorder>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pb_start">
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lbl_etape">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="pb_avancement">
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <zorder></zorder>
+  <zorder>pb_start</zorder>
+  <zorder>pb_avancement</zorder>
+  <zorder>lbl_etape</zorder>
+  <zorder>pb_dbConnect</zorder>
+  <zorder>scrollArea</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="btgr_geom"/>
+ </buttongroups>
+</ui>
