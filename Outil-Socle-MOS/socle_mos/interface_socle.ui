@@ -160,7 +160,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_14">
               <property name="text">
-               <string>Limite communes BD Topo</string>
+               <string>Communes BD Topo</string>
               </property>
              </widget>
             </item>
@@ -179,7 +179,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Limite communes BD Parcellaire</string>
+               <string>Communes BD Parcellaire</string>
               </property>
              </widget>
             </item>

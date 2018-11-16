@@ -187,6 +187,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     
 
     def chargeTable0(self):
+        #Fonction de chargement des données des tables lorsque le schéma T0 est changé
         self.cb_table_t1.clear()
         db = self.connexion()
             #Connexion à la base de données
@@ -204,6 +205,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     self.cb_table_t1.addItem(queryTable.value(0))
 
     def chargeTable1(self):
+        #Fonction de chargement des données des tables lorsque le schéma T+1 est changé
         self.cb_table_t0.clear()
 
 
@@ -246,7 +248,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
         temp.singleShot(100, self.detectionChamps)
 
     def detectionChamps(self):
-        
+        #Fonction de détection des champs à appeler dans la couche t0
         cur = self.conn.cursor()
         cur.execute(u"""Select column_name
                         from information_schema.columns 
@@ -311,14 +313,17 @@ class Compare_mos(QDialog, Ui_interface_compare):
         self.conn.commit();
         self.lbl_etape.setText(u'Etape 2/2')
         self.pb_avancement.setValue(5)
-        temp = QTimer       
+        temp = QTimer
+            #Appel à la fonction de comparaison de socle       
         temp.singleShot(100, self.compareSocle)
 
 
     def compareSocle(self):
-        #Calcul des taux de présence
+        #Fonction de comparaison de socle t0 (multi date) et t+1
+        #Création des géométries en fonction des anciennes présentes et des nouvelles
+        #Garde les découpe de l'ancienne en ajoutant les découpes nouvelles
         cur = self.conn.cursor()
-            #Execution de la suite de requêtes
+            #Récupération de l'année t+1
         cur.execute(u"""Select right(column_name,4) 
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
@@ -332,7 +337,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
         yearCode_t1 = cur.fetchone()
         cur.close();
 
-
+            #Récupération de l'année t0
         cur2 = self.conn.cursor()
         cur2.execute(u"""Select right(column_name,4) 
                         from information_schema.columns 
@@ -346,7 +351,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     )
         yearCode_t0 = cur2.fetchone()
         cur2.close();
-
+            #Récupération du type de données du code t0
         cur = self.conn.cursor()
         cur.execute(u"""Select data_type
                         from information_schema.columns 
@@ -361,6 +366,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     )
         dType = cur.fetchone()
         cur.close();
+            #Récupération de l'appel à la focntion de conversion de text en integer dans le cas où le code est un varchar
         if dType[0] == 'integer':
             tonumber_debut = ' '
             tonumber_fin = ' '
@@ -372,9 +378,10 @@ class Compare_mos(QDialog, Ui_interface_compare):
 
 
         
-
+            #Lancement du processus de comparaison de socle
         cur5 = self.conn.cursor()
         cur5.execute(u"""
+                --Création de la table de comparaison avec les champs nécessaire sans les différentes dates
                 drop table if exists {6}.{7};
                 Create table {6}.{7} (
                         to_milit integer,
@@ -419,6 +426,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                 );
                 create index idx_{6}_{7} on {6}.{7} using gist(geom);
 
+
+                    --Création de la donnée avec les nouvelles géométries fusionnées
                 drop table if exists vm_temp_compare cascade;
                 Create temporary table vm_temp_compare as 
                 Select row_number() over() as gid, * ,
@@ -473,6 +482,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     left Join {2}.{3} mos on st_intersects(p.geom,mos.geom)
                 ) tt;
 
+                    --Ajout des colonnes de code pour les différentes année contenues + la nouvelle année
+                    --Ajout des colonnes de surface et périmetre 
                 DO 
                 LANGUAGE plpgsql
                 $BODY$
@@ -496,7 +507,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
 
 
 
-
+                    --Insertion des données dans la table en fusionnant les routes
                 insert into {6}.{7} (
                             gid_t0,
                             to_milit, 
@@ -664,6 +675,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                     Select  *
                     From tmp3;
 
+                    --Mise à jour des codes des années précédentes t-x
+                    --Mise à jour des codes t+1 lorsque l'évolution est jugé incorecte
                 DO 
                 LANGUAGE plpgsql
                 $BODY$
@@ -672,6 +685,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         v_annee character varying;
                         v_remarque integer;
                     BEGIN
+                            --Mise à jour des 
                         For v_annee in Select right(column_name,4) from information_schema.columns where table_schema||'.'||table_name  = '{2}.{3}' and column_name like 'code4%' order by column_name asc LOOP
                             execute format('select count(*) from information_schema.columns where table_schema||''.''||table_name  = ''{2}.{3}'' and column_name like ''remarque_%1$s'' ', v_annee) into v_remarque;
                             if v_remarque > 0 then

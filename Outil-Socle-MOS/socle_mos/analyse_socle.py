@@ -214,6 +214,8 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                     
 
     def chargeTable(self):
+        #Fonction de chargement des données des tables contenues dans le schémas
+        #Fonction lancée lorsque le schéma est modifié
         self.cb_table.clear()
 
 
@@ -249,11 +251,13 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         self.pb_start.setEnabled(False)
         self.pb_avancement.setValue(0)
 
+            #Attribution du champ geometrie
         if self.rb_geom.isChecked():
             self.geom = 'geom'
         else:
             self.geom = 'the_geom'
 
+            #Recherche des couches présentes au lancement de l'analyse
         if self.cb_geobati.currentText() == '':
             self.geo_bati = 'none'
         else:
@@ -277,12 +281,15 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
 
         self.conn = psycopg2.connect(host=self.host, port=self.port, user=self.username, dbname=self.database, password=self.pwd )
 
-        temp = QTimer       
+        temp = QTimer 
+            #Lancement de la fonction de détection des champs      
         temp.singleShot(100, self.detectionChamps)
             #Appel de la fonction pour le début du socle 
         #self.createSocle()
 
     def detectionChamps(self):
+        #Fonction récupérant le nom de chaque champs contenus dans le socle
+        #Appliqué pour les cas où le champ n'est pas nommé de la même façon 
         cur = self.conn.cursor()
         cur.execute(u"""Select column_name
                         from information_schema.columns 
@@ -787,13 +794,17 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         self.conn.commit();
         self.lbl_etape.setText(u'Etape 2/2')
         self.pb_avancement.setValue(20)
-        temp = QTimer       
+        temp = QTimer 
+            #Lancement de la fonction d'analyse      
         temp.singleShot(100, self.analyseSocle)
 
     def analyseSocle(self):
-        #Calcul des taux de présence
-        print (self.cb_ff_parcelle.currentText())
+        #Fonction calculant les évolution entre l'année t0 et l'année t-1
+        #Prend en compte les données des ficheirs foncier sur les dates de construction des bâtiments
+        #Dans le cas où des données bâtiments à la date t-1 sont utilisées on calcul la surface de recouvrant sur la parcelle 
+            #Récupération de l'année t-1
         yearCode_t1 = int(self.le_annee.text())
+            #Récupération de l'année t0
         cur = self.conn.cursor()
             #Execution de la suite de requêtes
         cur.execute(u"""Select right(column_name,4) 
@@ -809,7 +820,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         yearCode_t0 = cur.fetchone()
         cur.close();
 
-
+            #Récupération de l'id_mos
         cur3 = self.conn.cursor()
         cur3.execute(u"""Select column_name 
                         from information_schema.columns 
@@ -824,6 +835,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         idmos_t0 = cur3.fetchone()
         cur3.close();
 
+            #Lancement de l'analyse
         cur5 = self.conn.cursor()
         cur5.execute(u"""
                 Create or replace function public.fun_bati_evol(i_socle_c text, 

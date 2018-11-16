@@ -35,7 +35,7 @@ class socle_mos:
         self.menuSocle = QMenu(u"Socle MOS")
         self.menuSocle.setIcon(QIcon(os.path.dirname(__file__) + "/icon.png"))
         self.menuSocle.addAction(self.createSocle)
-        self.menuSocle.addAction(self.compareSocle)
+        #self.menuSocle.addAction(self.compareSocle)
         self.menuSocle.addAction(self.analyseSocle)
         self.menuSocle.addAction(self.repairSocle)
         self.interface.pluginMenu().addMenu(self.menuSocle)
@@ -44,7 +44,7 @@ class socle_mos:
         self.toolbarSocle = self.interface.addToolBar(u"socle_mos");
         self.toolbarSocle.setObjectName("barreOutilsocle__mos")
         self.toolbarSocle.addAction(self.createSocle)
-        self.toolbarSocle.addAction(self.compareSocle)
+        #self.toolbarSocle.addAction(self.compareSocle)
         self.toolbarSocle.addAction(self.analyseSocle)
         self.toolbarSocle.addAction(self.repairSocle)
 
