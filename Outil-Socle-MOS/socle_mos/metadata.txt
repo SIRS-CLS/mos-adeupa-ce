@@ -34,7 +34,7 @@ changelog=
    * Ajout de l'interface de calcul des retro-évolutions (comparer le socle t0 avec des données t-1)
   Version 0.4.1
    * Correction du crash de chargement des données de l'interface de réparation (Prérequis : champ 'geom' de type Polygon)
-   * Import - Utilisation de buffer de 0.001m pour palier les exception topologiques "unary unions"
+   * Import - Utilisation de buffer de 0.001m pour pallier les exception topologiques "unary unions"
 
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
