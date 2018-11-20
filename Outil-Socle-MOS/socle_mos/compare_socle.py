@@ -838,7 +838,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                 end;
                     end
                     $$
-                    language 'plpgsql' immutable parallel safe;
+                    language 'plpgsql' immutable strict parallel safe;
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,
