@@ -2214,7 +2214,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                 end;
                     end
                     $$
-                    language 'plpgsql' immutable parallel safe;
+                    language 'plpgsql' immutable strict parallel safe;
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,
