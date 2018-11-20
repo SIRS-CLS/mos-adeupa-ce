@@ -28,6 +28,8 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 
 # Uncomment the following line and add your changelog:
 changelog=   
+  Version 0.5.1
+   * Fonctions forcées en strict parallel safe pour éviter les erreurs de type "ne peut pas lancer de sous-transactions pendant une opération parallèle CONTEXT"
   Version 0.5
    * Ajout de l'interface de calcul des retro-évolutions (comparer le socle t0 avec des données t-1)
   Version 0.4.1
