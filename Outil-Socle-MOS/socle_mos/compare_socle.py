@@ -729,6 +729,12 @@ class Compare_mos(QDialog, Ui_interface_compare):
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
                                 Where code4_{1} = 1226 and  code4_{0} != 1226;
+
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 2511 and  (code4_{0} = 2121 or code4_{0} = 1412) ;
+
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
@@ -737,6 +743,54 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                                                                         or to_char(code4_{1}, '9999') like ' 2%'
                                                                                         or to_char(code4_{1}, '9999') like ' 13%'
                                                                                         or to_char(code4_{1}, '9999') like ' 12%');
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where (code4_{0} = 1421 and code4_{1} != 1421) or (code4_{0} = 1422 and code4_{1} != 1422);
+
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where (code4_{0} != 1412 and code4_{1} = 1412) ;
+
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where (code4_{0} != 121 and code4_{1} = 121) ;
+
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where to_char(code4_{1}, '9999') in (' 3251', ' 3261')  and to_char(code4_{0}, '9999') not in (' 3251', ' 3261') ;
+
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where to_char(code4_{0}, '9999') like ' 13%'  and code4_{1} = 3251;
+
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 1112 and to_char(code4_{0}, '9999') in (' 1113', ' 1114', ' 1122', ' 1212', ' 1215', ' 1217', ' 1213', ' 1422', ' 1431', ' 1214', ' 1131', ' 2511', ' 1222', ' 2121') ;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 1115 and to_char(code4_{0}, '9999') in (' 1212', ' 1216', ' 1217', ' 1214', ' 1113', ' 1222', ' 1212', ' 1131', ' 2121', ' 1213', ' 1112', ' 1422' ) ;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 1113 and to_char(code4_{0}, '9999') in (' 1222', ' 1213', ' 1131', ' 1112') ;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+
+                                Where code4_{1} = 1212 and to_char(code4_{0}, '9999') in (' 1217', ' 1412') ;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 1114 and to_char(code4_{0}, '9999') in (' 1213') ;
+
+
 
                         Alter table {6}.{7} drop column gid_t0;
                     END;
@@ -838,7 +892,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                 end;
                     end
                     $$
-                    language 'plpgsql' immutable parallel safe;
+                    language 'plpgsql' immutable strict parallel safe;
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,

@@ -917,6 +917,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                                 {31} as tex,
                                                 {32} as section,
                                                 {33} as code_insee,
+                                                -- as nom_commune,
                                                 gid,
                                                 geom,
                                                 {34} as id_mos,
@@ -1182,7 +1183,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                 end;
                     end
                     $$
-                    language 'plpgsql' immutable parallel safe;
+                    language 'plpgsql' immutable strict parallel safe;
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,

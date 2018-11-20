@@ -32,8 +32,11 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
         self.geom = None
 
+        self.schema_geom = None
+
         self.pb_avancement.setValue(False)
         self.lbl_etape.setText(None)
+        self.gb_genere.setEnabled(False)
         
             #Déclenchement de la création du socle
         self.connect(self.pb_start, SIGNAL("clicked()"), self.start)
@@ -45,8 +48,13 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             #Déclenchement du chargement des données de la base dans les combobox
         self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.charge)
 
+        self.connect(self.cb_schema_geom, SIGNAL("activated(int)"), self.chargeTableGeom)
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
         self.updateConnectionList()
+
+        self.connect(self.cbx_etape1, SIGNAL("stateChanged(int)"), self.blockGroupBox)
+        self.connect(self.cbx_etape2, SIGNAL("stateChanged(int)"), self.blockGroupBox)
+        self.connect(self.cbx_etape3, SIGNAL("stateChanged(int)"), self.blockGroupBox)
 
 
             #Déclenchement de la vérification de la totalité des champs rentrés pour lancer le programme
@@ -86,6 +94,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         self.connect(self.cb_voiefer, SIGNAL("currentIndexChanged(int)"), self.canStart)
         self.connect(self.cb_schema, SIGNAL("currentIndexChanged(int)"), self.canStart)
         self.connect(self.cb_section, SIGNAL("currentIndexChanged(int)"), self.canStart)
+        self.connect(self.cb_couche_geom, SIGNAL("currentIndexChanged(int)"), self.canStart)
 
 
         self.connect(self.le_destination, SIGNAL("textChanged(QString)"), self.canStart)
@@ -135,9 +144,6 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
     def getConInfo(self):
         #Fonction de récupération des données des connexions
 
-        self.cb_parcelle_bdtopo.clear()
-
-
         QApplication.setOverrideCursor(Qt.WaitCursor)
         connectionName = self.cb_connexion.currentText()
         self.connectionName = connectionName
@@ -177,6 +183,25 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                 settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
                 self.service, self.host, self.port, self.database, self.username, self.pwd, self.authcfg = [settings.value(x, "", type=str) for x in settingsList]
         QApplication.restoreOverrideCursor()
+
+
+    def chargeTableGeom(self):
+        #Fonction de chargement des données des tables lorsque le schéma T0 est changé
+        self.cb_couche_geom.clear()
+        db = self.connexion()
+            #Connexion à la base de données
+        if (not db.open()):
+            QMessageBox.critical(self, "Erreur", u"Impossible de se connecter à la base de données principale ...",
+                                 QMessageBox.Ok)
+        else:
+
+                    #Initialisation de la combo box schema avec la liste des schemas de la base
+            queryTable = QSqlQuery(db)
+            wschema = self.cb_schema_geom.currentText()
+            queryTable.prepare("Select distinct table_name from information_schema.tables where table_schema = '" + wschema + "' order by table_name;")
+            if queryTable.exec_():
+                while queryTable.next():
+                    self.cb_couche_geom.addItem(queryTable.value(0))
 
 
     def charge(self):
@@ -219,6 +244,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         self.cb_triage.clear()
         self.cb_voiefer.clear()
         self.cb_schema.clear()
+        self.cb_schema_geom.clear()
         self.cb_section.clear()
 
         db = self.connexion()
@@ -279,8 +305,9 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             if querySchema.exec_():
                 while querySchema.next():
                     self.cb_schema.addItem(querySchema.value(0))
+                    self.cb_schema_geom.addItem(querySchema.value(0))
             
-            """            
+                      
                     #A ENLEVER /!\
             self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo.geo_parcelle'))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo.geo_subdfisc'))
@@ -319,9 +346,10 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_section.setCurrentIndex(self.cb_voiefer.findText('cadastre_edigeo.geo_section'))
 
             self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
+            self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText('sandbox'))
 
+            """           
             
-            """
             self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_22.geo_parcelle'))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_22.geo_subdfisc'))
             self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_22.geo_tronroute'))
@@ -364,8 +392,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             #self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('sandbox.emprise_g1_bdtopo'))
             #self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('sandbox.emprise_g1_parc'))
 
-            """
-
+            
+            
           
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
             self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
@@ -406,35 +434,281 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
             self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))"""
 
+    def blockGroupBox(self):
+        if self.cbx_etape1.isChecked():
+            if self.cbx_etape2.isChecked():
+                self.gb_genere.setEnabled(False)
+                self.gb_destination.setEnabled(True)
+                self.gb_data.setEnabled(True)
+
+                self.cb_parcelle_bdtopo.setEnabled(True)
+                self.cb_parcellaire.setEnabled(True)
+
+                self.cb_section.setEnabled(True)
+                self.cb_parcelle.setEnabled(True)
+                self.cb_subparc.setEnabled(True)
+                self.cb_tronroute.setEnabled(True)
+                self.cb_tronfluv.setEnabled(True)
+                self.cb_tsurf.setEnabled(True)
+                self.cb_geobati.setEnabled(True)
+
+                self.cb_ff_parcelle.setEnabled(True)
+                self.cb_rpga.setEnabled(True)
+                self.cb_ipli.setEnabled(True)
+                self.cb_finess.setEnabled(True)
+                self.cb_res_sport.setEnabled(True)
+
+                self.cb_pai_cult.setEnabled(True)
+                self.cb_paitransp.setEnabled(True)
+                self.cb_paisante.setEnabled(True)
+                self.cb_pairel.setEnabled(True)
+                self.cb_paimilit.setEnabled(True)
+                self.cb_paiens.setEnabled(True)
+                self.cb_paicom.setEnabled(True)
+                self.cb_paisport.setEnabled(True)
+                self.cb_paitransfo.setEnabled(True)
+                self.cb_cime.setEnabled(True)
+                self.cb_terrainsport.setEnabled(True)
+                self.cb_zoneveget.setEnabled(True)
+                self.cb_route.setEnabled(True)
+                self.cb_remarquable.setEnabled(True)
+                self.cb_indust.setEnabled(True)
+                self.cb_indif.setEnabled(True)
+                self.cb_surf_eau.setEnabled(True)
+                self.cb_pt_eau.setEnabled(True)
+                self.cb_surf_acti.setEnabled(True)
+                self.cb_triage.setEnabled(True)
+                self.cb_voiefer.setEnabled(True)
+            else:
+                self.gb_genere.setEnabled(False)
+                self.gb_destination.setEnabled(False)
+                self.gb_data.setEnabled(True)
+
+                self.cb_parcelle_bdtopo.setEnabled(True)
+                self.cb_parcellaire.setEnabled(True)
+
+                self.cb_section.setEnabled(True)
+                self.cb_parcelle.setEnabled(True)
+                self.cb_subparc.setEnabled(True)
+                self.cb_tronroute.setEnabled(False)
+                self.cb_tronfluv.setEnabled(False)
+                self.cb_tsurf.setEnabled(False)
+                self.cb_geobati.setEnabled(False)
+
+                self.cb_ff_parcelle.setEnabled(False)
+                self.cb_rpga.setEnabled(True)
+                self.cb_ipli.setEnabled(True)
+                self.cb_finess.setEnabled(False)
+                self.cb_res_sport.setEnabled(False)
+
+                self.cb_pai_cult.setEnabled(False)
+                self.cb_paitransp.setEnabled(False)
+                self.cb_paisante.setEnabled(False)
+                self.cb_pairel.setEnabled(False)
+                self.cb_paimilit.setEnabled(False)
+                self.cb_paiens.setEnabled(False)
+                self.cb_paicom.setEnabled(False)
+                self.cb_paisport.setEnabled(False)
+                self.cb_paitransfo.setEnabled(False)
+                self.cb_cime.setEnabled(False)
+                self.cb_terrainsport.setEnabled(False)
+                self.cb_zoneveget.setEnabled(True)
+                self.cb_route.setEnabled(True)
+                self.cb_remarquable.setEnabled(False)
+                self.cb_indust.setEnabled(False)
+                self.cb_indif.setEnabled(False)
+                self.cb_surf_eau.setEnabled(False)
+                self.cb_pt_eau.setEnabled(False)
+                self.cb_surf_acti.setEnabled(False)
+                self.cb_triage.setEnabled(False)
+                self.cb_voiefer.setEnabled(False)
+
+
+        elif self.cbx_etape2.isChecked():
+            self.gb_genere.setEnabled(False)
+            self.gb_destination.setEnabled(True)
+            self.gb_data.setEnabled(True)
+
+            self.cb_parcelle_bdtopo.setEnabled(True)
+            self.cb_parcellaire.setEnabled(True)
+
+            self.cb_section.setEnabled(True)
+            self.cb_parcelle.setEnabled(True)
+            self.cb_subparc.setEnabled(True)
+            self.cb_tronroute.setEnabled(True)
+            self.cb_tronfluv.setEnabled(True)
+            self.cb_tsurf.setEnabled(True)
+            self.cb_geobati.setEnabled(True)
+
+            self.cb_ff_parcelle.setEnabled(True)
+            self.cb_rpga.setEnabled(True)
+            self.cb_ipli.setEnabled(True)
+            self.cb_finess.setEnabled(True)
+            self.cb_res_sport.setEnabled(True)
+
+            self.cb_pai_cult.setEnabled(True)
+            self.cb_paitransp.setEnabled(True)
+            self.cb_paisante.setEnabled(True)
+            self.cb_pairel.setEnabled(True)
+            self.cb_paimilit.setEnabled(True)
+            self.cb_paiens.setEnabled(True)
+            self.cb_paicom.setEnabled(True)
+            self.cb_paisport.setEnabled(True)
+            self.cb_paitransfo.setEnabled(True)
+            self.cb_cime.setEnabled(True)
+            self.cb_terrainsport.setEnabled(True)
+            self.cb_zoneveget.setEnabled(True)
+            self.cb_route.setEnabled(True)
+            self.cb_remarquable.setEnabled(True)
+            self.cb_indust.setEnabled(True)
+            self.cb_indif.setEnabled(True)
+            self.cb_surf_eau.setEnabled(True)
+            self.cb_pt_eau.setEnabled(True)
+            self.cb_surf_acti.setEnabled(True)
+            self.cb_triage.setEnabled(True)
+            self.cb_voiefer.setEnabled(True)
+
+        elif self.cbx_etape3.isChecked():
+            self.gb_genere.setEnabled(True)
+            self.gb_destination.setEnabled(False)
+            self.gb_data.setEnabled(False)
+            self.le_annee.setEnabled(True)
+        else:
+            self.gb_destination.setEnabled(True)
+            self.gb_genere.setEnabled(True)
+            self.gb_data.setEnabled(True)
 
     def canStart(self):
         #Fonction analysant si le programme peu être exécuté (tous les champs sont remplis) ou non
-        if self.cb_parcelle.currentText() == '' or self.cb_subparc.currentText() == '' or self.cb_tronroute.currentText() == '' or self.cb_tronfluv.currentText() == '' or self.cb_tsurf.currentText() == '' or self.cb_rpga.currentText() == '' or self.cb_finess.currentText() == '' or self.cb_res_sport.currentText() == '' or self.cb_ff_parcelle.currentText() == '' or self.cb_parcellaire.currentText() == '' or self.cb_pai_cult.currentText() == '' or self.cb_paitransp.currentText() == '' or self.cb_paisante.currentText() == '' or self.cb_pairel.currentText() == '' or self.cb_paimilit.currentText() == '' or self.cb_paiens.currentText() == '' or self.cb_paicom.currentText() == '' or self.cb_paitransfo.currentText() == '' or self.cb_terrainsport.currentText() == '' or self.cb_cime.currentText() == '' or self.cb_zoneveget.currentText() == '' or self.cb_parcelle_bdtopo.currentText() == '' or self.cb_route.currentText() == '' or self.cb_remarquable.currentText() == '' or self.cb_indust.currentText() == '' or self.cb_indif.currentText() == '' or self.cb_surf_eau.currentText() == '' or self.cb_pt_eau.currentText() == '' or  self.cb_surf_acti.currentText() == '' or self.cb_triage.currentText() == '' or self.cb_voiefer.currentText() == '' or self.cb_paisport.currentText() == '' or self.cb_paisport.currentText() == '' or self.cb_schema.currentText() == '' or self.le_destination.text() == '' or self.le_annee.text() == '' :
-            self.pb_start.setEnabled(False)
-        else:
-            self.pb_start.setEnabled(True)
-            print ('ok')
+        if self.cbx_etape1.isChecked():
+            if self.cbx_etape2.isChecked():
+                if self.cb_parcelle.currentText() == '' or self.cb_subparc.currentText() == '' or self.cb_tronroute.currentText() == '' or self.cb_tronfluv.currentText() == '' or self.cb_tsurf.currentText() == '' or self.cb_rpga.currentText() == '' or self.cb_finess.currentText() == '' or self.cb_res_sport.currentText() == '' or self.cb_ff_parcelle.currentText() == '' or self.cb_parcellaire.currentText() == '' or self.cb_pai_cult.currentText() == '' or self.cb_paitransp.currentText() == '' or self.cb_paisante.currentText() == '' or self.cb_pairel.currentText() == '' or self.cb_paimilit.currentText() == '' or self.cb_paiens.currentText() == '' or self.cb_paicom.currentText() == '' or self.cb_paitransfo.currentText() == '' or self.cb_terrainsport.currentText() == '' or self.cb_cime.currentText() == '' or self.cb_zoneveget.currentText() == '' or self.cb_parcelle_bdtopo.currentText() == '' or self.cb_route.currentText() == '' or self.cb_remarquable.currentText() == '' or self.cb_indust.currentText() == '' or self.cb_indif.currentText() == '' or self.cb_surf_eau.currentText() == '' or self.cb_pt_eau.currentText() == '' or  self.cb_surf_acti.currentText() == '' or self.cb_triage.currentText() == '' or self.cb_voiefer.currentText() == '' or self.cb_paisport.currentText() == '' or self.cb_paisport.currentText() == '' or self.cb_schema.currentText() == '' or self.le_destination.text() == '' or self.le_annee.text() == '' :
+                    self.pb_start.setEnabled(False)
+                else:
+                    self.pb_start.setEnabled(True)
+            else:
+                if  self.cb_parcelle.currentText() == '' or self.cb_subparc.currentText() == '' or self.cb_parcelle_bdtopo.currentText() == '' or self.cb_parcellaire.currentText() == '' or self.cb_section.currentText() == '' or self.cb_rpga.currentText() == '' or self.cb_ipli.currentText() == ''  or self.cb_zoneveget.currentText() == '' or self.cb_route.currentText() == '':
+                    self.pb_start.setEnabled(False)
+                else: 
+                    self.pb_start.setEnabled(True)
+        elif self.cbx_etape2.isChecked():
+                if self.cb_parcelle.currentText() == '' or self.cb_subparc.currentText() == '' or self.cb_tronroute.currentText() == '' or self.cb_tronfluv.currentText() == '' or self.cb_tsurf.currentText() == '' or self.cb_rpga.currentText() == '' or self.cb_finess.currentText() == '' or self.cb_res_sport.currentText() == '' or self.cb_ff_parcelle.currentText() == '' or self.cb_parcellaire.currentText() == '' or self.cb_pai_cult.currentText() == '' or self.cb_paitransp.currentText() == '' or self.cb_paisante.currentText() == '' or self.cb_pairel.currentText() == '' or self.cb_paimilit.currentText() == '' or self.cb_paiens.currentText() == '' or self.cb_paicom.currentText() == '' or self.cb_paitransfo.currentText() == '' or self.cb_terrainsport.currentText() == '' or self.cb_cime.currentText() == '' or self.cb_zoneveget.currentText() == '' or self.cb_parcelle_bdtopo.currentText() == '' or self.cb_route.currentText() == '' or self.cb_remarquable.currentText() == '' or self.cb_indust.currentText() == '' or self.cb_indif.currentText() == '' or self.cb_surf_eau.currentText() == '' or self.cb_pt_eau.currentText() == '' or  self.cb_surf_acti.currentText() == '' or self.cb_triage.currentText() == '' or self.cb_voiefer.currentText() == '' or self.cb_paisport.currentText() == '' or self.cb_paisport.currentText() == '' or self.cb_schema.currentText() == '' or self.le_destination.text() == '' or self.le_annee.text() == '' :
+                    self.pb_start.setEnabled(False)
+                else:
+                    self.pb_start.setEnabled(True)
+        elif self.cbx_etape3.isChecked():
+            if self.cb_couche_geom.currentText() == '':
+                self.pb_start.setEnabled(False)
+            else:
+                self.pb_start.setEnabled(True)  
 
 
     def start(self):
         #Fonction de lancement du programme
-        self.lbl_etape.setText(u'Etape 1/3')
         self.pb_start.setEnabled(False)
-        self.pb_avancement.setValue(0)
 
         self.conn = psycopg2.connect(host=self.host, port=self.port, user=self.username, dbname=self.database, password=self.pwd )
-
+        cur = self.conn.cursor()
 
         if self.rb_geom.isChecked():
             self.geom = 'geom'
         else:
             self.geom = 'the_geom'
 
-        temp = QTimer       
-        temp.singleShot(100, self.createSocle)
+        temp = QTimer
+        if self.cbx_etape1.isChecked() and self.cbx_etape2.isChecked() and self.cbx_etape3.isChecked():
+            self.cas_etape = 1
+
+            self.socle_geom = 'socle_temp_geom'
+            self.yearCode = self.le_annee.text()
+            self.schema_desti = self.cb_schema.currentText()
+            self.couche_desti = self.le_destination.text()
+
+            self.lbl_etape.setText(u'Etape 1/3 :Création du socle géométrique')
+            self.pb_avancement.setValue(0)
+            temp.singleShot(100, self.createSocle)
+
+        elif self.cbx_etape1.isChecked() and self.cbx_etape2.isChecked():
+            self.cas_etape = 2
+
+            self.socle_geom = 'socle_temp_geom'
+
+
+            self.lbl_etape.setText(u'Etape 1/2 : Création du socle géométrique')
+            self.pb_avancement.setValue(0)
+            temp.singleShot(100, self.createSocle)
+
+
+        elif self.cbx_etape1.isChecked() and not self.cbx_etape3.isChecked():
+            self.cas_etape = 3
+
+            self.socle_geom = 'socle_temp_geom'
+
+            self.lbl_etape.setText(u'Etape 1/1 : Création du socle géométrique')
+            self.pb_avancement.setValue(0)
+
+            temp.singleShot(100, self.createSocle)
+
+
+        elif self.cbx_etape2.isChecked() and self.cbx_etape3.isChecked():
+            self.cas_etape = 4
+
+            self.socle_geom = 'socle_temp_geom'
+            self.yearCode = self.le_annee.text()
+
+            self.schema_desti = self.cb_schema.currentText()
+            self.couche_desti = self.le_destination.text()
+
+            self.lbl_etape.setText(u'Etape 1/2 : Analyse du taux de recouvrement')
+            self.pb_avancement.setValue(0)
+            try:
+                temp.singleShot(100, self.getTauxInfo)
+            except Exception as exc:
+                QMessageBox.critical(self, "Erreur", u"Un problème est survenu : %s"%exc,
+                                     QMessageBox.Ok)
+
+        elif self.cbx_etape2.isChecked():
+            self.cas_etape = 5
+
+            self.socle_geom = 'socle_temp_geom'
+
+            self.lbl_etape.setText(u'Etape 1/1 : Analyse du taux de recouvrement')
+            self.pb_avancement.setValue(0)
+            temp.singleShot(100, self.getTauxInfo)
+
+
+            self.lbl_etape.setText(u'Terminé')
+            self.pb_avancement.setValue(100)
+
+        elif self.cbx_etape3.isChecked() and not self.cbx_etape1.isChecked():
+            self.cas_etape = 6
+            self.schema_desti = self.cb_schema_geom.currentText()
+            self.couche_desti = self.cb_couche_geom.currentText()
+
+            cur.execute(u"""Select right(column_name,4) 
+                from information_schema.columns 
+                where table_schema||'.'||table_name  = '{0}.{1}'  
+                and column_name like 'code4%' 
+                order by column_name desc
+
+            """.format(self.schema_desti,
+                        self.couche_desti
+                        )
+            )
+            self.yearCode = cur.fetchone()
+            self.yearCode = self.yearCode[0]
+            cur.close();
+
+            self.lbl_etape.setText(u'Etape 1/1 : Calcul des code4 à attribuer')
+            self.pb_avancement.setValue(0)
+            temp.singleShot(100, self.getCode4)
+
+        else:
+            QMessageBox.critical(self, "Erreur", u"Problème lors de la sélection de phase de calcul",
+                                 QMessageBox.Ok)
+
             #Appel de la fonction pour le début du socle 
         #self.createSocle()
-
 
     def createSocle(self):
         #Fonction de création du socle première étape
@@ -1050,8 +1324,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     create index idx_ncv2_2 on vm_nc_v2 using gist(geom);
                         --Création du socle géométrique final
-                    drop table if exists socle_temp cascade;
-                    Create  table socle_temp as 
+                    drop table if exists {12} cascade;
+                    Create table {12} as 
                         Select ROW_NUMBER() OVER() as gid, *
                         FROM (
                             (Select code_insee, idu, num_parc, tex, geom, section
@@ -1061,26 +1335,40 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             From vm_nc_v2 vmnc, {8} vmtt
                             Group by vmnc.code_insee, vmnc.geom,vmtt.code_insee)
                             )tt;
-                    create index idx_socleF_geom on socle_temp using gist(geom);
-                   """.format(self.cb_parcelle.currentText(), 
-                                self.cb_subparc.currentText(), 
-                                self.cb_parcellaire.currentText(),
-                                self.cb_route.currentText(),
-                                self.cb_zoneveget.currentText(),
-                                self.cb_surf_eau.currentText(),
-                                self.cb_rpga.currentText(),
-                                self.cb_ipli.currentText(),
-                                self.cb_parcelle_bdtopo.currentText(),
-                                self.cb_schema.currentText(),
-                                self.geom,
-                                self.cb_section.currentText()
+                    create index idx_{12}_geom on {12} using gist(geom);
+                   """.format(self.cb_parcelle.currentText(), #0
+                                self.cb_subparc.currentText(), #1
+                                self.cb_parcellaire.currentText(),#2
+                                self.cb_route.currentText(),#3
+                                self.cb_zoneveget.currentText(),#4
+                                self.cb_surf_eau.currentText(),#5
+                                self.cb_rpga.currentText(),#6
+                                self.cb_ipli.currentText(),#7
+                                self.cb_parcelle_bdtopo.currentText(),#8
+                                self.schema_geom,#9 inutile
+                                self.geom,#10
+                                self.cb_section.currentText(),#11
+                                self.socle_geom#12
                             ))
         cur.close()
         self.conn.commit()
-        self.lbl_etape.setText(u'Etape 2/3')
-        self.pb_avancement.setValue(20)
-        temp = QTimer       
-        temp.singleShot(100, self.getTauxInfo)
+        temp = QTimer 
+        if self.cas_etape == 1:
+            self.lbl_etape.setText(u'Etape 2/3 : Analyse du taux de recouvrement')
+            self.pb_avancement.setValue(20)
+            temp.singleShot(100, self.getTauxInfo)
+
+        elif self.cas_etape == 2:
+            self.lbl_etape.setText(u'Etape 2/2 : Analyse du taux de recouvrement')
+            self.pb_avancement.setValue(30)
+            temp.singleShot(100, self.getTauxInfo)
+        elif self.cas_etape == 3:
+            self.lbl_etape.setText(u'Terminé')
+            self.pb_avancement.setValue(100)
+
+        #Úself.pb_avancement.setValue(20)
+              
+        #temp.singleShot(100, self.getTauxInfo)
             #Lancement de la deuxième partie de la création du socle
         #self.getTauxInfo()
         
@@ -1089,693 +1377,985 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         #Calcul des taux de présence
         cur2 = self.conn.cursor()
             #Execution de la suite de requêtes
-        cur2.execute(u"""
-            Create or replace function public.fun_typage(i_socle_c text, 
-                                            i_pai_milit text, 
-                                            i_bati text, 
-                                            i_bati_rem text, 
-                                            i_bati_indus text, 
-                                            i_surf_acti text, 
-                                            i_aire_tri text, 
-                                            i_voie_ferre text,
-                                            i_pai_indus_com text,
-                                            i_cime text,
-                                            i_terrain_sport text,
-                                            i_pai_cul_lois text,
-                                            i_rpga text,
-                                            i_surf_eau text,
-                                            i_pai_scens text,
-                                            i_pai_sante text,
-                                            i_pai_rel text,
-                                            i_point_eau text,
-                                            i_post_transf text,
-                                            i_pai_transp text,
-                                            i_pai_sport text,
-                                            i_finess text,
-                                            i_zveget text,
-                                            i_res text,
-                                            i_tronfluv text,
-                                            i_tsurf text,
-                                            i_route_sec text,
-                                            i_tronroute text,
-                                            i_emprise text,
-                                            i_foncier text,
-                                            i_bati_indif text
-                                            )
-                Returns void AS
-                --Fonction de calcul des aménagements présents sur les parcelles
-                --Met en correlation de nombreuses données recouvrant ou non une parcelle en indiquant la surface de recouvrement, ou si une présence est constaté
-            $BODY$
-                DECLARE
-                    v_geom geometry(polygon,2154); -- Géométrie du socle
-                    v_insee character varying; --code insee du socle
-                    v_idu character varying; -- code idu du socle
-                    v_num_parc character varying;-- num_parc du socle
-                    v_tex character varying; -- tex du socle
-                    v_gid integer; -- identifiant du socle
-                    v_section character varying; --Section du socle
-                    v_surf_mos double precision;
-                    v_peri_mos double precision;
-                    v_cpt_mos integer = 0;
-                    v_id_mos character varying;
-                    
-                    v_tomilit integer;--Taux debâtiments militaire sur la parcelle
-                    v_tobati integer;-- Taux de bâtiment sur la parcelle
-                    v_tobatire integer; --Taux de bâtiment remarquable sur la parcelle
-                    v_tobatagri integer; -- Taux de bâtiment agricole sur la parcelle
-                    v_toserre integer; --Taux de serre sur la parcelle
-                    v_toindust integer; --Taux de bâtiment industriel sur la parcelle
-                    v_tocomer integer; -- Taux de bâtiment commercial sur la parcelle
-                    v_tozic integer; -- Taux de de bâtiment industriel ou commercial sur la parcelle
-                    v_totransp integer; -- Taux de transport sur la parcelle
-                    v_tovoiefer integer; -- Taux de voies férrées sur la parcelle
-                    v_tocarrier integer; -- Taux de carrière sur la parcelle
-                    v_tocime integer; -- Taux de cimetière sur la parcelle
-                    v_tosport integer; -- Taux terrain sport sur la parcelle
-                    v_toloisir integer; -- Taux de loisir sur la parcelle
-                    v_toagri integer; -- Taux de parcelles agricoles sur la parcelle
-                    v_toeau integer; -- Taux d'eau dans la parcelle
-                    v_toveget integer; -- Taux de végétation hors agriculture dans la parcelle
-                    v_toroute integer; -- Taux de route secondaire dans la parcelle
-                    v_tobatimaison integer; -- Taux de batiment maison (bati indiferencie)
+        try:    
+            cur2.execute(u"""
+                Create or replace function public.fun_typage(i_socle_c text, 
+                                                i_pai_milit text, 
+                                                i_bati text, 
+                                                i_bati_rem text, 
+                                                i_bati_indus text, 
+                                                i_surf_acti text, 
+                                                i_aire_tri text, 
+                                                i_voie_ferre text,
+                                                i_pai_indus_com text,
+                                                i_cime text,
+                                                i_terrain_sport text,
+                                                i_pai_cul_lois text,
+                                                i_rpga text,
+                                                i_surf_eau text,
+                                                i_pai_scens text,
+                                                i_pai_sante text,
+                                                i_pai_rel text,
+                                                i_point_eau text,
+                                                i_post_transf text,
+                                                i_pai_transp text,
+                                                i_pai_sport text,
+                                                i_finess text,
+                                                i_zveget text,
+                                                i_res text,
+                                                i_tronfluv text,
+                                                i_tsurf text,
+                                                i_route_sec text,
+                                                i_tronroute text,
+                                                i_emprise text,
+                                                i_foncier text,
+                                                i_bati_indif text
+                                                )
+                    Returns void AS
+                    --Fonction de calcul des aménagements présents sur les parcelles
+                    --Met en correlation de nombreuses données recouvrant ou non une parcelle en indiquant la surface de recouvrement, ou si une présence est constaté
+                $BODY$
+                    DECLARE
+                        v_geom geometry(polygon,2154); -- Géométrie du socle
+                        v_insee character varying; --code insee du socle
+                        v_idu character varying; -- code idu du socle
+                        v_num_parc character varying;-- num_parc du socle
+                        v_tex character varying; -- tex du socle
+                        v_gid integer; -- identifiant du socle
+                        v_section character varying; --Section du socle
+                        v_surf_mos double precision;
+                        v_peri_mos double precision;
+                        v_cpt_mos integer = 0;
+                        v_id_mos character varying;
+                        
+                        v_tomilit integer;--Taux debâtiments militaire sur la parcelle
+                        v_tobati integer;-- Taux de bâtiment sur la parcelle
+                        v_tobatire integer; --Taux de bâtiment remarquable sur la parcelle
+                        v_tobatagri integer; -- Taux de bâtiment agricole sur la parcelle
+                        v_toserre integer; --Taux de serre sur la parcelle
+                        v_toindust integer; --Taux de bâtiment industriel sur la parcelle
+                        v_tocomer integer; -- Taux de bâtiment commercial sur la parcelle
+                        v_tozic integer; -- Taux de de bâtiment industriel ou commercial sur la parcelle
+                        v_totransp integer; -- Taux de transport sur la parcelle
+                        v_tovoiefer integer; -- Taux de voies férrées sur la parcelle
+                        v_tocarrier integer; -- Taux de carrière sur la parcelle
+                        v_tocime integer; -- Taux de cimetière sur la parcelle
+                        v_tosport integer; -- Taux terrain sport sur la parcelle
+                        v_toloisir integer; -- Taux de loisir sur la parcelle
+                        v_toagri integer; -- Taux de parcelles agricoles sur la parcelle
+                        v_toeau integer; -- Taux d'eau dans la parcelle
+                        v_toveget integer; -- Taux de végétation hors agriculture dans la parcelle
+                        v_toroute integer; -- Taux de route secondaire dans la parcelle
+                        v_tobatimaison integer; -- Taux de batiment maison (bati indiferencie)
 
-                    v_temp_toeau integer; -- Taux temporaire pour comparer plusieurs taux d'eau sur la parcelle
-                    v_temp_route integer; -- taux temporaire pour comparer plusieurs taux de route sur la parcelle
-                    
-                    v_prescol integer; --Présence d'équipement d'enseignement sur la parcelle
-                    v_presante integer; -- Présence d'équipement de santé sur la parcelle
-                    v_preqadmi integer; -- présence d'équipement local, administration sur la parcelle
-                    v_preonrj integer; -- Présence d'équipement eau assainissement énergie sur la parcelle
-                    v_pretransp integer; -- Présence d'infrastructure de transport sur la parcelle
-                    v_presploi integer; -- Présence sport et loisir
+                        v_temp_toeau integer; -- Taux temporaire pour comparer plusieurs taux d'eau sur la parcelle
+                        v_temp_route integer; -- taux temporaire pour comparer plusieurs taux de route sur la parcelle
+                        
+                        v_prescol integer; --Présence d'équipement d'enseignement sur la parcelle
+                        v_presante integer; -- Présence d'équipement de santé sur la parcelle
+                        v_preqadmi integer; -- présence d'équipement local, administration sur la parcelle
+                        v_preonrj integer; -- Présence d'équipement eau assainissement énergie sur la parcelle
+                        v_pretransp integer; -- Présence d'infrastructure de transport sur la parcelle
+                        v_presploi integer; -- Présence sport et loisir
 
-                    v_mfonction character varying;-- Type de bâtiment sur la parcelle
-                    v_probjardin integer; --Probabilité de présence de jardin 0|1|2
-                BEGIN
-                        --Récupération des routes secondaires qui seront corrélées dans nos calculs
-                    Execute format('Create temporary table tt_secondaire as
-                        Select ROW_NUMBER() OVEr() as gid, *
-                            From (select (st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(polygon,2154) as geom, nature
-                                From (
-                                    Select st_buffer(rs.{33}, largeur/2, ''endcap=square join=round'')::geometry(Polygon,2154) as geom, nature
-                                    From %1$s rs, %2$s com
-                                    Where rs.importance in (''3'', ''4'', ''5'', ''NC'') AND rs.nature not in (''Chemin'', ''Escalier'', ''Piste cyclable'', ''Sentier'')   
-                                    AND st_intersects(rs.{33}, com.geom) 
-                                    Group by rs.largeur/2, rs.{33}, nature
-                                )tt
-                            Group by nature) tt2;
-                            Create index idx_tt_secondaire on tt_secondaire using gist(geom);', i_route_sec, i_emprise);
-                    
-                        --Création de la table qui sera le socle MOS final
-                    Drop table if exists {30}.{31};
-                    Create table {30}.{31} (
-                        to_milit integer,
-                        to_bati integer,
-                        to_batire integer,
-                        to_batagri integer, 
-                        to_serre integer, 
-                        to_indust integer,
-                        to_comer integer,
-                        to_zic integer,
-                        to_transp integer,
-                        to_voiefer integer,
-                        to_carrier integer,
-                        to_cime integer,
-                        to_sport integer,
-                        to_loisir integer,
-                        to_agri integer,
-                        to_veget integer,
-                        to_eau integer,
-                        to_route integer,
-                        to_batimaison integer,
-                        pre_scol integer,
-                        pre_sante integer,
-                        pre_eqadmi integer,
-                        pre_o_nrj integer,
-                        pre_transp integer,
-                        pre_sploi integer,
-                        prob_jardin integer,
-                        m_fonction character varying,
-                        idu character varying,
-                        num_parc character varying,
-                        tex character varying,
-                        section character varying,
-                        code_insee character varying,
-                        nom_commune character varying,
-                        gid serial,
-                        geom geometry(Polygon,2154),
-                        id_mos character varying,
-                        subdi_sirs character varying,                                           
-                        code4_{32} integer,
-                        lib4_{32} character varying,
-                        remarque_{32} character varying,
-                        surface_m2 double precision,
-                        perimetre double precision,
-                        constraint pk_{31} PRIMARY KEY (gid)
-                                                                                            
-                    );
-                    Create index idx_{31}_geom on {30}.{31} using gist(geom);
+                        v_mfonction character varying;-- Type de bâtiment sur la parcelle
+                        v_probjardin integer; --Probabilité de présence de jardin 0|1|2
+                    BEGIN
+                            --Récupération des données à corréler sur l'emprise
+                            execute format ('
+                                    drop table if exists vm_i_bati;
+                                    create temporary table vm_i_bati as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_bati on vm_i_bati using gist(geom);
+                                    ', i_bati, i_emprise);
 
-                        --Parcours de toutes les parcelles pour affecter les calcul de présence qui lui sont propre
-                        -- Les calculs sont stockés dans des variables puis insérés en fin de boucle dans la table
-                    For v_geom, v_insee, v_idu, v_num_parc, v_tex, v_gid, v_section, v_surf_mos, v_peri_mos IN execute format('Select geom, code_insee, idu, num_parc, tex, gid, section, st_area(geom), st_perimeter(geom) From %1$s sc;', i_socle_c) LOOP
-                        if v_idu != 'NC' then
-                            --Seul les données cadastrés sont calculés pour cette étape
-                    --Ajout des colonnes taux
-                        --Calcul du taux de bâtiment militaire
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
-                                            From %2$s pm
-                                            Where st_intersects(''%3$s'', pm.{33}) 
-                                            AND pm.id in (Select pm.id
-                                                            From %1$s pm
-                                                            Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
-                                                            Where p2.nature = ''Enceinte militaire'')
-                                        ', i_surf_acti, i_pai_milit, v_geom)
-                    into v_tomilit;
-                            --Calcul du taux de bâtiment présent sur la parcelle
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.geom) 
-                                        ', i_bati, v_geom)
-                    into v_tobati;
-                            --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_bati_indif, v_geom)
-                    into v_tobatimaison;
-                            --Calcul du taux de présence de bâtiment remarquable
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_bati_rem, v_geom)
-                    into v_tobatire;
-                            --Calcul du taux de présence de bâtiments agricole
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.nature in (''Bâtiment agricole'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_bati_indus, v_geom)
-                    into v_tobatagri;
-                            --Calcul du taux de présence de serres
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.nature in (''Serre'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_bati_indus, v_geom)
-                    into v_toserre;
-                            --Calcul du taux de présence de bâtiments industriel
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.nature in (''Bâtiment industriel'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_bati_indus, v_geom)
-                    into v_toindust;
-                            --Calcul du taux de présence de bâtiments commerciaux
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.nature in (''Bâtiment commercial'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_bati_indus, v_geom)
-                    into v_tocomer;
-                            --Calcul du taux de présence de bâtiments industriels ou commerciaux
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.categorie in (''Industriel ou commercial'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_surf_acti, v_geom)
-                    into v_tozic;
-                            --Calcul du taux de présence d'équipement de transport
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where pm.categorie in (''Transport'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_surf_acti, v_geom)
-                    into v_totransp;
-                            --Calcul du taux de présence de voies férrées
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 3 * pm.nb_voies,''endcap=flat join=round'')), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_voie_ferre, v_geom)
-                    into v_tovoiefer;
-                    if v_tovoiefer in (null) or v_tovoiefer <1 THEN
-                            --Si pas de voie férrées détéctées, recherche avec les aires de triage
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_aire_tri, v_geom)
-                    into v_tovoiefer;
-                    END IF;
-                            --Calcul du taux de présence de carrières
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%3$s'', pm.{33}) 
-                                            AND pm.id in (Select pm.id
-                                                            From %1$s pm
-                                                            Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
-                                                            Where p2.nature = ''Carrière'' )
-                                        ',i_surf_acti,  i_pai_indus_com, v_geom)
-                    into v_tocarrier;
-                            --Calcul du taux de présence de cimetières
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_cime, v_geom)
-                    into v_tocime;
-                            --Calcul du taux de présence d'équipement sportif
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where categorie = ''Sport''
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_surf_acti, v_geom)
-                    into v_tosport;
-                    IF v_tosport in (null) or v_tosport < 1 THEN
-                                --Si pas d'équipement trouvés, on recherche avec les données IGN terrain de sport
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_terrain_sport, v_geom)
-                    into v_tosport;
-                    END IF;
-                            --Calcul du taux de présence d'aménagement loisir
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%3$s'', pm.{33})
-                                            AND pm.id in (Select pm.id 
-                                                            From %1$s pm
-                                                            Join %2$s p2 on st_intersects(p2.{33}, pm.{33})
-                                                            Where p2.nature in (''Village de vacances'', ''Camping'', ''Parc de loisirs'', ''Parc zoologique'', ''parc des expositions'' ))
-                                        ', i_surf_acti, i_pai_cul_lois, v_geom)
-                    into v_toloisir;
-                            --Calcul du taux de présence des parcelles agricoles
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where st_intersects(''%2$s'', pm.geom) 
-                                        ', i_rpga, v_geom)
-                    into v_toagri;
-                        If v_toagri in (null) or v_toagri < 1 Then
-                                --Si pas de correspondance, on recherche aussi avec les zone de végétation peupleraies et verger
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where nature in (''Verger'', ''Peupleraie'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_zveget, v_geom)
-                    into v_toagri;
-                        END IF;
 
-                            --Calcul du taux de présence de végétation qui ne sont pas verger ou peupleraie
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where nature not in (''Verger'', ''Peupleraie'') 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_zveget, v_geom)
-                    into v_toveget;
-                            --Calcul de présence des surface en eau permanentes
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where regime = ''Permanent'' 
-                                            AND st_intersects(''%2$s'', pm.{33}) 
-                                        ', i_surf_eau, v_geom)
-                    into v_toeau;
-                            --Calcul du taux de présence de l'eau des données edigeoo geo_tronfluv
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where  st_intersects(''%2$s'', pm.geom) 
-                                        ', i_tronfluv, v_geom)
-                    into v_temp_toeau;
-                    if v_temp_toeau > v_toeau Then
-                            --Si les données édigéos apportent plus de valeur, on garde cette données qui écrase les surface en eau IGN
-                        v_toeau = v_temp_toeau;
-                    End if;
-                            --Calcul du taux de présence de l'eau des données edigeo geo_tsurf
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where  st_intersects(''%2$s'', pm.geom) 
-                                        ', i_tsurf, v_geom)
-                    into v_temp_toeau;
-                    if v_temp_toeau > v_toeau Then
-                        --Si les données tsurf sont plus importantes que les autres, on écrases les gardes
-                        v_toeau = v_temp_toeau;
-                    End if;
-                        --Calcul du taux de présence des routes secondaire
-                    Select ((st_area(st_safe_intersection(st_union(pm.geom), v_geom))*100)/st_area(v_geom))::integer
-                                            From tt_secondaire pm
-                                            Where  st_intersects(v_geom, pm.geom)       
-                    into v_toroute;
-                            --Calcul du taux de présence des routes edigeo geo_tronroute
-                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                            From %1$s pm
-                                            Where  st_intersects(''%2$s'', pm.geom) 
-                                        ', i_tronroute, v_geom)
-                    into v_temp_route;
-                    if v_toroute < v_temp_route Then
-                        --Si les données edigeo sont plus impotantes, on les gardes
-                        v_toroute = v_temp_route;
-                    end if;
-                    
-                            --Ajout des colonnes bool
-                        --Enseignement
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where pm.nature like ''Enseignement%%''
-                                            AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                        ', i_pai_scens, v_geom)
-                    into v_prescol;
-                    if v_prescol < 1 Then 
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where categorie = ''Enseignement'' 
-                                            AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
-                                        ', i_surf_acti, v_geom)
-                    into v_prescol;
-                
-                        if v_prescol < 1 Then 
-                            v_prescol = 0;
-                        end if;
-                    end if;
+                            execute format ('
+                                    drop table if exists vm_i_pai_milit;
+                                    create temporary table vm_i_pai_milit as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_milit on vm_i_pai_milit using gist({33});
+                                    ', i_pai_milit, i_emprise);
 
-                        --Sante
-                        execute format ('Select 1
-                                            From %1$s pm
-                                            Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                        ', i_pai_sante, v_geom)
-                    into v_presante;
-        
-                    if v_presante != 1 Then 
-                        execute format ('Select 1
-                                            From %1$s pm
-                                            Where categorie = ''Santé'' 
-                                            AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
-                                        ', i_surf_acti, v_geom)
-                    into v_presante;
-                        if v_presante != 1 THEN
-                            execute format ('Select 1
+                            execute format ('
+                                    drop table if exists vm_i_bati_rem;
+                                    create temporary table vm_i_bati_rem as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_bati_rem on vm_i_bati_rem using gist({33});
+                                    ', i_bati_rem, i_emprise);
+
+
+                            execute format ('
+                                    drop table if exists vm_i_bati_indus;
+                                    create temporary table vm_i_bati_indus as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_bati_indus on vm_i_bati_indus using gist({33});
+                                    ', i_bati_indus, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_surf_acti;
+                                    create temporary table vm_i_surf_acti as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_surf_acti on vm_i_surf_acti using gist({33});
+                                    ', i_surf_acti, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_aire_tri;
+                                    create temporary table vm_i_aire_tri as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_aire_tri on vm_i_aire_tri using gist({33});
+                                    ', i_aire_tri, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_voie_ferre;
+                                    create temporary table vm_i_voie_ferre as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_voie_fette on vm_i_voie_ferre using gist({33});
+                                    ', i_voie_ferre, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_pai_indus_com;
+                                    create temporary table vm_i_pai_indus_com as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_indus_com on vm_i_pai_indus_com using gist({33});
+                                    ', i_pai_indus_com, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_cime;
+                                    create temporary table vm_i_cime as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_cime on vm_i_cime using gist({33});
+                                    ', i_cime, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_terrain_sport;
+                                    create temporary table vm_i_terrain_sport as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_terrain_sport on vm_i_terrain_sport using gist({33});
+                                    ', i_terrain_sport, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_pai_cul_lois;
+                                    create temporary table vm_i_pai_cul_lois as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_cul_lois on vm_i_pai_cul_lois using gist({33});
+                                    ', i_pai_cul_lois, i_emprise);
+                                    
+
+                            execute format ('
+                                    drop table if exists vm_i_rpga;
+                                    create temporary table vm_i_rpga as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_rpga on vm_i_rpga using gist(geom);
+                                    ', i_rpga, i_emprise);
+                                    
+
+                            execute format ('
+                                    drop table if exists vm_i_surf_eau;
+                                    create temporary table vm_i_surf_eau as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_surf_eau on vm_i_surf_eau using gist({33});
+                                    ', i_surf_eau, i_emprise);
+
+
+                            execute format ('
+                                    drop table if exists vm_i_pai_scens;
+                                    create temporary table vm_i_pai_scens as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_scens on vm_i_pai_scens using gist({33});
+                                    ', i_pai_scens, i_emprise);
+                                    
+
+                            execute format ('
+                                    drop table if exists vm_i_pai_sante;
+                                    create temporary table vm_i_pai_sante as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_sante on vm_i_pai_sante using gist({33});
+                                    ', i_pai_sante, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_pai_rel;
+                                    create temporary table vm_i_pai_rel as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_rel on vm_i_pai_rel using gist({33});
+                                    ', i_pai_rel, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_point_eau;
+                                    create temporary table vm_i_point_eau as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_point_eau on vm_i_point_eau using gist({33});
+                                    ', i_point_eau, i_emprise);
+                                    
+
+                            execute format ('
+                                    drop table if exists vm_i_post_transf;
+                                    create temporary table vm_i_post_transf as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_post_transf on vm_i_post_transf using gist({33});
+                                    ', i_post_transf, i_emprise);
+                                    
+
+                            execute format ('
+                                    drop table if exists vm_i_pai_transp;
+                                    create temporary table vm_i_pai_transp as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_transp on vm_i_pai_transp using gist({33});
+                                    ', i_pai_transp, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_pai_sport;
+                                    create temporary table vm_i_pai_sport as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_pai_sport on vm_i_pai_sport using gist({33});
+                                    ', i_pai_sport, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_finess;
+                                    create temporary table vm_i_finess as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_finess on vm_i_finess using gist(geom);
+                                    ', i_finess, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_zveget;
+                                    create temporary table vm_i_zveget as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_zveget on vm_i_zveget using gist({33});
+                                    ', i_zveget, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_res;
+                                    create temporary table vm_i_res as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_res on vm_i_res using gist(geom);
+                                    ', i_res, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_tronfluv;
+                                    create temporary table vm_i_tronfluv as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_tronfluv on vm_i_tronfluv using gist(geom);
+                                    ', i_tronfluv, i_emprise);
+
+
+                            execute format ('
+                                    drop table if exists vm_i_tsurf;
+                                    create temporary table vm_i_tsurf as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_tsurf on vm_i_tsurf using gist(geom);
+                                    ', i_tsurf, i_emprise);
+
+                            execute format ('
+                                    drop table if exists vm_i_tronroute;
+                                    create temporary table vm_i_tronroute as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geom, emp.geom);
+                                    Create index idx_vm_i_tronroute on vm_i_tronroute using gist(geom);
+                                    ', i_tronroute, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_foncier;
+                                    create temporary table vm_i_foncier as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.geomloc, emp.geom);
+                                    Create index idx_vm_i_foncier on vm_i_foncier using gist(geomloc);
+                                    ', i_foncier, i_emprise);
+
+                                    
+                            execute format ('
+                                    drop table if exists vm_i_bati_indif;
+                                    create temporary table vm_i_bati_indif as 
+                                    select cegb.* 
+                                    from %1$s cegb 
+                                    join %2$s emp on st_intersects(cegb.{33}, emp.geom);
+                                    Create index idx_vm_i_bati_indif on vm_i_bati_indif using gist({33});
+                                    ', i_bati_indif, i_emprise);
+
+
+
+                            --Récupération des routes secondaires qui seront corrélées dans nos calculs
+                        Execute format('Create temporary table tt_secondaire as
+                            Select ROW_NUMBER() OVEr() as gid, *
+                                From (select (st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(polygon,2154) as geom, nature
+                                    From (
+                                        Select st_buffer(rs.{33}, largeur/2, ''endcap=square join=round'')::geometry(Polygon,2154) as geom, nature
+                                        From %1$s rs, %2$s com
+                                        Where rs.importance in (''3'', ''4'', ''5'', ''NC'') AND rs.nature not in (''Chemin'', ''Escalier'', ''Piste cyclable'', ''Sentier'')   
+                                        AND st_intersects(rs.{33}, com.geom) 
+                                        Group by rs.largeur/2, rs.{33}, nature
+                                    )tt
+                                Group by nature) tt2;
+                                Create index idx_tt_secondaire on tt_secondaire using gist(geom);', i_route_sec, i_emprise);
+                        
+                            --Création de la table qui sera le socle MOS final
+                        Drop table if exists {30}.{31};
+                        Create table {30}.{31} (
+                            to_milit integer,
+                            to_bati integer,
+                            to_batire integer,
+                            to_batagri integer, 
+                            to_serre integer, 
+                            to_indust integer,
+                            to_comer integer,
+                            to_zic integer,
+                            to_transp integer,
+                            to_voiefer integer,
+                            to_carrier integer,
+                            to_cime integer,
+                            to_sport integer,
+                            to_loisir integer,
+                            to_agri integer,
+                            to_veget integer,
+                            to_eau integer,
+                            to_route integer,
+                            to_batimaison integer,
+                            pre_scol integer,
+                            pre_sante integer,
+                            pre_eqadmi integer,
+                            pre_o_nrj integer,
+                            pre_transp integer,
+                            pre_sploi integer,
+                            prob_jardin integer,
+                            m_fonction character varying,
+                            idu character varying,
+                            num_parc character varying,
+                            tex character varying,
+                            section character varying,
+                            code_insee character varying,
+                            nom_commune character varying,
+                            gid serial,
+                            geom geometry(Polygon,2154),
+                            id_mos character varying,
+                            subdi_sirs character varying,                                           
+                            code4_{32} integer,
+                            lib4_{32} character varying,
+                            remarque_{32} character varying,
+                            surface_m2 double precision,
+                            perimetre double precision,
+                            constraint pk_{31} PRIMARY KEY (gid)
+                                                                                                
+                        );
+                        Create index idx_{31}_geom on {30}.{31} using gist(geom);
+
+                            --Parcours de toutes les parcelles pour affecter les calcul de présence qui lui sont propre
+                            -- Les calculs sont stockés dans des variables puis insérés en fin de boucle dans la table
+                        For v_geom, v_insee, v_idu, v_num_parc, v_tex, v_gid, v_section, v_surf_mos, v_peri_mos IN execute format('Select geom, code_insee, idu, num_parc, tex, gid, section, st_area(geom), st_perimeter(geom) From %1$s sc;', i_socle_c) LOOP
+                            if v_idu != 'NC' then
+                                --Seul les données cadastrés sont calculés pour cette étape
+                        --Ajout des colonnes taux
+                            --Calcul du taux de bâtiment militaire
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                                 From %1$s pm
-                                                Where lib_catego not like (''Pharmacie d''Officine'') and lib_catego not like ''Service %''
-                                                AND ((st_area(st_safe_intersection(pm.geom, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
-                                        ', i_finess, v_geom)
-                        into v_presante;
-                            if v_presante != 1 Then 
-                                v_presante = 0;
+                                                Where st_intersects(''%3$s'', pm.{33}) 
+                                                AND pm.id in (Select pm.id
+                                                                From %1$s pm
+                                                                Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
+                                                                Where p2.nature = ''Enceinte militaire'')
+                                            ', 'vm_i_surf_acti', 'vm_i_pai_milit', v_geom)
+                        into v_tomilit;
+                                --Calcul du taux de bâtiment présent sur la parcelle
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.geom) 
+                                            ', 'vm_i_bati', v_geom)
+                        into v_tobati;
+                                --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_bati_indif', v_geom)
+                        into v_tobatimaison;
+                                --Calcul du taux de présence de bâtiment remarquable
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_bati_rem', v_geom)
+                        into v_tobatire;
+                                --Calcul du taux de présence de bâtiments agricole
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.nature in (''Bâtiment agricole'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_bati_indus', v_geom)
+                        into v_tobatagri;
+                                --Calcul du taux de présence de serres
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.nature in (''Serre'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_bati_indus', v_geom)
+                        into v_toserre;
+                                --Calcul du taux de présence de bâtiments industriel
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.nature in (''Bâtiment industriel'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_bati_indus', v_geom)
+                        into v_toindust;
+                                --Calcul du taux de présence de bâtiments commerciaux
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.nature in (''Bâtiment commercial'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_bati_indus', v_geom)
+                        into v_tocomer;
+                                --Calcul du taux de présence de bâtiments industriels ou commerciaux
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.categorie in (''Industriel ou commercial'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_surf_acti', v_geom)
+                        into v_tozic;
+                                --Calcul du taux de présence d'équipement de transport
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where pm.categorie in (''Transport'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_surf_acti', v_geom)
+                        into v_totransp;
+                                --Calcul du taux de présence de voies férrées
+                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 3 * pm.nb_voies,''endcap=flat join=round'')), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_voie_ferre', v_geom)
+                        into v_tovoiefer;
+                        if v_tovoiefer = 0 THEN
+                                --Si pas de voie férrées détéctées, recherche avec les aires de triage
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_aire_tri', v_geom)
+                        into v_tovoiefer;
+                        END IF;
+                                --Calcul du taux de présence de carrières
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                                From %1$s pm
+                                                Where st_intersects(''%3$s'', pm.{33}) 
+                                                AND pm.id in (Select pm.id
+                                                                From %1$s pm
+                                                                Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
+                                                                Where p2.nature = ''Carrière'' )
+                                            ','vm_i_surf_acti',  'vm_i_pai_indus_com', v_geom)
+                        into v_tocarrier;
+                                --Calcul du taux de présence de cimetières
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_cime', v_geom)
+                        into v_tocime;
+                                --Calcul du taux de présence d'équipement sportif
+                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_terrain_sport', v_geom)
+                        into v_tosport;
+                            
+                        IF v_tosport = 0 THEN
+                                    --Si pas d'équipement trouvés, on recherche avec les données IGN terrain de sport
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where categorie = ''Sport''
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_surf_acti', v_geom)
+                        into v_tosport;
+                        END IF;
+                                --Calcul du taux de présence d'aménagement loisir
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                                From %1$s pm
+                                                Where st_intersects(''%3$s'', pm.{33})
+                                                AND pm.id in (Select pm.id 
+                                                                From %1$s pm
+                                                                Join %2$s p2 on st_intersects(p2.{33}, pm.{33})
+                                                                Where p2.nature in (''Village de vacances'', ''Camping'', ''Parc de loisirs'', ''Parc zoologique'', ''parc des expositions'' ))
+                                            ', 'vm_i_surf_acti', 'vm_i_pai_cul_lois', v_geom)
+                        into v_toloisir;
+                                --Calcul du taux de présence des parcelles agricoles
+                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                From %1$s pm
+                                                Where st_intersects(''%2$s'', pm.geom) 
+                                            ', 'vm_i_rpga', v_geom)
+                        into v_toagri;
+                            If v_toagri = 0 Then
+                                    --Si pas de correspondance, on recherche aussi avec les zone de végétation peupleraies et verger
+                                execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where nature in (''Verger'', ''Peupleraie'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_zveget', v_geom)
+                        into v_toagri;
+                            END IF;
+
+                                --Calcul du taux de présence de végétation qui ne sont pas verger ou peupleraie
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where nature not in (''Verger'', ''Peupleraie'') 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_zveget', v_geom)
+                        into v_toveget;
+                                --Calcul de présence des surface en eau permanentes
+                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
+                                                From %1$s pm
+                                                Where regime = ''Permanent'' 
+                                                AND st_intersects(''%2$s'', pm.{33}) 
+                                            ', 'vm_i_surf_eau', v_geom)
+                        into v_toeau;
+                                --Calcul du taux de présence de l'eau des données edigeoo geo_tronfluv
+                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                From %1$s pm
+                                                Where  st_intersects(''%2$s'', pm.geom) 
+                                            ', 'vm_i_tronfluv', v_geom)
+                        into v_temp_toeau;
+                        if v_temp_toeau > v_toeau Then
+                                --Si les données édigéos apportent plus de valeur, on garde cette données qui écrase les surface en eau IGN
+                            v_toeau = v_temp_toeau;
+                        End if;
+                                --Calcul du taux de présence de l'eau des données edigeo geo_tsurf
+                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                From %1$s pm
+                                                Where  st_intersects(''%2$s'', pm.geom) 
+                                            ', 'vm_i_tsurf', v_geom)
+                        into v_temp_toeau;
+                        if v_temp_toeau > v_toeau Then
+                            --Si les données tsurf sont plus importantes que les autres, on écrases les gardes
+                            v_toeau = v_temp_toeau;
+                        End if;
+                            --Calcul du taux de présence des routes secondaire
+                        Select ((st_area(st_safe_intersection(st_union(pm.geom), v_geom))*100)/st_area(v_geom))::integer
+                                                From tt_secondaire pm
+                                                Where  st_intersects(v_geom, pm.geom)       
+                        into v_toroute;
+                                --Calcul du taux de présence des routes edigeo geo_tronroute
+                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                From %1$s pm
+                                                Where  st_intersects(''%2$s'', pm.geom) 
+                                            ', 'vm_i_tronroute', v_geom)
+                        into v_temp_route;
+                        if v_toroute < v_temp_route Then
+                            --Si les données edigeo sont plus impotantes, on les gardes
+                            v_toroute = v_temp_route;
+                        end if;
+                        
+                                --Ajout des colonnes bool
+                            --Enseignement
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where pm.nature like ''Enseignement%%''
+                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                            ', 'vm_i_pai_scens', v_geom)
+                        into v_prescol;
+                        if v_prescol < 1 Then 
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where categorie = ''Enseignement'' 
+                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
+                                            ', 'vm_i_surf_acti', v_geom)
+                        into v_prescol;
+                    
+                            if v_prescol < 1 Then 
+                                v_prescol = 0;
                             end if;
                         end if;
-                    end if;
 
-                        --Administration
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where nature in (''Eglise'', ''Bâtiment religieux divers'', ''Gare'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'', ''Divers public ou administratif'')
-                                            AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                        ', i_pai_milit, v_geom)
-                    into v_preqadmi;
-                    if v_preqadmi < 1 Then 
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where nature in (''Culte catholique ou orthodoxe'', ''Culte protestant'') 
-                                            AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                        ', i_pai_rel, v_geom)
-                    into v_preqadmi;
-                
+                            --Sante
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                            ', 'vm_i_pai_sante', v_geom)
+                        into v_presante;
+            
+                        if v_presante = 0 Then 
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where categorie = ''Santé'' 
+                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
+                                            ', 'vm_i_surf_acti', v_geom)
+                        into v_presante;
+                            if v_presante = 0 THEN
+                                execute format ('Select count(*)
+                                                    From %1$s pm
+                                                    Where libcateget not like ''Pharmacie'' and libcateget not like ''Service%%''
+                                                    AND st_intersects(''%2$s'', pm.geom)
+                                            ', 'vm_i_finess', v_geom)
+                            into v_presante;
+                                if v_presante < 1 Then 
+                                    v_presante = 0;
+                                end if;
+                            end if;
+                        end if;
+
+                            --Administration
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where nature in (''Eglise'', ''Bâtiment religieux divers'', ''Gare'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'', ''Divers public ou administratif'')
+                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                            ', 'vm_i_pai_milit', v_geom)
+                        into v_preqadmi;
                         if v_preqadmi < 1 Then 
                             execute format ('Select count(*)
                                                 From %1$s pm
-                                                Where nature in (''Eglise'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'') 
-                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
-                                            ', i_bati_rem, v_geom)
+                                                Where nature in (''Culte catholique ou orthodoxe'', ''Culte protestant'') 
+                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                            ', 'vm_i_pai_rel', v_geom)
                         into v_preqadmi;
-                
-                            IF v_preqadmi < 1 Then
-                                v_preqadmi = 0;
+                    
+                            if v_preqadmi < 1 Then 
+                                execute format ('Select count(*)
+                                                    From %1$s pm
+                                                    Where nature in (''Eglise'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'') 
+                                                    AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
+                                                ', 'vm_i_bati_rem', v_geom)
+                            into v_preqadmi;
+                    
+                                IF v_preqadmi < 1 Then
+                                    v_preqadmi = 0;
+                                end if;
                             end if;
                         end if;
-                    end if;
 
-                        --Eau, énergie
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where nature = (''Station de pompage'')
-                                            AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                        ', i_point_eau, v_geom)
-                    into v_preonrj;
-                    if v_preonrj < 1 Then 
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where categorie in (''Gestion des eaux'')
-                                            AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40
-                                        ', i_surf_acti, v_geom)
-                    into v_preonrj;
-
+                            --Eau, énergie
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where nature = (''Station de pompage'')
+                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                            ', 'vm_i_point_eau', v_geom)
+                        into v_preonrj;
                         if v_preonrj < 1 Then 
                             execute format ('Select count(*)
                                                 From %1$s pm
-                                                Where  ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
-                                            ', i_post_transf, v_geom)
+                                                Where categorie in (''Gestion des eaux'')
+                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40
+                                            ', 'vm_i_surf_acti', v_geom)
                         into v_preonrj;
 
-                            If v_preonrj < 1 Then 
-                                v_preonrj = 0;
+                            if v_preonrj < 1 Then 
+                                execute format ('Select count(*)
+                                                    From %1$s pm
+                                                    Where  ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
+                                                ', 'vm_i_post_transf', v_geom)
+                            into v_preonrj;
+
+                                If v_preonrj < 1 Then 
+                                    v_preonrj = 0;
+                                end if;
                             end if;
                         end if;
-                    end if;
 
-                        --Transport
-                        execute format ('Select 1
-                                            From %1$s pm
-                                            Where nature in (''Gare routière'',''Gare voyageurs et fret'', ''Gare voyageurs uniquement'', ''Parking'')
-                                            AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
-                                        ', i_pai_transp, v_geom)
-                    into v_pretransp;
-                    If v_pretransp != 1 Then 
-                        v_pretransp = 0;
-                    end if;
+                            --Transport
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where nature in (''Gare routière'',''Gare voyageurs et fret'', ''Gare voyageurs uniquement'', ''Parking'')
+                                                AND st_intersects(pm.{33}, ''%2$s'') 
+                                            ', 'vm_i_pai_transp', v_geom)
+                        into v_pretransp;
+                        If v_pretransp != 1 Then 
+                            v_pretransp = 0;
+                        end if;
 
-                        --Sport, loisir
-                        execute format ('Select 1
-                                            From %1$s pm
-                                            Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                        ', i_pai_sport, v_geom)
-                    into v_presploi;
-                    If v_presploi != 1 Then
-                        execute format ('Select 1
-                                            From %1$s pm
-                                            Where naturelibe != ''Intérieur''
-                                            AND st_intersects(pm.geom, ''%2$s'') 
-                                        ', i_res, v_geom)
-                    into v_presploi;
-                        IF v_presploi != 1 Then
-                            execute format ('Select 2
-                                            From %1$s pm
-                                            Where naturelibe = ''Intérieur''
-                                            AND st_intersects(pm.geom, ''%2$s'') 
-                                        ', i_res, v_geom)
+                            --Sport, loisir
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                            ', 'vm_i_pai_sport', v_geom)
                         into v_presploi;
-                            If v_presploi != 1 Then
-                                v_presploi = 0;
+                        If v_presploi < 1 Then
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where naturelibe != ''Intérieur''
+                                                AND st_intersects(pm.geom, ''%2$s'') 
+                                            ', 'vm_i_res', v_geom)
+                        into v_presploi;
+                            IF v_presploi < 1 Then
+                                execute format ('Select 2
+                                                From %1$s pm
+                                                Where naturelibe = ''Intérieur''
+                                                AND st_intersects(pm.geom, ''%2$s'') 
+                                            ', 'vm_i_res', v_geom)
+                            into v_presploi;
+                                If v_presploi != 1 Then
+                                    v_presploi = 0;
+                                end if;
                             end if;
-                        end if;
-                    end if; 
+                        end if; 
 
-                    --Traitement fichiers foncier
-                        execute format ('Select tlocdomin
-                                            From %1$s pm
-                                            Where st_intersects(pm.geomloc, ''%2$s'')
-                                            order by tlocdomin desc
-                                        ', i_foncier, v_geom)
-                    into v_mfonction;
+                        --Traitement fichiers foncier
+                            execute format ('Select tlocdomin
+                                                From %1$s pm
+                                                Where st_intersects(pm.geomloc, ''%2$s'')
+                                                order by tlocdomin desc
+                                            ', 'vm_i_foncier', v_geom)
+                        into v_mfonction;
 
-                        execute format ('Select count(*)
-                                            From %1$s pm
-                                            Where st_intersects(pm.geomloc, ''%2$s'')
-                                            and (pm.dcnt09 > 1 or pm.dcnt11 > 1)
-                                        ', i_foncier,  v_geom)
-                    into v_probjardin;
-                    --Récupération de l'identifiant unique
-                    v_id_mos = left(v_insee,2) || v_num_parc;
+                            execute format ('Select count(*)
+                                                From %1$s pm
+                                                Where st_intersects(pm.geomloc, ''%2$s'')
+                                                and (pm.dcnt09 > 1 or pm.dcnt11 > 1)
+                                            ', 'vm_i_foncier',  v_geom)
+                        into v_probjardin;
+                        --Récupération de l'identifiant unique
+                        v_id_mos = left(v_insee,2) || v_num_parc;
 
-                        else
-                            v_cpt_mos = v_cpt_mos +1;
-                            v_tomilit = null;
-                            v_tobati = null;
-                            v_tobatire = null; 
-                            v_tobatagri = null;
-                            v_toserre = null ;
-                            v_toindust = null ;
-                            v_tocomer = null ;
-                            v_tozic = null ;
-                            v_totransp= null; 
-                            v_tovoiefer = null;
-                            v_tocarrier = null ;
-                            v_tocime = null;
-                            v_tosport = null; 
-                            v_toloisir = null;
-                            v_toagri = null;
-                            v_toveget = null;
-                            v_toeau = null ;
-                            v_toroute = null;
-                            v_prescol = null;
-                            v_presante = null;
-                            v_preqadmi = null;
-                            v_preonrj = null;
-                            v_pretransp = null;
-                            v_presploi = null;
-                            v_mfonction = null;
-                            v_probjardin = null;
-                            v_id_mos = v_insee || 'NC' ||  v_cpt_mos;
-                        end if;
+                            else
+                                v_cpt_mos = v_cpt_mos +1;
+                                v_tomilit = null;
+                                v_tobati = null;
+                                v_tobatire = null; 
+                                v_tobatagri = null;
+                                v_toserre = null ;
+                                v_toindust = null ;
+                                v_tocomer = null ;
+                                v_tozic = null ;
+                                v_totransp= null; 
+                                v_tovoiefer = null;
+                                v_tocarrier = null ;
+                                v_tocime = null;
+                                v_tosport = null; 
+                                v_toloisir = null;
+                                v_toagri = null;
+                                v_toveget = null;
+                                v_toeau = null ;
+                                v_toroute = null;
+                                v_prescol = null;
+                                v_presante = null;
+                                v_preqadmi = null;
+                                v_preonrj = null;
+                                v_pretransp = null;
+                                v_presploi = null;
+                                v_mfonction = null;
+                                v_probjardin = null;
+                                v_id_mos = v_insee || 'NC' ||  v_cpt_mos;
+                            end if;
 
-                    
-                    
-                        INSERT INTO {30}.{31}(code_insee, idu, num_parc, tex, section, geom, 
-                                                        to_milit, 
-                                                        to_bati, 
-                                                        to_batire, 
-                                                        to_batagri, 
-                                                        to_serre, 
-                                                        to_indust, 
-                                                        to_comer, 
-                                                        to_zic, 
-                                                        to_transp, 
-                                                        to_voiefer, 
-                                                        to_carrier, 
-                                                        to_cime, 
-                                                        to_sport,
-                                                        to_loisir,
-                                                        to_agri,
-                                                        to_veget,
-                                                        to_eau,
-                                                        to_route,
-                                                        to_batimaison,
-                                                        pre_scol,
-                                                        pre_sante,
-                                                        pre_eqadmi,
-                                                        pre_o_nrj,
-                                                        pre_transp,
-                                                        pre_sploi,
-                                                        m_fonction,
-                                                        prob_jardin,
-                                                        id_mos,
-                                                        surface_m2,
-                                                        perimetre) values
-                        (v_insee, v_idu, v_num_parc, v_tex,v_section, v_geom, 
-                            v_tomilit, 
-                            v_tobati, 
-                            v_tobatire, 
-                            v_tobatagri, 
-                            v_toserre, 
-                            v_toindust, 
-                            v_tocomer, 
-                            v_tozic, 
-                            v_totransp, 
-                            v_tovoiefer, 
-                            v_tocarrier, 
-                            v_tocime, 
-                            v_tosport,
-                            v_toloisir,
-                            v_toagri,
-                            v_toveget,
-                            v_toeau,
-                            v_toroute,
-                            v_tobatimaison,
-                            v_prescol,
-                            v_presante,
-                            v_preqadmi,
-                            v_preonrj,
-                            v_pretransp,
-                            v_presploi,
-                            v_mfonction,
-                            v_probjardin,
-                            v_id_mos,
-                            v_surf_mos,
-                            v_peri_mos
-                        );
                         
                         
-                    END LOOP;
+                            INSERT INTO {30}.{31}(code_insee, idu, num_parc, tex, section, geom, 
+                                                            to_milit, 
+                                                            to_bati, 
+                                                            to_batire, 
+                                                            to_batagri, 
+                                                            to_serre, 
+                                                            to_indust, 
+                                                            to_comer, 
+                                                            to_zic, 
+                                                            to_transp, 
+                                                            to_voiefer, 
+                                                            to_carrier, 
+                                                            to_cime, 
+                                                            to_sport,
+                                                            to_loisir,
+                                                            to_agri,
+                                                            to_veget,
+                                                            to_eau,
+                                                            to_route,
+                                                            to_batimaison,
+                                                            pre_scol,
+                                                            pre_sante,
+                                                            pre_eqadmi,
+                                                            pre_o_nrj,
+                                                            pre_transp,
+                                                            pre_sploi,
+                                                            m_fonction,
+                                                            prob_jardin,
+                                                            id_mos,
+                                                            surface_m2,
+                                                            perimetre) values
+                            (v_insee, v_idu, v_num_parc, v_tex,v_section, v_geom, 
+                                v_tomilit, 
+                                v_tobati, 
+                                v_tobatire, 
+                                v_tobatagri, 
+                                v_toserre, 
+                                v_toindust, 
+                                v_tocomer, 
+                                v_tozic, 
+                                v_totransp, 
+                                v_tovoiefer, 
+                                v_tocarrier, 
+                                v_tocime, 
+                                v_tosport,
+                                v_toloisir,
+                                v_toagri,
+                                v_toveget,
+                                v_toeau,
+                                v_toroute,
+                                v_tobatimaison,
+                                v_prescol,
+                                v_presante,
+                                v_preqadmi,
+                                v_preonrj,
+                                v_pretransp,
+                                v_presploi,
+                                v_mfonction,
+                                v_probjardin,
+                                v_id_mos,
+                                v_surf_mos,
+                                v_peri_mos
+                            );
+                            
+                            
+                        END LOOP;
 
-                RETURN;
-                END;
-            $BODY$
-                LANGUAGE 'plpgsql';
+                    RETURN;
+                    END;
+                $BODY$
+                    LANGUAGE 'plpgsql';
 
 
 
-            select public.fun_typage('socle_temp', 
-                        '{0}', 
-                        '{1}', 
-                        '{2}', 
-                        '{3}', 
-                        '{4}', 
-                        '{5}',
-                        '{6}',
-                        '{7}',
-                        '{8}',
-                        '{9}',
-                        '{10}',
-                        '{11}',
-                        '{12}',
-                        '{13}',
-                        '{14}',
-                        '{15}',
-                        '{16}',
-                        '{17}',
-                        '{18}',
-                        '{19}',
-                        '{20}',
-                        '{21}',
-                        '{22}',
-                        '{23}',
-                        '{24}',
-                        '{25}',
-                        '{26}',
-                        '{27}',
-                        '{28}',
-                        '{29}'
-                        );
+                select public.fun_typage('{35}', 
+                            '{0}', 
+                            '{1}', 
+                            '{2}', 
+                            '{3}', 
+                            '{4}', 
+                            '{5}',
+                            '{6}',
+                            '{7}',
+                            '{8}',
+                            '{9}',
+                            '{10}',
+                            '{11}',
+                            '{12}',
+                            '{13}',
+                            '{14}',
+                            '{15}',
+                            '{16}',
+                            '{17}',
+                            '{18}',
+                            '{19}',
+                            '{20}',
+                            '{21}',
+                            '{22}',
+                            '{23}',
+                            '{24}',
+                            '{25}',
+                            '{26}',
+                            '{27}',
+                            '{28}',
+                            '{29}'
+                            );
+                        update {30}.{31} x 
+                        set nom_commune = nom_com
+                        From {27} y where x.code_insee = y.code_insee
 
-            """.format(self.cb_paimilit.currentText(),
-                        self.cb_geobati.currentText(),
-                        self.cb_remarquable.currentText(),
-                        self.cb_indust.currentText(),
-                        self.cb_surf_acti.currentText(),
-                        self.cb_triage.currentText(),
-                        self.cb_voiefer.currentText(),
-                        self.cb_paicom.currentText(),
-                        self.cb_cime.currentText(),
-                        self.cb_terrainsport.currentText(),
-                        self.cb_pai_cult.currentText(),
-                        self.cb_rpga.currentText(),
-                        self.cb_surf_eau.currentText(),
-                        self.cb_paiens.currentText(),
-                        self.cb_paisante.currentText(),
-                        self.cb_pairel.currentText(),
-                        self.cb_pt_eau.currentText(),
-                        self.cb_paitransfo.currentText(),
-                        self.cb_paitransp.currentText(),
-                        self.cb_paisport.currentText(),
-                        self.cb_finess.currentText(),
-                        self.cb_zoneveget.currentText(),
-                        self.cb_res_sport.currentText(),
-                        self.cb_tronfluv.currentText(),
-                        self.cb_tsurf.currentText(),
-                        self.cb_route.currentText(),
-                        self.cb_tronroute.currentText(),
-                        self.cb_parcellaire.currentText(),
-                        self.cb_ff_parcelle.currentText(),
-                        self.cb_indif.currentText(),
-                        self.cb_schema.currentText(),
-                        self.le_destination.text(),
-                        self.le_annee.text(),
-                        self.geom
-                    )
-            )
+                """.format(self.cb_paimilit.currentText(),#0
+                            self.cb_geobati.currentText(),#1
+                            self.cb_remarquable.currentText(),#2
+                            self.cb_indust.currentText(),#3
+                            self.cb_surf_acti.currentText(),#4
+                            self.cb_triage.currentText(),#5
+                            self.cb_voiefer.currentText(),#6
+                            self.cb_paicom.currentText(),#7
+                            self.cb_cime.currentText(),#8
+                            self.cb_terrainsport.currentText(),#9
+                            self.cb_pai_cult.currentText(),#10
+                            self.cb_rpga.currentText(),#11
+                            self.cb_surf_eau.currentText(),#12
+                            self.cb_paiens.currentText(),#13
+                            self.cb_paisante.currentText(),#14
+                            self.cb_pairel.currentText(),#15
+                            self.cb_pt_eau.currentText(),#16
+                            self.cb_paitransfo.currentText(),#17
+                            self.cb_paitransp.currentText(),#18
+                            self.cb_paisport.currentText(),#19
+                            self.cb_finess.currentText(),#20
+                            self.cb_zoneveget.currentText(),#21
+                            self.cb_res_sport.currentText(),#22
+                            self.cb_tronfluv.currentText(),#23
+                            self.cb_tsurf.currentText(),#24
+                            self.cb_route.currentText(),#25
+                            self.cb_tronroute.currentText(),#26
+                            self.cb_parcellaire.currentText(),#27
+                            self.cb_ff_parcelle.currentText(),#28
+                            self.cb_indif.currentText(),#29
+                            self.cb_schema.currentText(),#30
+                            self.le_destination.text(),#31
+                            self.le_annee.text(),#32
+                            self.geom,#33
+                            self.schema_geom,#34
+                            self.socle_geom,#35
+                        )
+                )
+        except Exception as exc:
+            exc = str(exc).decode('utf-8')
+            QMessageBox.critical(self, 'Erreur', u'Un problème est survenu : {0}'.format(exc),
+                         QMessageBox.Ok)
         cur2.close()
         self.conn.commit()
-
-        self.lbl_etape.setText(u'Etape 3/3')
-        self.pb_avancement.setValue(70)
-        temp = QTimer       
-        temp.singleShot(100, self.getCode4)
+        temp = QTimer 
+        if self.cas_etape == 1:
+            self.lbl_etape.setText(u'Etape 3/3 : Calcul des code4 à attribuer')
+            self.pb_avancement.setValue(70)
+            temp.singleShot(100, self.getCode4)
+        elif self.cas_etape == 2 or self.cas_etape == 5:
+            self.lbl_etape.setText(u'Terminé')
+            self.pb_avancement.setValue(100)
+        elif self.cas_etape == 4:
+            self.lbl_etape.setText(u'2/2 : Calcul des code4 à attribuer')
+            self.pb_avancement.setValue(100)
+            temp.singleShot(100, self.getCode4)
+    
+        #temp.singleShot(100, self.getCode4)
  #       time.sleep(15)
             #Lancement de la troisième et dernière étape
         #self.getCode4()
@@ -1816,6 +2396,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         v_is_jardin integer;
                     BEGIN
                         For v_socle in Select * from {0}.{1} where idu != 'NC' LOOP
+                            v_code4 = 0;
 
                             if v_socle.to_milit >= 20 then
                                 v_code4 = 1110;
@@ -1940,6 +2521,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     v_lib4 = 'Surface commerciale';
                                 elseif v_socle.to_zic >= 20 then
                                     v_code4 = 121;
+                                    v_lib4 = '';
                                 else 
                                     v_code4 = 1115;
                                     v_lib4 = 'Bâti divers';
@@ -1956,7 +2538,13 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                 v_code4 = 5121;
                                 v_lib4 = 'Plan d''eau';
 
-                            elsif v_socle.to_batimaison > 1 then
+                            else 
+                                v_code4 = 3251;
+                                v_lib4 = 'Espace naturel';
+
+                            end if;
+
+                            if v_code4 = 3251 and v_socle.to_batimaison > 10 then
                                   Select count(*)
                                             From {0}.{1} pm
                                             Where idu = v_socle.idu
@@ -1966,11 +2554,16 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     v_code4 = 1112;
                                     v_lib4 = 'Habitat individuel';
                                 end if;
-
-                            else 
-                                v_code4 = 3251;
-                                v_lib4 = 'Espace naturel';
-
+                            elsif v_code4 = 3251 and  v_socle.to_batimaison > 1 then
+                                  Select count(*)
+                                            From {0}.{1} pm
+                                            Where idu = v_socle.idu
+                                            and m_fonction = 'MAISON'
+                                into v_is_maison;
+                                if v_is_maison > 0 then
+                                    v_code4 = 1412;
+                                    v_lib4 = 'Parc et jardin';
+                                end if;
                             end if;
 
                             if v_code4 = 3251 then
@@ -2128,11 +2721,10 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     END;
                 $BODY$;
 
-                Drop table if exists socle_temp;
                 """.format(
-                        self.cb_schema.currentText(),
-                        self.le_destination.text(),
-                        self.le_annee.text()
+                        self.schema_desti,
+                        self.couche_desti,
+                        self.yearCode
                             )
                 )    
                  
@@ -2214,7 +2806,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                 end;
                     end
                     $$
-                    language 'plpgsql' immutable parallel safe;
+                    language 'plpgsql' immutable strict parallel safe;
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,
