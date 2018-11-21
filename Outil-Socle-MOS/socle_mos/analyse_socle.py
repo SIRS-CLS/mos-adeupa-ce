@@ -697,6 +697,21 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         cur.execute(u"""Select column_name
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
+                        and column_name like '%nom_com%' 
+                        order by column_name 
+
+                    """.format(self.cb_schema.currentText(),
+                                self.cb_table.currentText()
+                                )
+                    )
+        self.nom_com = cur.fetchone()
+        cur.close();
+
+
+        cur = self.conn.cursor()
+        cur.execute(u"""Select column_name
+                        from information_schema.columns 
+                        where table_schema||'.'||table_name  = '{0}.{1}'  
                         and column_name like 'id_mos%' 
                         order by column_name 
 
@@ -917,7 +932,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                                 {31} as tex,
                                                 {32} as section,
                                                 {33} as code_insee,
-                                                -- as nom_commune,
+                                                {46} as nom_commune,
                                                 gid,
                                                 geom,
                                                 {34} as id_mos,
@@ -932,6 +947,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                                 {40} as perimetre
                                             From %1$s   
                                     );
+                                    Alter table {41}.{42} add constraint pk_{41}_{42} PRIMARY KEY (gid);
                                     create index idx_{41}_{42} on {41}.{42} using gist(geom);
                             ', i_socle_c);
 
@@ -1103,7 +1119,8 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                         self.le_table_desti.text(),#42
                         self.indust,#43
                         self.bati_rem,#44
-                        self.bati_indif#45
+                        self.bati_indif,#45
+                        self.nom_com[0]#46
                         )
                     )
 

@@ -746,12 +746,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
-                                Where (code4_{0} = 1421 and code4_{1} != 1421) or (code4_{0} = 1422 and code4_{1} != 1422);
+                                Where (code4_{0} = 1421 and code4_{1} != 1421) or (code4_{0} = 1422 and code4_{1} != 1422) or (code4_{0} != 1412 and code4_{1} = 1412);
 
-                        update {6}.{7} x
-                            Set code4_{1} = code4_{0},
-                                lib4_{1} = lib4_{0}
-                                Where (code4_{0} != 1412 and code4_{1} = 1412) ;
 
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},

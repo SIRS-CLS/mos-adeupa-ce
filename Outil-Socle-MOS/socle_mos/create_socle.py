@@ -301,13 +301,13 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                     #Initialisation de la combo box schema avec la liste des schemas de la base
             querySchema = QSqlQuery(db)
-            querySchema.prepare("Select distinct f_table_schema from geometry_columns order by f_table_schema;")
+            querySchema.prepare("Select distinct schema_name from information_schema.schemata where schema_name not like 'pg%' order by schema_name;")
             if querySchema.exec_():
                 while querySchema.next():
                     self.cb_schema.addItem(querySchema.value(0))
                     self.cb_schema_geom.addItem(querySchema.value(0))
             
-                      
+            """          
                     #A ENLEVER /!\
             self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo.geo_parcelle'))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo.geo_subdfisc'))
@@ -393,7 +393,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             #self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('sandbox.emprise_g1_parc'))
 
             
-            
+            """
           
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
             self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
