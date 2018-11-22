@@ -30,7 +30,7 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 changelog=
   Version 0.6
    * Optimisation du traitement des données pour les taux de recouvrement : découpage à l'emprise en amont
-   * Import - Interface de création de socle par étape (possibilité de sélectionner l'étape à lancer ce qui désactive les données non nécessaires)
+   * Import - Interface de création de socle par étape (possibilité de sélectionner l'étape à lancer, ce qui désactive les données non nécessaires)
   Version 0.5.1
    * Fonctions forcées en strict parallel safe pour éviter les erreurs de type "ne peut pas lancer de sous-transactions pendant une opération parallèle CONTEXT"
   Version 0.5

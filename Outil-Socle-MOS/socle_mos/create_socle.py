@@ -605,6 +605,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
     def start(self):
         #Fonction de lancement du programme
+        #Lancement des étapes suivant les cases cochées
+        #Initialisation des noms des tables créées
         self.pb_start.setEnabled(False)
 
         self.conn = psycopg2.connect(host=self.host, port=self.port, user=self.username, dbname=self.database, password=self.pwd )
@@ -617,6 +619,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
         temp = QTimer
         if self.cbx_etape1.isChecked() and self.cbx_etape2.isChecked() and self.cbx_etape3.isChecked():
+            #Premier cas, les 3 étapes sont lancée
             self.cas_etape = 1
 
             self.socle_geom = 'socle_temp_geom'
@@ -629,6 +632,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             temp.singleShot(100, self.createSocle)
 
         elif self.cbx_etape1.isChecked() and self.cbx_etape2.isChecked():
+            #deuxième cas, seules les deux premières étapes sont lancées
             self.cas_etape = 2
 
             self.socle_geom = 'socle_temp_geom'
@@ -640,6 +644,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
 
         elif self.cbx_etape1.isChecked() and not self.cbx_etape3.isChecked():
+            #Troisième cas, seule la première étape est lancée
             self.cas_etape = 3
 
             self.socle_geom = 'socle_temp_geom'
@@ -651,6 +656,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
 
         elif self.cbx_etape2.isChecked() and self.cbx_etape3.isChecked():
+            #Quatrième cas, l'étape deux et trois sont lancées
             self.cas_etape = 4
 
             self.socle_geom = 'socle_temp_geom'
@@ -668,6 +674,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                      QMessageBox.Ok)
 
         elif self.cbx_etape2.isChecked():
+            #Cinquièeme cas, l'étape deux est lancée
             self.cas_etape = 5
 
             self.socle_geom = 'socle_temp_geom'
@@ -681,10 +688,12 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.pb_avancement.setValue(100)
 
         elif self.cbx_etape3.isChecked() and not self.cbx_etape1.isChecked():
+            #Sixième cas, l'étape troi est lancée
             self.cas_etape = 6
             self.schema_desti = self.cb_schema_geom.currentText()
             self.couche_desti = self.cb_couche_geom.currentText()
 
+                #Récupération de l'année à d'insertion
             cur.execute(u"""Select right(column_name,4) 
                 from information_schema.columns 
                 where table_schema||'.'||table_name  = '{0}.{1}'  
@@ -1353,16 +1362,20 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         cur.close()
         self.conn.commit()
         temp = QTimer 
+            #Choix du lancement des étapes selon les cas rencontrés
         if self.cas_etape == 1:
+            #Cas 1, on passe à l'étape 2, puis 3
             self.lbl_etape.setText(u'Etape 2/3 : Analyse du taux de recouvrement')
             self.pb_avancement.setValue(20)
             temp.singleShot(100, self.getTauxInfo)
 
         elif self.cas_etape == 2:
+            #Cas 2 on passe à l'étape 2 avant de terminer
             self.lbl_etape.setText(u'Etape 2/2 : Analyse du taux de recouvrement')
             self.pb_avancement.setValue(30)
             temp.singleShot(100, self.getTauxInfo)
         elif self.cas_etape == 3:
+            #Cas 3 on a terminé
             self.lbl_etape.setText(u'Terminé')
             self.pb_avancement.setValue(100)
 
@@ -2336,6 +2349,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                             self.socle_geom,#35
                         )
                 )
+            #Récupération du message d'erreur dans un message box critical
         except Exception as exc:
             exc = str(exc).decode('utf-8')
             QMessageBox.critical(self, 'Erreur', u'Un problème est survenu : {0}'.format(exc),
@@ -2343,14 +2357,18 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         cur2.close()
         self.conn.commit()
         temp = QTimer 
+            #Choix des étapes à suivre
         if self.cas_etape == 1:
+            #Cas 1 : on passe à l'étape 3 avant de finir
             self.lbl_etape.setText(u'Etape 3/3 : Calcul des code4 à attribuer')
             self.pb_avancement.setValue(70)
             temp.singleShot(100, self.getCode4)
         elif self.cas_etape == 2 or self.cas_etape == 5:
+            #Cas 5 : on termine
             self.lbl_etape.setText(u'Terminé')
             self.pb_avancement.setValue(100)
         elif self.cas_etape == 4:
+            #Cas 4 on passe à l'étape 3 avant de finir 
             self.lbl_etape.setText(u'2/2 : Calcul des code4 à attribuer')
             self.pb_avancement.setValue(100)
             temp.singleShot(100, self.getCode4)
