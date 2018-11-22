@@ -6,8 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< HEAD
     <width>844</width>
     <height>842</height>
+=======
+    <width>815</width>
+    <height>576</height>
+>>>>>>> master
    </rect>
   </property>
   <property name="maximumSize">
@@ -63,6 +68,7 @@
     </widget>
    </item>
    <item>
+<<<<<<< HEAD
     <widget class="QGroupBox" name="gb_destination">
      <property name="title">
       <string>Destination</string>
@@ -127,6 +133,63 @@
       </item>
      </layout>
     </widget>
+=======
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Schema destination</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cb_schema"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Couche destination</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_destination">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Année</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_annee">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+>>>>>>> master
    </item>
    <item>
     <widget class="QScrollArea" name="gb_data">
@@ -147,7 +210,11 @@
        <rect>
         <x>0</x>
         <y>0</y>
+<<<<<<< HEAD
         <width>807</width>
+=======
+        <width>778</width>
+>>>>>>> master
         <height>618</height>
        </rect>
       </property>

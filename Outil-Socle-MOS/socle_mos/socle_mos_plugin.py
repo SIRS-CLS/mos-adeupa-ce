@@ -19,9 +19,15 @@ class socle_mos:
         self.createSocle = QAction(iconCreateSocle, u"Réaliser un socle", self.interface.mainWindow())
         QObject.connect(self.createSocle, SIGNAL("triggered()"), self.gereActionCreate)
 
+<<<<<<< HEAD
         #iconCompare = QIcon(os.path.dirname(__file__) + "/compare.png")
         #self.compareSocle = QAction(iconCompare, u"Comparer les socles", self.interface.mainWindow())
         #QObject.connect(self.compareSocle, SIGNAL("triggered()"), self.gereActionCompare)
+=======
+        iconCompare = QIcon(os.path.dirname(__file__) + "/compare.png")
+        self.compareSocle = QAction(iconCompare, u"Comparer les socles", self.interface.mainWindow())
+        QObject.connect(self.compareSocle, SIGNAL("triggered()"), self.gereActionCompare)
+>>>>>>> master
 
         iconanalyse = QIcon(os.path.dirname(__file__) + "/analyse.png")
         self.analyseSocle = QAction(iconanalyse, u"Réaliser une rétroévolution", self.interface.mainWindow())
@@ -35,7 +41,11 @@ class socle_mos:
         self.menuSocle = QMenu(u"Socle MOS")
         self.menuSocle.setIcon(QIcon(os.path.dirname(__file__) + "/icon.png"))
         self.menuSocle.addAction(self.createSocle)
+<<<<<<< HEAD
        # self.menuSocle.addAction(self.compareSocle)
+=======
+        #self.menuSocle.addAction(self.compareSocle)
+>>>>>>> master
         self.menuSocle.addAction(self.analyseSocle)
         self.menuSocle.addAction(self.repairSocle)
         self.interface.pluginMenu().addMenu(self.menuSocle)

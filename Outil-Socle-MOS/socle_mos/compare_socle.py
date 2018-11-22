@@ -729,12 +729,15 @@ class Compare_mos(QDialog, Ui_interface_compare):
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
                                 Where code4_{1} = 1226 and  code4_{0} != 1226;
+<<<<<<< HEAD
 
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
                                 Where code4_{1} = 2511 and  (code4_{0} = 2121 or code4_{0} = 1412) ;
 
+=======
+>>>>>>> master
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
@@ -743,6 +746,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                                                                         or to_char(code4_{1}, '9999') like ' 2%'
                                                                                         or to_char(code4_{1}, '9999') like ' 13%'
                                                                                         or to_char(code4_{1}, '9999') like ' 12%');
+<<<<<<< HEAD
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
@@ -787,6 +791,8 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                 Where code4_{1} = 1114 and to_char(code4_{0}, '9999') in (' 1213') ;
 
 
+=======
+>>>>>>> master
 
                         Alter table {6}.{7} drop column gid_t0;
                     END;
@@ -888,7 +894,11 @@ class Compare_mos(QDialog, Ui_interface_compare):
                                 end;
                     end
                     $$
+<<<<<<< HEAD
                     language 'plpgsql' immutable strict parallel safe;
+=======
+                    language 'plpgsql' immutable parallel safe;
+>>>>>>> master
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,
