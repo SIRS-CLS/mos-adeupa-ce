@@ -959,7 +959,9 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                 into v_yearMin, v_yearMax;
                                 v_tobati_old = 0;
 
-                                if v_yearMin > {0} then
+                                if v_yearMin = -1 then
+                                    v_evol = FALSE;
+                                elsif v_yearMin > {0} then
                                     --Evolution détecté : date de première création posterieur à t-1
                                     v_evol = TRUE;
                                 else 
