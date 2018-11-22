@@ -1,4 +1,4 @@
-# This file contains metadata for your plugin. Since 
+﻿# This file contains metadata for your plugin. Since 
 # version 2.0 of QGIS this is the proper way to supply 
 # information about a plugin. The old method of 
 # embedding metadata in __init__.py will 
@@ -35,9 +35,6 @@ changelog=
    * Fonctions forcées en strict parallel safe pour éviter les erreurs de type "ne peut pas lancer de sous-transactions pendant une opération parallèle CONTEXT"
   Version 0.5
    * Ajout de l'interface de calcul des retro-évolutions (comparer le socle t0 avec des données t-1)
-  Version 0.4.1
-   * Correction du crash de chargement des données de l'interface de réparation (Prérequis : champ 'geom' de type Polygon)
-   * Import - Utilisation de buffer de 0.001m pour pallier les exception topologiques "unary unions"
 
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
