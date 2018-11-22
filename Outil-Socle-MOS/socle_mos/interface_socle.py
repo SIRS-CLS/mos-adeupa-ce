@@ -2,11 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_socle.ui'
 #
-<<<<<<< HEAD
 # Created: Tue Nov 20 12:13:30 2018
-=======
-# Created: Fri Nov 16 17:28:38 2018
->>>>>>> master
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,11 +26,7 @@ except AttributeError:
 class Ui_interface_socle(object):
     def setupUi(self, interface_socle):
         interface_socle.setObjectName(_fromUtf8("interface_socle"))
-<<<<<<< HEAD
         interface_socle.resize(844, 842)
-=======
-        interface_socle.resize(815, 576)
->>>>>>> master
         interface_socle.setMaximumSize(QtCore.QSize(16777215, 16777215))
         interface_socle.setSizeGripEnabled(True)
         self.verticalLayout_6 = QtGui.QVBoxLayout(interface_socle)
@@ -109,11 +101,7 @@ class Ui_interface_socle(object):
         self.gb_data.setWidgetResizable(True)
         self.gb_data.setObjectName(_fromUtf8("gb_data"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-<<<<<<< HEAD
         self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 807, 618))
-=======
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 778, 618))
->>>>>>> master
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_2 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))

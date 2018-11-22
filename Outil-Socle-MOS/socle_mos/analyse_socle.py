@@ -697,7 +697,6 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         cur.execute(u"""Select column_name
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
-<<<<<<< HEAD
                         and column_name like '%nom_com%' 
                         order by column_name 
 
@@ -713,8 +712,6 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
         cur.execute(u"""Select column_name
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
-=======
->>>>>>> master
                         and column_name like 'id_mos%' 
                         order by column_name 
 
@@ -935,10 +932,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                                 {31} as tex,
                                                 {32} as section,
                                                 {33} as code_insee,
-<<<<<<< HEAD
                                                 {46} as nom_commune,
-=======
->>>>>>> master
                                                 gid,
                                                 geom,
                                                 {34} as id_mos,
@@ -953,10 +947,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                                 {40} as perimetre
                                             From %1$s   
                                     );
-<<<<<<< HEAD
                                     Alter table {41}.{42} add constraint pk_{41}_{42} PRIMARY KEY (gid);
-=======
->>>>>>> master
                                     create index idx_{41}_{42} on {41}.{42} using gist(geom);
                             ', i_socle_c);
 
@@ -1128,12 +1119,8 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                         self.le_table_desti.text(),#42
                         self.indust,#43
                         self.bati_rem,#44
-<<<<<<< HEAD
                         self.bati_indif,#45
                         self.nom_com[0]#46
-=======
-                        self.bati_indif#45
->>>>>>> master
                         )
                     )
 
@@ -1213,11 +1200,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
                                 end;
                     end
                     $$
-<<<<<<< HEAD
                     language 'plpgsql' immutable strict parallel safe;
-=======
-                    language 'plpgsql' immutable parallel safe;
->>>>>>> master
 
                     create or replace function ST_Safe_Repair(
                         geom    geometry,
