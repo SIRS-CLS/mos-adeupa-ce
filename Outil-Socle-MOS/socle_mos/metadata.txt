@@ -1,4 +1,4 @@
-﻿# This file contains metadata for your plugin. Since 
+# This file contains metadata for your plugin. Since 
 # version 2.0 of QGIS this is the proper way to supply 
 # information about a plugin. The old method of 
 # embedding metadata in __init__.py will 
@@ -12,7 +12,7 @@ qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Outil de génération et de croisement de modes d'occupation du sol
 version=0.6
-author=Corentin Falcon (SIRS) 
+author=Corentin Falcone (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
 about=Ce plugin propose 3 grandes fonctionnalités : 
@@ -47,3 +47,4 @@ experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
+
