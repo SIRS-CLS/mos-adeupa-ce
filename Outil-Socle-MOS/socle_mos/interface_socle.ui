@@ -738,7 +738,7 @@
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>Couche générées</string>
+      <string>Couche générée</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
@@ -818,7 +818,6 @@
        </layout>
       </item>
      </layout>
-     <zorder>cbx_etape1</zorder>
      <zorder></zorder>
     </widget>
    </item>
@@ -859,11 +858,7 @@
   <zorder>lbl_etape</zorder>
   <zorder>pb_dbConnect</zorder>
   <zorder>gb_data</zorder>
-  <zorder>cbx_etape2</zorder>
-  <zorder>cbx_etape1</zorder>
-  <zorder>cbx_etape3</zorder>
   <zorder>groupBox_2</zorder>
-  <zorder>cbx_etape2</zorder>
   <zorder>gb_genere</zorder>
   <zorder>gb_destination</zorder>
  </widget>

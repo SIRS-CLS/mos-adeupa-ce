@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_socle.ui'
 #
-# Created: Tue Nov 20 12:13:30 2018
+# Created: Thu Nov 22 10:37:07 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -550,7 +550,7 @@ class Ui_interface_socle(object):
         self.label_50.setText(_translate("interface_socle", "Surface activité", None))
         self.label_51.setText(_translate("interface_socle", "Aitre triage", None))
         self.label_52.setText(_translate("interface_socle", "Voie ferré", None))
-        self.gb_genere.setTitle(_translate("interface_socle", "Couche générées", None))
+        self.gb_genere.setTitle(_translate("interface_socle", "Couche générée", None))
         self.label_16.setText(_translate("interface_socle", "Schéma de la couche destination", None))
         self.label_17.setText(_translate("interface_socle", "Couche destination", None))
         self.groupBox_2.setTitle(_translate("interface_socle", "Sélection des phases de calcul", None))
