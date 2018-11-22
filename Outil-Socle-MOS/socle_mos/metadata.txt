@@ -11,7 +11,11 @@ name=Socle-MOS
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Outil de génération et de croisement de modes d'occupation du sol
+<<<<<<< HEAD
 version=0.6
+=======
+version=0.5.1
+>>>>>>> 3ae04575189385ca03059bd0ef9cf327e9954e30
 author=Corentin Falcon (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
@@ -27,10 +31,14 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
+<<<<<<< HEAD
 changelog=
   Version 0.6
    * Optimisation du traitement des données pour les taux de recouvrement : découpage à l'emprise en amont
    * Import - Interface de création de socle par étape (possibilité de sélectionner l'étape à lancer, ce qui désactive les données non nécessaires)
+=======
+changelog=   
+>>>>>>> 3ae04575189385ca03059bd0ef9cf327e9954e30
   Version 0.5.1
    * Fonctions forcées en strict parallel safe pour éviter les erreurs de type "ne peut pas lancer de sous-transactions pendant une opération parallèle CONTEXT"
   Version 0.5
