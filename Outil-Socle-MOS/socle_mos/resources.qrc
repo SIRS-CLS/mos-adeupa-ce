@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/plugins/socle_mos" >
+        <file>compare.png</file>
+        <file>icon.png</file>
+        <file>icon_socle.png</file>
+        <file>repair.png</file>
+        <file>stat.png</file>
+    </qresource>
+</RCC>
