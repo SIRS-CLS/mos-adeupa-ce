@@ -771,7 +771,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
-                                Where code4_{1} = 1115 and to_char(code4_{0}, '9999') in (' 1212', ' 1216', ' 1217', ' 1214', ' 1113', ' 1222', ' 1212', ' 1131', ' 2121', ' 1213', ' 1112', ' 1422' ) ;
+                                Where code4_{1} = 1115 and to_char(code4_{0}, '9999') in (' 1212', ' 1216', ' 1217', ' 1214', ' 1113', ' 1222', ' 1212', ' 1131', ' 2121', ' 1213', ' 1112', ' 1422', ' 1211' ) ;
                         update {6}.{7} x
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
@@ -785,6 +785,11 @@ class Compare_mos(QDialog, Ui_interface_compare):
                             Set code4_{1} = code4_{0},
                                 lib4_{1} = lib4_{0}
                                 Where code4_{1} = 1114 and to_char(code4_{0}, '9999') in (' 1213') ;
+                        update {6}.{7} x
+                            Set code4_{1} = code4_{0},
+                                lib4_{1} = lib4_{0}
+                                Where code4_{1} = 2511 and code4_{0} = 1226
+                                And (st_perimeter(geom)/(2 * sqrt(3.14* st_area(geom)))) > 2 ;
 
 
 
