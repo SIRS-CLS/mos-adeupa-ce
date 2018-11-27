@@ -348,7 +348,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
             self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText('sandbox'))
 
-            """           
+         
             
             self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_22.geo_parcelle'))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_22.geo_subdfisc'))
@@ -432,8 +432,9 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText(None))
             self.cb_section.setCurrentIndex(self.cb_voiefer.findText(None))
 
-            self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))"""
+            self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
 
+            
     def blockGroupBox(self):
         if self.cbx_etape1.isChecked():
             if self.cbx_etape2.isChecked():
@@ -1812,361 +1813,362 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                             --Parcours de toutes les parcelles pour affecter les calcul de présence qui lui sont propre
                             -- Les calculs sont stockés dans des variables puis insérés en fin de boucle dans la table
-                        For v_geom, v_insee, v_idu, v_num_parc, v_tex, v_gid, v_section, v_surf_mos, v_peri_mos IN execute format('Select geom, code_insee, idu, num_parc, tex, gid, section, st_area(geom), st_perimeter(geom) From %1$s sc;', i_socle_c) LOOP
+                        For v_geom, v_insee, v_idu, v_num_parc, v_tex, v_gid, v_section, v_surf_mos, v_peri_mos IN execute format('Select geom, code_insee, idu, num_parc, tex, gid, section, st_area(geom), st_perimeter(geom) From %1$s sc where st_area(geom) > 10;', i_socle_c) LOOP
                             if v_idu != 'NC' then
                                 --Seul les données cadastrés sont calculés pour cette étape
-                        --Ajout des colonnes taux
-                            --Calcul du taux de bâtiment militaire
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%3$s'', pm.{33}) 
-                                                AND pm.id in (Select pm.id
-                                                                From %1$s pm
-                                                                Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
-                                                                Where p2.nature = ''Enceinte militaire'')
-                                            ', 'vm_i_surf_acti', 'vm_i_pai_milit', v_geom)
-                        into v_tomilit;
-                                --Calcul du taux de bâtiment présent sur la parcelle
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.geom) 
-                                            ', 'vm_i_bati', v_geom)
-                        into v_tobati;
-                                --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_bati_indif', v_geom)
-                        into v_tobatimaison;
-                                --Calcul du taux de présence de bâtiment remarquable
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_bati_rem', v_geom)
-                        into v_tobatire;
-                                --Calcul du taux de présence de bâtiments agricole
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.nature in (''Bâtiment agricole'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_bati_indus', v_geom)
-                        into v_tobatagri;
-                                --Calcul du taux de présence de serres
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.nature in (''Serre'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_bati_indus', v_geom)
-                        into v_toserre;
-                                --Calcul du taux de présence de bâtiments industriel
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.nature in (''Bâtiment industriel'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_bati_indus', v_geom)
-                        into v_toindust;
-                                --Calcul du taux de présence de bâtiments commerciaux
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.nature in (''Bâtiment commercial'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_bati_indus', v_geom)
-                        into v_tocomer;
-                                --Calcul du taux de présence de bâtiments industriels ou commerciaux
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.categorie in (''Industriel ou commercial'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_surf_acti', v_geom)
-                        into v_tozic;
-                                --Calcul du taux de présence d'équipement de transport
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where pm.categorie in (''Transport'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_surf_acti', v_geom)
-                        into v_totransp;
-                                --Calcul du taux de présence de voies férrées
-                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 3 * pm.nb_voies,''endcap=flat join=round'')), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_voie_ferre', v_geom)
-                        into v_tovoiefer;
-                        if v_tovoiefer = 0 THEN
-                                --Si pas de voie férrées détéctées, recherche avec les aires de triage
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_aire_tri', v_geom)
-                        into v_tovoiefer;
-                        END IF;
-                                --Calcul du taux de présence de carrières
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%3$s'', pm.{33}) 
-                                                AND pm.id in (Select pm.id
-                                                                From %1$s pm
-                                                                Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
-                                                                Where p2.nature = ''Carrière'' )
-                                            ','vm_i_surf_acti',  'vm_i_pai_indus_com', v_geom)
-                        into v_tocarrier;
-                                --Calcul du taux de présence de cimetières
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_cime', v_geom)
-                        into v_tocime;
-                                --Calcul du taux de présence d'équipement sportif
-                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_terrain_sport', v_geom)
-                        into v_tosport;
+
+                                --Ajout des colonnes taux
+                                    --Calcul du taux de bâtiment militaire
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%3$s'', pm.{33}) 
+                                                        AND pm.id in (Select pm.id
+                                                                        From %1$s pm
+                                                                        Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
+                                                                        Where p2.nature = ''Enceinte militaire'')
+                                                    ', 'vm_i_surf_acti', 'vm_i_pai_milit', v_geom)
+                                into v_tomilit;
+                                        --Calcul du taux de bâtiment présent sur la parcelle
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.geom) 
+                                                    ', 'vm_i_bati', v_geom)
+                                into v_tobati;
+                                        --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_bati_indif', v_geom)
+                                into v_tobatimaison;
+                                        --Calcul du taux de présence de bâtiment remarquable
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_bati_rem', v_geom)
+                                into v_tobatire;
+                                        --Calcul du taux de présence de bâtiments agricole
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.nature in (''Bâtiment agricole'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_bati_indus', v_geom)
+                                into v_tobatagri;
+                                        --Calcul du taux de présence de serres
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.nature in (''Serre'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_bati_indus', v_geom)
+                                into v_toserre;
+                                        --Calcul du taux de présence de bâtiments industriel
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.nature in (''Bâtiment industriel'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_bati_indus', v_geom)
+                                into v_toindust;
+                                        --Calcul du taux de présence de bâtiments commerciaux
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.nature in (''Bâtiment commercial'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_bati_indus', v_geom)
+                                into v_tocomer;
+                                        --Calcul du taux de présence de bâtiments industriels ou commerciaux
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.categorie in (''Industriel ou commercial'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_surf_acti', v_geom)
+                                into v_tozic;
+                                        --Calcul du taux de présence d'équipement de transport
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where pm.categorie in (''Transport'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_surf_acti', v_geom)
+                                into v_totransp;
+                                        --Calcul du taux de présence de voies férrées
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 3 * pm.nb_voies,''endcap=flat join=round'')), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_voie_ferre', v_geom)
+                                into v_tovoiefer;
+                                if v_tovoiefer = 0 THEN
+                                        --Si pas de voie férrées détéctées, recherche avec les aires de triage
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_aire_tri', v_geom)
+                                into v_tovoiefer;
+                                END IF;
+                                        --Calcul du taux de présence de carrières
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%3$s'', pm.{33}) 
+                                                        AND pm.id in (Select pm.id
+                                                                        From %1$s pm
+                                                                        Join %2$s p2 on st_intersects(p2.{33}, pm.{33}) 
+                                                                        Where p2.nature = ''Carrière'' )
+                                                    ','vm_i_surf_acti',  'vm_i_pai_indus_com', v_geom)
+                                into v_tocarrier;
+                                        --Calcul du taux de présence de cimetières
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_cime', v_geom)
+                                into v_tocime;
+                                        --Calcul du taux de présence d'équipement sportif
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_terrain_sport', v_geom)
+                                into v_tosport;
+                                    
+                                IF v_tosport = 0 THEN
+                                            --Si pas d'équipement trouvés, on recherche avec les données IGN terrain de sport
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where categorie = ''Sport''
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_surf_acti', v_geom)
+                                into v_tosport;
+                                END IF;
+                                        --Calcul du taux de présence d'aménagement loisir
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%3$s'', pm.{33})
+                                                        AND pm.id in (Select pm.id 
+                                                                        From %1$s pm
+                                                                        Join %2$s p2 on st_intersects(p2.{33}, pm.{33})
+                                                                        Where p2.nature in (''Village de vacances'', ''Camping'', ''Parc de loisirs'', ''Parc zoologique'', ''parc des expositions'' ))
+                                                    ', 'vm_i_surf_acti', 'vm_i_pai_cul_lois', v_geom)
+                                into v_toloisir;
+                                        --Calcul du taux de présence des parcelles agricoles
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.geom) 
+                                                    ', 'vm_i_rpga', v_geom)
+                                into v_toagri;
+                                    If v_toagri = 0 Then
+                                            --Si pas de correspondance, on recherche aussi avec les zone de végétation peupleraies et verger
+                                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where nature in (''Verger'', ''Peupleraie'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_zveget', v_geom)
+                                into v_toagri;
+                                    END IF;
+
+                                        --Calcul du taux de présence de végétation qui ne sont pas verger ou peupleraie
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where nature not in (''Verger'', ''Peupleraie'') 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_zveget', v_geom)
+                                into v_toveget;
+                                        --Calcul de présence des surface en eau permanentes
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
+                                                        From %1$s pm
+                                                        Where regime = ''Permanent'' 
+                                                        AND st_intersects(''%2$s'', pm.{33}) 
+                                                    ', 'vm_i_surf_eau', v_geom)
+                                into v_toeau;
+                                        --Calcul du taux de présence de l'eau des données edigeoo geo_tronfluv
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                        From %1$s pm
+                                                        Where  st_intersects(''%2$s'', pm.geom) 
+                                                    ', 'vm_i_tronfluv', v_geom)
+                                into v_temp_toeau;
+                                if v_temp_toeau > v_toeau Then
+                                        --Si les données édigéos apportent plus de valeur, on garde cette données qui écrase les surface en eau IGN
+                                    v_toeau = v_temp_toeau;
+                                End if;
+                                        --Calcul du taux de présence de l'eau des données edigeo geo_tsurf
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                                        From %1$s pm
+                                                        Where  st_intersects(''%2$s'', pm.geom) 
+                                                    ', 'vm_i_tsurf', v_geom)
+                                into v_temp_toeau;
+                                if v_temp_toeau > v_toeau Then
+                                    --Si les données tsurf sont plus importantes que les autres, on écrases les gardes
+                                    v_toeau = v_temp_toeau;
+                                End if;
+                                    --Calcul du taux de présence des routes secondaire
+                                Select ((st_area(st_safe_intersection(st_union(pm.geom), v_geom))*100)/st_area(v_geom))::integer
+                                                        From tt_secondaire pm
+                                                        Where  st_intersects(v_geom, pm.geom)       
+                                into v_toroute;
+                                        --Calcul du taux de présence des routes edigeo geo_tronroute
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where  st_intersects(''%2$s'', pm.geom) 
+                                                    ', 'vm_i_tronroute', v_geom)
+                                into v_temp_route;
+                                if v_toroute < v_temp_route Then
+                                    --Si les données edigeo sont plus impotantes, on les gardes
+                                    v_toroute = v_temp_route;
+                                end if;
+                                
+                                        --Ajout des colonnes bool
+                                    --Enseignement
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where pm.nature like ''Enseignement%%''
+                                                        AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                                    ', 'vm_i_pai_scens', v_geom)
+                                into v_prescol;
+                                if v_prescol < 1 Then 
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where categorie = ''Enseignement'' 
+                                                        AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
+                                                    ', 'vm_i_surf_acti', v_geom)
+                                into v_prescol;
                             
-                        IF v_tosport = 0 THEN
-                                    --Si pas d'équipement trouvés, on recherche avec les données IGN terrain de sport
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where categorie = ''Sport''
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_surf_acti', v_geom)
-                        into v_tosport;
-                        END IF;
-                                --Calcul du taux de présence d'aménagement loisir
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
-                                                From %1$s pm
-                                                Where st_intersects(''%3$s'', pm.{33})
-                                                AND pm.id in (Select pm.id 
-                                                                From %1$s pm
-                                                                Join %2$s p2 on st_intersects(p2.{33}, pm.{33})
-                                                                Where p2.nature in (''Village de vacances'', ''Camping'', ''Parc de loisirs'', ''Parc zoologique'', ''parc des expositions'' ))
-                                            ', 'vm_i_surf_acti', 'vm_i_pai_cul_lois', v_geom)
-                        into v_toloisir;
-                                --Calcul du taux de présence des parcelles agricoles
-                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
-                                                From %1$s pm
-                                                Where st_intersects(''%2$s'', pm.geom) 
-                                            ', 'vm_i_rpga', v_geom)
-                        into v_toagri;
-                            If v_toagri = 0 Then
-                                    --Si pas de correspondance, on recherche aussi avec les zone de végétation peupleraies et verger
-                                execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where nature in (''Verger'', ''Peupleraie'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_zveget', v_geom)
-                        into v_toagri;
-                            END IF;
+                                    if v_prescol < 1 Then 
+                                        v_prescol = 0;
+                                    end if;
+                                end if;
 
-                                --Calcul du taux de présence de végétation qui ne sont pas verger ou peupleraie
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where nature not in (''Verger'', ''Peupleraie'') 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_zveget', v_geom)
-                        into v_toveget;
-                                --Calcul de présence des surface en eau permanentes
-                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
-                                                From %1$s pm
-                                                Where regime = ''Permanent'' 
-                                                AND st_intersects(''%2$s'', pm.{33}) 
-                                            ', 'vm_i_surf_eau', v_geom)
-                        into v_toeau;
-                                --Calcul du taux de présence de l'eau des données edigeoo geo_tronfluv
-                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
-                                                From %1$s pm
-                                                Where  st_intersects(''%2$s'', pm.geom) 
-                                            ', 'vm_i_tronfluv', v_geom)
-                        into v_temp_toeau;
-                        if v_temp_toeau > v_toeau Then
-                                --Si les données édigéos apportent plus de valeur, on garde cette données qui écrase les surface en eau IGN
-                            v_toeau = v_temp_toeau;
-                        End if;
-                                --Calcul du taux de présence de l'eau des données edigeo geo_tsurf
-                            execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
-                                                From %1$s pm
-                                                Where  st_intersects(''%2$s'', pm.geom) 
-                                            ', 'vm_i_tsurf', v_geom)
-                        into v_temp_toeau;
-                        if v_temp_toeau > v_toeau Then
-                            --Si les données tsurf sont plus importantes que les autres, on écrases les gardes
-                            v_toeau = v_temp_toeau;
-                        End if;
-                            --Calcul du taux de présence des routes secondaire
-                        Select ((st_area(st_safe_intersection(st_union(pm.geom), v_geom))*100)/st_area(v_geom))::integer
-                                                From tt_secondaire pm
-                                                Where  st_intersects(v_geom, pm.geom)       
-                        into v_toroute;
-                                --Calcul du taux de présence des routes edigeo geo_tronroute
-                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
-                                                From %1$s pm
-                                                Where  st_intersects(''%2$s'', pm.geom) 
-                                            ', 'vm_i_tronroute', v_geom)
-                        into v_temp_route;
-                        if v_toroute < v_temp_route Then
-                            --Si les données edigeo sont plus impotantes, on les gardes
-                            v_toroute = v_temp_route;
-                        end if;
-                        
-                                --Ajout des colonnes bool
-                            --Enseignement
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where pm.nature like ''Enseignement%%''
-                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                            ', 'vm_i_pai_scens', v_geom)
-                        into v_prescol;
-                        if v_prescol < 1 Then 
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where categorie = ''Enseignement'' 
-                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
-                                            ', 'vm_i_surf_acti', v_geom)
-                        into v_prescol;
+                                    --Sante
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                                    ', 'vm_i_pai_sante', v_geom)
+                                into v_presante;
                     
-                            if v_prescol < 1 Then 
-                                v_prescol = 0;
-                            end if;
-                        end if;
-
-                            --Sante
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                            ', 'vm_i_pai_sante', v_geom)
-                        into v_presante;
-            
-                        if v_presante = 0 Then 
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where categorie = ''Santé'' 
-                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
-                                            ', 'vm_i_surf_acti', v_geom)
-                        into v_presante;
-                            if v_presante = 0 THEN
-                                execute format ('Select count(*)
-                                                    From %1$s pm
-                                                    Where libcateget not like ''Pharmacie'' and libcateget not like ''Service%%''
-                                                    AND st_intersects(''%2$s'', pm.geom)
-                                            ', 'vm_i_finess', v_geom)
-                            into v_presante;
-                                if v_presante < 1 Then 
-                                    v_presante = 0;
+                                if v_presante = 0 Then 
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where categorie = ''Santé'' 
+                                                        AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
+                                                    ', 'vm_i_surf_acti', v_geom)
+                                into v_presante;
+                                    if v_presante = 0 THEN
+                                        execute format ('Select count(*)
+                                                            From %1$s pm
+                                                            Where libcateget not like ''Pharmacie'' and libcateget not like ''Service%%''
+                                                            AND st_intersects(''%2$s'', pm.geom)
+                                                    ', 'vm_i_finess', v_geom)
+                                    into v_presante;
+                                        if v_presante < 1 Then 
+                                            v_presante = 0;
+                                        end if;
+                                    end if;
                                 end if;
-                            end if;
-                        end if;
 
-                            --Administration
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where nature in (''Eglise'', ''Bâtiment religieux divers'', ''Gare'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'', ''Divers public ou administratif'')
-                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                            ', 'vm_i_pai_milit', v_geom)
-                        into v_preqadmi;
-                        if v_preqadmi < 1 Then 
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where nature in (''Culte catholique ou orthodoxe'', ''Culte protestant'') 
-                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                            ', 'vm_i_pai_rel', v_geom)
-                        into v_preqadmi;
-                    
-                            if v_preqadmi < 1 Then 
-                                execute format ('Select count(*)
-                                                    From %1$s pm
-                                                    Where nature in (''Eglise'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'') 
-                                                    AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
-                                                ', 'vm_i_bati_rem', v_geom)
-                            into v_preqadmi;
-                    
-                                IF v_preqadmi < 1 Then
-                                    v_preqadmi = 0;
+                                    --Administration
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where nature in (''Eglise'', ''Bâtiment religieux divers'', ''Gare'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'', ''Divers public ou administratif'')
+                                                        AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                                    ', 'vm_i_pai_milit', v_geom)
+                                into v_preqadmi;
+                                if v_preqadmi < 1 Then 
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where nature in (''Culte catholique ou orthodoxe'', ''Culte protestant'') 
+                                                        AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                                    ', 'vm_i_pai_rel', v_geom)
+                                into v_preqadmi;
+                            
+                                    if v_preqadmi < 1 Then 
+                                        execute format ('Select count(*)
+                                                            From %1$s pm
+                                                            Where nature in (''Eglise'', ''Mairie'', ''Préfecture'', ''Sous-préfecture'') 
+                                                            AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 50 
+                                                        ', 'vm_i_bati_rem', v_geom)
+                                    into v_preqadmi;
+                            
+                                        IF v_preqadmi < 1 Then
+                                            v_preqadmi = 0;
+                                        end if;
+                                    end if;
                                 end if;
-                            end if;
-                        end if;
 
-                            --Eau, énergie
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where nature = (''Station de pompage'')
-                                                AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                            ', 'vm_i_point_eau', v_geom)
-                        into v_preonrj;
-                        if v_preonrj < 1 Then 
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where categorie in (''Gestion des eaux'')
-                                                AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40
-                                            ', 'vm_i_surf_acti', v_geom)
-                        into v_preonrj;
+                                    --Eau, énergie
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where nature = (''Station de pompage'')
+                                                        AND st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                                    ', 'vm_i_point_eau', v_geom)
+                                into v_preonrj;
+                                if v_preonrj < 1 Then 
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where categorie in (''Gestion des eaux'')
+                                                        AND ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40
+                                                    ', 'vm_i_surf_acti', v_geom)
+                                into v_preonrj;
 
-                            if v_preonrj < 1 Then 
-                                execute format ('Select count(*)
-                                                    From %1$s pm
-                                                    Where  ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
-                                                ', 'vm_i_post_transf', v_geom)
-                            into v_preonrj;
+                                    if v_preonrj < 1 Then 
+                                        execute format ('Select count(*)
+                                                            From %1$s pm
+                                                            Where  ((st_area(st_safe_intersection(pm.{33}, ''%2$s''))*100)/st_area(''%2$s''))::integer >= 40 
+                                                        ', 'vm_i_post_transf', v_geom)
+                                    into v_preonrj;
 
-                                If v_preonrj < 1 Then 
-                                    v_preonrj = 0;
+                                        If v_preonrj < 1 Then 
+                                            v_preonrj = 0;
+                                        end if;
+                                    end if;
                                 end if;
-                            end if;
-                        end if;
 
-                            --Transport
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where nature in (''Gare routière'',''Gare voyageurs et fret'', ''Gare voyageurs uniquement'', ''Parking'')
-                                                AND st_intersects(pm.{33}, ''%2$s'') 
-                                            ', 'vm_i_pai_transp', v_geom)
-                        into v_pretransp;
-                        If v_pretransp != 1 Then 
-                            v_pretransp = 0;
-                        end if;
-
-                            --Sport, loisir
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
-                                            ', 'vm_i_pai_sport', v_geom)
-                        into v_presploi;
-                        If v_presploi < 1 Then
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where naturelibe != ''Intérieur''
-                                                AND st_intersects(pm.geom, ''%2$s'') 
-                                            ', 'vm_i_res', v_geom)
-                        into v_presploi;
-                            IF v_presploi < 1 Then
-                                execute format ('Select 2
-                                                From %1$s pm
-                                                Where naturelibe = ''Intérieur''
-                                                AND st_intersects(pm.geom, ''%2$s'') 
-                                            ', 'vm_i_res', v_geom)
-                            into v_presploi;
-                                If v_presploi != 1 Then
-                                    v_presploi = 0;
+                                    --Transport
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where nature in (''Gare routière'',''Gare voyageurs et fret'', ''Gare voyageurs uniquement'', ''Parking'')
+                                                        AND st_intersects(pm.{33}, ''%2$s'') 
+                                                    ', 'vm_i_pai_transp', v_geom)
+                                into v_pretransp;
+                                If v_pretransp != 1 Then 
+                                    v_pretransp = 0;
                                 end if;
-                            end if;
-                        end if; 
 
-                        --Traitement fichiers foncier
-                            execute format ('Select tlocdomin
-                                                From %1$s pm
-                                                Where st_intersects(pm.geomloc, ''%2$s'')
-                                                order by tlocdomin desc
-                                            ', 'vm_i_foncier', v_geom)
-                        into v_mfonction;
+                                    --Sport, loisir
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where st_intersects(st_buffer(pm.{33}, 5), ''%2$s'') 
+                                                    ', 'vm_i_pai_sport', v_geom)
+                                into v_presploi;
+                                If v_presploi < 1 Then
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where naturelibe != ''Intérieur''
+                                                        AND st_intersects(pm.geom, ''%2$s'') 
+                                                    ', 'vm_i_res', v_geom)
+                                into v_presploi;
+                                    IF v_presploi < 1 Then
+                                        execute format ('Select 2
+                                                        From %1$s pm
+                                                        Where naturelibe = ''Intérieur''
+                                                        AND st_intersects(pm.geom, ''%2$s'') 
+                                                    ', 'vm_i_res', v_geom)
+                                    into v_presploi;
+                                        If v_presploi != 1 Then
+                                            v_presploi = 0;
+                                        end if;
+                                    end if;
+                                end if; 
 
-                            execute format ('Select count(*)
-                                                From %1$s pm
-                                                Where st_intersects(pm.geomloc, ''%2$s'')
-                                                and (pm.dcnt09 > 1 or pm.dcnt11 > 1)
-                                            ', 'vm_i_foncier',  v_geom)
-                        into v_probjardin;
-                        --Récupération de l'identifiant unique
-                        v_id_mos = left(v_insee,2) || v_num_parc;
+                                --Traitement fichiers foncier
+                                    execute format ('Select tlocdomin
+                                                        From %1$s pm
+                                                        Where st_intersects(pm.geomloc, ''%2$s'')
+                                                        order by tlocdomin desc
+                                                    ', 'vm_i_foncier', v_geom)
+                                into v_mfonction;
+
+                                    execute format ('Select count(*)
+                                                        From %1$s pm
+                                                        Where st_intersects(pm.geomloc, ''%2$s'')
+                                                        and (pm.dcnt09 > 1 or pm.dcnt11 > 1)
+                                                    ', 'vm_i_foncier',  v_geom)
+                                into v_probjardin;
+                                    --Récupération de l'identifiant unique
+                                v_id_mos = left(v_insee,2) || v_num_parc;
 
                             else
                                 v_cpt_mos = v_cpt_mos +1;
@@ -2370,7 +2372,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         elif self.cas_etape == 4:
             #Cas 4 on passe à l'étape 3 avant de finir 
             self.lbl_etape.setText(u'2/2 : Calcul des code4 à attribuer')
-            self.pb_avancement.setValue(100)
+            self.pb_avancement.setValue(80)
             temp.singleShot(100, self.getCode4)
     
         #temp.singleShot(100, self.getCode4)
