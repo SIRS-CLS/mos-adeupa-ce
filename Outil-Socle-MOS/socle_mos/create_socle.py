@@ -307,49 +307,49 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     self.cb_schema.addItem(querySchema.value(0))
                     self.cb_schema_geom.addItem(querySchema.value(0))
             
-            """          
+                      
                     #A ENLEVER /!\
-            self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo.geo_parcelle'))
-            self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo.geo_subdfisc'))
-            self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo.geo_tronroute'))
-            self.cb_tronfluv.setCurrentIndex(self.cb_tronfluv.findText('cadastre_edigeo.geo_tronfluv'))
-            self.cb_tsurf.setCurrentIndex(self.cb_tsurf.findText('cadastre_edigeo.geo_tsurf'))
-            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText('cadastre_edigeo.geo_batiment'))
-            self.cb_rpga.setCurrentIndex(self.cb_rpga.findText('data_exo.rpga_29_2015'))
-            self.cb_finess.setCurrentIndex(self.cb_finess.findText('data_exo.extraction_finess_dep29'))
-            self.cb_res_sport.setCurrentIndex(self.cb_res_sport.findText('data_exo.equipements_sportifs_res_dep_29'))
-            self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText('ff_d29_2015.d29_2015_pnb10_parcelle'))
-            self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('sandbox.emprise_d29'))
-            self.cb_pai_cult.setCurrentIndex(self.cb_pai_cult.findText('ref_ign.pai_culture_loisirs'))
-            self.cb_paitransp.setCurrentIndex(self.cb_paitransp.findText('ref_ign.pai_transport'))
-            self.cb_paisante.setCurrentIndex(self.cb_paisante.findText('ref_ign.pai_sante'))
-            self.cb_pairel.setCurrentIndex(self.cb_pairel.findText('ref_ign.pai_religieux'))
-            self.cb_paimilit.setCurrentIndex(self.cb_paimilit.findText('ref_ign.pai_administratif_militaire'))
-            self.cb_paiens.setCurrentIndex(self.cb_paiens.findText('ref_ign.pai_science_enseignement'))
-            self.cb_paicom.setCurrentIndex(self.cb_paicom.findText('ref_ign.pai_industirel_commercial'))
-            self.cb_paisport.setCurrentIndex(self.cb_paisport.findText('ref_ign.pai_sport'))
-            self.cb_paitransfo.setCurrentIndex(self.cb_paitransfo.findText('ref_ign.poste_transformation'))
-            self.cb_terrainsport.setCurrentIndex(self.cb_terrainsport.findText('ref_ign.terrain_sport'))
-            self.cb_cime.setCurrentIndex(self.cb_cime.findText('ref_ign.cimetiere'))
-            self.cb_zoneveget.setCurrentIndex(self.cb_zoneveget.findText('ref_ign.zone_vegetation'))
-            self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('sandbox.emprise_d29_bdtopo'))
-            self.cb_route.setCurrentIndex(self.cb_route.findText('ref_ign.route'))
-            self.cb_ipli.setCurrentIndex(self.cb_ipli.findText('data_exo.ipli_n_occ_sol_lit_region'))
-            self.cb_remarquable.setCurrentIndex(self.cb_remarquable.findText('ref_ign.bati_remarquable'))
-            self.cb_indust.setCurrentIndex(self.cb_indust.findText('ref_ign.bati_industirel'))
-            self.cb_indif.setCurrentIndex(self.cb_indif.findText('ref_ign.bati_indifferencie'))
-            self.cb_surf_eau.setCurrentIndex(self.cb_surf_eau.findText('ref_ign.surface_eau'))
-            self.cb_pt_eau.setCurrentIndex(self.cb_pt_eau.findText('ref_ign.point_eau'))
-            self.cb_surf_acti.setCurrentIndex(self.cb_surf_acti.findText('ref_ign.surface_activite'))
-            self.cb_triage.setCurrentIndex(self.cb_triage.findText('ref_ign.aire_triage'))
-            self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText('ref_ign.troncon_voie_ferree'))
-            self.cb_section.setCurrentIndex(self.cb_voiefer.findText('cadastre_edigeo.geo_section'))
+            self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_29.geo_parcelle'))
+            self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_29.geo_subdfisc'))
+            self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_29.geo_tronroute'))
+            self.cb_tronfluv.setCurrentIndex(self.cb_tronfluv.findText('cadastre_edigeo_29.geo_tronfluv'))
+            self.cb_tsurf.setCurrentIndex(self.cb_tsurf.findText('cadastre_edigeo_29.geo_tsurf'))
+            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText('cadastre_edigeo_29.geo_batiment'))
+            self.cb_rpga.setCurrentIndex(self.cb_rpga.findText('data_exo.rpga_d22_d29_d35_d56_2016'))
+            self.cb_finess.setCurrentIndex(self.cb_finess.findText('data_exo.etablissements_finess_france'))
+            self.cb_res_sport.setCurrentIndex(self.cb_res_sport.findText('data_exo.res_d22_d29_2017'))
+            self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText('ff_d29_2017.d29_2017_pnb10_parcelle'))
+            self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('data_exo.communes_pays_brest_bd_parcellaire_2018'))
+            self.cb_pai_cult.setCurrentIndex(self.cb_pai_cult.findText('ign_d29_2017.pai_culture_loisirs'))
+            self.cb_paitransp.setCurrentIndex(self.cb_paitransp.findText('ign_d29_2017.pai_transport'))
+            self.cb_paisante.setCurrentIndex(self.cb_paisante.findText('ign_d29_2017.pai_sante'))
+            self.cb_pairel.setCurrentIndex(self.cb_pairel.findText('ign_d29_2017.pai_religieux'))
+            self.cb_paimilit.setCurrentIndex(self.cb_paimilit.findText('ign_d29_2017.pai_administratif_militaire'))
+            self.cb_paiens.setCurrentIndex(self.cb_paiens.findText('ign_d29_2017.pai_science_enseignement'))
+            self.cb_paicom.setCurrentIndex(self.cb_paicom.findText('ign_d29_2017.pai_industriel_commercial'))
+            self.cb_paisport.setCurrentIndex(self.cb_paisport.findText('ign_d29_2017.pai_sport'))
+            self.cb_paitransfo.setCurrentIndex(self.cb_paitransfo.findText('ign_d29_2017.poste_transformation'))
+            self.cb_terrainsport.setCurrentIndex(self.cb_terrainsport.findText('ign_d29_2017.terrain_sport'))
+            self.cb_cime.setCurrentIndex(self.cb_cime.findText('ign_d29_2017.cimetiere'))
+            self.cb_zoneveget.setCurrentIndex(self.cb_zoneveget.findText('ign_d29_2017.zone_vegetation'))
+            self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('data_exo.communes_pays_brest_bd_topo_2018'))
+            self.cb_route.setCurrentIndex(self.cb_route.findText('ign_d29_2017.route'))
+            self.cb_ipli.setCurrentIndex(self.cb_ipli.findText('data_exo.ipli_france_1977'))
+            self.cb_remarquable.setCurrentIndex(self.cb_remarquable.findText('ign_d29_2017.bati_remarquable'))
+            self.cb_indust.setCurrentIndex(self.cb_indust.findText('ign_d29_2017.bati_industriel'))
+            self.cb_indif.setCurrentIndex(self.cb_indif.findText('ign_d29_2017.bati_indifferencie'))
+            self.cb_surf_eau.setCurrentIndex(self.cb_surf_eau.findText('ign_d29_2017.surface_eau'))
+            self.cb_pt_eau.setCurrentIndex(self.cb_pt_eau.findText('ign_d29_2017.point_eau'))
+            self.cb_surf_acti.setCurrentIndex(self.cb_surf_acti.findText('ign_d29_2017.surface_activite'))
+            self.cb_triage.setCurrentIndex(self.cb_triage.findText('ign_d29_2017.aire_triage'))
+            self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText('ign_d29_2017.troncon_voie_ferree'))
+            self.cb_section.setCurrentIndex(self.cb_voiefer.findText('cadastre_edigeo_29.geo_section'))
 
             self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
             self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText('sandbox'))
 
          
-            
+            """
             self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_22.geo_parcelle'))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_22.geo_subdfisc'))
             self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_22.geo_tronroute'))
@@ -393,7 +393,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             #self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('sandbox.emprise_g1_parc'))
 
             
-            """
+            
           
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
             self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
@@ -433,8 +433,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_section.setCurrentIndex(self.cb_voiefer.findText(None))
 
             self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
+            """
 
-            
     def blockGroupBox(self):
         if self.cbx_etape1.isChecked():
             if self.cbx_etape2.isChecked():
@@ -1276,13 +1276,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                         Select b.gid, st_union(st_buffer(a.geom,0.001)) as geom
                             From vm_veget b
                             Join t_socle_nc a on st_area(st_intersection(b.geom, a.geom)) > 1
-                            group by b.gid
+                            group by b.gid, a.code_insee
                     ), tmp2 as(
                         Select st_safe_difference(b.geom, t.geom) as geom, b.nature
                             From vm_veget b
                             left Join tmp t on b.gid = t.gid
+                            Where st_area(b.geom) > 400
                     )
-                    Select ROW_number() over() as gid, (st_dump(st_collectionextract(st_union(st_buffer(geom,0.001)),3))).geom::geometry(polygon,2154), 
+                    Select ROW_number() over() as gid, (st_dump(st_collectionextract(geom,3))).geom::geometry(polygon,2154), 
                         nature
                         From tmp2 tt
                         group by tt.geom, tt.nature
