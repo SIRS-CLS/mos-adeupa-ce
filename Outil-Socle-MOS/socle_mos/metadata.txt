@@ -29,7 +29,7 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 # Uncomment the following line and add your changelog:
 changelog=
   Version 0.7.2
-   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis
+   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de PostGIS
   Version 0.7.1
    * Correction de l'affichage de la progression qui s'affichait à 100% sans que le processus ne soit terminé.
   Version 0.7
