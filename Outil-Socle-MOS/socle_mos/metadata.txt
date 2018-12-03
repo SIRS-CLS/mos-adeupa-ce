@@ -36,9 +36,6 @@ changelog=
    * Import - Interface de comparaison de socle t0 (multi date) et t+1
   Version 0.6.1
    * Correction de l'analyse de rétro-évolution. Traitement du cas jannat = -1
-  Version 0.6
-   * Optimisation du traitement des données pour les taux de recouvrement : découpage à l'emprise en amont
-   * Import - Interface de création de socle par étape (possibilité de sélectionner l'étape à lancer, ce qui désactive les données non nécessaires)
  
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
