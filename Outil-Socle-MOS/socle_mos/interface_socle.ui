@@ -236,7 +236,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Sous-parcelles</string>
+               <string>Subdivisions</string>
               </property>
              </widget>
             </item>
@@ -256,7 +256,7 @@
             <item row="3" column="0">
              <widget class="QLabel" name="label_9">
               <property name="text">
-               <string>Tronçon Route</string>
+               <string>Tronçon route</string>
               </property>
              </widget>
             </item>
@@ -309,7 +309,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
-               <string>Sections</string>
+               <string>EDIGEO</string>
               </property>
              </widget>
             </item>
@@ -476,7 +476,7 @@
             <item row="3" column="0">
              <widget class="QLabel" name="label_28">
               <property name="text">
-               <string>PAI sante</string>
+               <string>PAI santé</string>
               </property>
              </widget>
             </item>
@@ -496,7 +496,7 @@
             <item row="5" column="0">
              <widget class="QLabel" name="label_22">
               <property name="text">
-               <string>PAI militaire</string>
+               <string>PAI administratif militaire</string>
               </property>
              </widget>
             </item>
@@ -528,7 +528,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>PAI indust/commer</string>
+               <string>PAI industrie/commerce</string>
               </property>
              </widget>
             </item>
@@ -558,7 +558,7 @@
             <item row="10" column="0">
              <widget class="QLabel" name="label_54">
               <property name="text">
-               <string>Cimetiere</string>
+               <string>Cimetière</string>
               </property>
              </widget>
             </item>
@@ -624,7 +624,7 @@
             <item row="16" column="0">
              <widget class="QLabel" name="label_21">
               <property name="text">
-               <string>Bâti indiferencie</string>
+               <string>Bâti indifférencié</string>
               </property>
              </widget>
             </item>
@@ -664,7 +664,7 @@
             <item row="20" column="0">
              <widget class="QLabel" name="label_51">
               <property name="text">
-               <string>Aitre triage</string>
+               <string>Aire de triage</string>
               </property>
              </widget>
             </item>
@@ -674,7 +674,7 @@
             <item row="21" column="0">
              <widget class="QLabel" name="label_52">
               <property name="text">
-               <string>Voie ferré</string>
+               <string>Voie ferrée</string>
               </property>
              </widget>
             </item>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_socle.ui'
 #
-# Created: Thu Nov 22 10:37:07 2018
+# Created: Tue Dec 04 11:41:34 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -513,12 +513,12 @@ class Ui_interface_socle(object):
         self.label_60.setText(_translate("interface_socle", "Communes BD Parcellaire", None))
         self.groupBox.setTitle(_translate("interface_socle", "Edigeo", None))
         self.label_7.setText(_translate("interface_socle", "Parcelles", None))
-        self.label_8.setText(_translate("interface_socle", "Sous-parcelles", None))
-        self.label_9.setText(_translate("interface_socle", "Tronçon Route", None))
+        self.label_8.setText(_translate("interface_socle", "Subdivisions", None))
+        self.label_9.setText(_translate("interface_socle", "Tronçon route", None))
         self.label_10.setText(_translate("interface_socle", "Tronçon fleuve", None))
         self.label_11.setText(_translate("interface_socle", "Tsurf", None))
         self.label_12.setText(_translate("interface_socle", "Bâtiments", None))
-        self.label_4.setText(_translate("interface_socle", "Sections", None))
+        self.label_4.setText(_translate("interface_socle", "EDIGEO", None))
         self.groupBox_3.setTitle(_translate("interface_socle", "Autre", None))
         self.label_18.setText(_translate("interface_socle", "IPLI", None))
         self.label_57.setText(_translate("interface_socle", "FINESS", None))
@@ -531,25 +531,25 @@ class Ui_interface_socle(object):
         self.rb_the_geom.setText(_translate("interface_socle", "the_geom", None))
         self.label_26.setText(_translate("interface_socle", "PAI culture/loisirs", None))
         self.label_27.setText(_translate("interface_socle", "PAI transport", None))
-        self.label_28.setText(_translate("interface_socle", "PAI sante", None))
+        self.label_28.setText(_translate("interface_socle", "PAI santé", None))
         self.label_29.setText(_translate("interface_socle", "PAI religieux", None))
-        self.label_22.setText(_translate("interface_socle", "PAI militaire", None))
+        self.label_22.setText(_translate("interface_socle", "PAI administratif militaire", None))
         self.label_23.setText(_translate("interface_socle", "PAI science/enseignement", None))
-        self.label_24.setText(_translate("interface_socle", "PAI indust/commer", None))
+        self.label_24.setText(_translate("interface_socle", "PAI industrie/commerce", None))
         self.label_25.setText(_translate("interface_socle", "PAI sport", None))
         self.label_53.setText(_translate("interface_socle", "Poste transformation", None))
-        self.label_54.setText(_translate("interface_socle", "Cimetiere", None))
+        self.label_54.setText(_translate("interface_socle", "Cimetière", None))
         self.label_55.setText(_translate("interface_socle", "Terrain sport", None))
         self.label_59.setText(_translate("interface_socle", "Zone végétation", None))
         self.label_15.setText(_translate("interface_socle", "Routes", None))
         self.label_19.setText(_translate("interface_socle", "Bâti remarquable", None))
         self.label_20.setText(_translate("interface_socle", "Bâti industriel", None))
-        self.label_21.setText(_translate("interface_socle", "Bâti indiferencie", None))
+        self.label_21.setText(_translate("interface_socle", "Bâti indifférencié", None))
         self.label_30.setText(_translate("interface_socle", "Surface eau", None))
         self.label_31.setText(_translate("interface_socle", "Point eau", None))
         self.label_50.setText(_translate("interface_socle", "Surface activité", None))
-        self.label_51.setText(_translate("interface_socle", "Aitre triage", None))
-        self.label_52.setText(_translate("interface_socle", "Voie ferré", None))
+        self.label_51.setText(_translate("interface_socle", "Aire de triage", None))
+        self.label_52.setText(_translate("interface_socle", "Voie ferrée", None))
         self.gb_genere.setTitle(_translate("interface_socle", "Couche générée", None))
         self.label_16.setText(_translate("interface_socle", "Schéma de la couche destination", None))
         self.label_17.setText(_translate("interface_socle", "Couche destination", None))
