@@ -146,7 +146,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-125</y>
         <width>807</width>
         <height>618</height>
        </rect>
@@ -160,7 +160,7 @@
          <item>
           <widget class="QGroupBox" name="groupBox_5">
            <property name="title">
-            <string>Emprise</string>
+            <string>EMPRISE</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
             <property name="sizeConstraint">
@@ -204,7 +204,7 @@
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Edigeo</string>
+            <string>EDIGEO</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
             <property name="sizeConstraint">
@@ -309,7 +309,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
-               <string>EDIGEO</string>
+               <string>Sections</string>
               </property>
              </widget>
             </item>
@@ -325,7 +325,7 @@
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Autre</string>
+            <string>AUTRE</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
             <property name="sizeConstraint">
@@ -738,7 +738,7 @@
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>Couche générée</string>
+      <string>COUCHE GENEREE</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>

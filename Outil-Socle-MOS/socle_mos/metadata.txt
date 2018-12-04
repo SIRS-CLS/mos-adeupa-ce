@@ -32,12 +32,17 @@ changelog=
    * Correction de des noms des champs dans l'interface de création
    * Correction des noms des couches dupliquées dans le cas où plusieurs champs de géométries sont présents.
   Version 0.7.2
-   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de PostGIS
+   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis
   Version 0.7.1
    * Correction de l'affichage de la progression qui s'affichait à 100% sans que le processus ne soit terminé.
   Version 0.7
    * Import - Interface de comparaison de socle t0 (multi date) et t+1
-
+  Version 0.6.1
+   * Correction de l'analyse de rétro-évolution. Traitement du cas jannat = -1
+  Version 0.6
+   * Optimisation du traitement des données pour les taux de recouvrement : découpage à l'emprise en amont
+   * Import - Interface de création de socle par étape (possibilité de sélectionner l'étape à lancer, ce qui désactive les données non nécessaires)
+ 
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
 
