@@ -30,7 +30,7 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 changelog=
   Version 0.7.3
    * Correction des noms des couches dans l'interface de création de socle
-   * Correction des noms des couches dupliquées dans le cas où plusieurs champs géométriques sont présents.
+   * Correction des noms des couches dupliquées dans le cas où plusieurs champs géométriques sont présents
   Version 0.7.2
    * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de PostGIS
   Version 0.7.1
