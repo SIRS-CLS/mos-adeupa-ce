@@ -37,9 +37,7 @@ changelog=
    * Correction de l'affichage de la progression qui s'affichait à 100% sans que le processus ne soit terminé.
   Version 0.7
    * Import - Interface de comparaison de socle t0 (multi date) et t+1
-  Version 0.6.1
-   * Correction de l'analyse de rétro-évolution. Traitement du cas jannat = -1
- 
+
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
 
