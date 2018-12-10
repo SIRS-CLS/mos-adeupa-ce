@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_socle.ui'
 #
-# Created: Tue Dec 04 11:41:34 2018
+# Created: Tue Dec 04 15:41:52 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -101,7 +101,7 @@ class Ui_interface_socle(object):
         self.gb_data.setWidgetResizable(True)
         self.gb_data.setObjectName(_fromUtf8("gb_data"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 807, 618))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, -125, 807, 618))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_2 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -508,18 +508,18 @@ class Ui_interface_socle(object):
         self.label_6.setText(_translate("interface_socle", "Schema destination", None))
         self.label_13.setText(_translate("interface_socle", "Couche destination", None))
         self.label_2.setText(_translate("interface_socle", "Année", None))
-        self.groupBox_5.setTitle(_translate("interface_socle", "Emprise", None))
+        self.groupBox_5.setTitle(_translate("interface_socle", "EMPRISE", None))
         self.label_14.setText(_translate("interface_socle", "Communes BD Topo", None))
         self.label_60.setText(_translate("interface_socle", "Communes BD Parcellaire", None))
-        self.groupBox.setTitle(_translate("interface_socle", "Edigeo", None))
+        self.groupBox.setTitle(_translate("interface_socle", "EDIGEO", None))
         self.label_7.setText(_translate("interface_socle", "Parcelles", None))
         self.label_8.setText(_translate("interface_socle", "Subdivisions", None))
         self.label_9.setText(_translate("interface_socle", "Tronçon route", None))
         self.label_10.setText(_translate("interface_socle", "Tronçon fleuve", None))
         self.label_11.setText(_translate("interface_socle", "Tsurf", None))
         self.label_12.setText(_translate("interface_socle", "Bâtiments", None))
-        self.label_4.setText(_translate("interface_socle", "EDIGEO", None))
-        self.groupBox_3.setTitle(_translate("interface_socle", "Autre", None))
+        self.label_4.setText(_translate("interface_socle", "Sections", None))
+        self.groupBox_3.setTitle(_translate("interface_socle", "AUTRE", None))
         self.label_18.setText(_translate("interface_socle", "IPLI", None))
         self.label_57.setText(_translate("interface_socle", "FINESS", None))
         self.label_58.setText(_translate("interface_socle", "RES sportif", None))
@@ -550,7 +550,7 @@ class Ui_interface_socle(object):
         self.label_50.setText(_translate("interface_socle", "Surface activité", None))
         self.label_51.setText(_translate("interface_socle", "Aire de triage", None))
         self.label_52.setText(_translate("interface_socle", "Voie ferrée", None))
-        self.gb_genere.setTitle(_translate("interface_socle", "Couche générée", None))
+        self.gb_genere.setTitle(_translate("interface_socle", "COUCHE GENEREE", None))
         self.label_16.setText(_translate("interface_socle", "Schéma de la couche destination", None))
         self.label_17.setText(_translate("interface_socle", "Couche destination", None))
         self.groupBox_2.setTitle(_translate("interface_socle", "Sélection des phases de calcul", None))

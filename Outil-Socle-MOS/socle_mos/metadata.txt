@@ -11,7 +11,7 @@ name=Socle-MOS
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Outil de génération et de croisement de modes d'occupation du sol
-version=0.7.2
+version=0.7.3
 author=Corentin Falcone (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
@@ -28,6 +28,9 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.7.3
+   * Correction de des noms des champs dans l'interface de création
+   * Correction des noms des couches dupliquées dans le cas où plusieurs champs de géométries sont présents.
   Version 0.7.2
    * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis
   Version 0.7.1

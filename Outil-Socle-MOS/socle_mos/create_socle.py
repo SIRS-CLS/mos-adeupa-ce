@@ -306,9 +306,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                 while querySchema.next():
                     self.cb_schema.addItem(querySchema.value(0))
                     self.cb_schema_geom.addItem(querySchema.value(0))
-            
-                      
-                    #A ENLEVER /!\
+
             self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_29.geo_parcelle'))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_29.geo_subdfisc'))
             self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_29.geo_tronroute'))
@@ -348,53 +346,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
             self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText('sandbox'))
 
-         
-            """
-            self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_22.geo_parcelle'))
-            self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_22.geo_subdfisc'))
-            self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_22.geo_tronroute'))
-            self.cb_tronfluv.setCurrentIndex(self.cb_tronfluv.findText('cadastre_edigeo_22.geo_tronfluv'))
-            self.cb_tsurf.setCurrentIndex(self.cb_tsurf.findText('cadastre_edigeo_22.geo_tsurf'))
-            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText('cadastre_edigeo_22.geo_batiment'))
-            self.cb_rpga.setCurrentIndex(self.cb_rpga.findText('exo_guimgamp.rpga_2019'))
-            self.cb_finess.setCurrentIndex(self.cb_finess.findText('exo_guimgamp.finess'))
-            self.cb_res_sport.setCurrentIndex(self.cb_res_sport.findText('exo_guimgamp.res_sport_22_29'))
-            self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText('ff_d22_2016.d22_2016_pnb10_parcelle'))
-            self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('exo_guimgamp.emprise_bd_parcellaire'))
-            self.cb_pai_cult.setCurrentIndex(self.cb_pai_cult.findText('ign_guimgamp.pai_culture_loisirs'))
-            self.cb_paitransp.setCurrentIndex(self.cb_paitransp.findText('ign_guimgamp.pai_transport'))
-            self.cb_paisante.setCurrentIndex(self.cb_paisante.findText('ign_guimgamp.pai_sante'))
-            self.cb_pairel.setCurrentIndex(self.cb_pairel.findText('ign_guimgamp.pai_religieux'))
-            self.cb_paimilit.setCurrentIndex(self.cb_paimilit.findText('ign_guimgamp.pai_administratif_militaire'))
-            self.cb_paiens.setCurrentIndex(self.cb_paiens.findText('ign_guimgamp.pai_science_enseignement'))
-            self.cb_paicom.setCurrentIndex(self.cb_paicom.findText('ign_guimgamp.pai_industriel_commercial'))
-            self.cb_paisport.setCurrentIndex(self.cb_paisport.findText('ign_guimgamp.pai_sport'))
-            self.cb_paitransfo.setCurrentIndex(self.cb_paitransfo.findText('ign_guimgamp.poste_transformation'))
-            self.cb_terrainsport.setCurrentIndex(self.cb_terrainsport.findText('ign_guimgamp.terrain_sport'))
-            self.cb_cime.setCurrentIndex(self.cb_cime.findText('ign_guimgamp.cimetiere'))
-            self.cb_zoneveget.setCurrentIndex(self.cb_zoneveget.findText('ign_guimgamp.zone_vegetation'))
-            self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('exo_guimgamp.emprise_bd_topo'))
-            self.cb_route.setCurrentIndex(self.cb_route.findText('ign_guimgamp.route'))
-            self.cb_ipli.setCurrentIndex(self.cb_ipli.findText('exo_guimgamp.ipli_1977'))
-            self.cb_remarquable.setCurrentIndex(self.cb_remarquable.findText('ign_guimgamp.bati_remarquable'))
-            self.cb_indust.setCurrentIndex(self.cb_indust.findText('ign_guimgamp.bati_industriel'))
-            self.cb_indif.setCurrentIndex(self.cb_indif.findText('ign_guimgamp.bati_indifferencie'))
-            self.cb_surf_eau.setCurrentIndex(self.cb_surf_eau.findText('ign_guimgamp.surface_eau'))
-            self.cb_pt_eau.setCurrentIndex(self.cb_pt_eau.findText('ign_guimgamp.point_eau'))
-            self.cb_surf_acti.setCurrentIndex(self.cb_surf_acti.findText('ign_guimgamp.surface_activite'))
-            self.cb_triage.setCurrentIndex(self.cb_triage.findText('ign_guimgamp.aire_triage'))
-            self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText('ign_guimgamp.troncon_voie_ferree'))
-            self.cb_section.setCurrentIndex(self.cb_voiefer.findText('cadastre_edigeo_22.geo_section'))
-
-            self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
-            #self.le_destination.setText('mos_guimgamp')
-            
-            #self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('sandbox.emprise_g1_bdtopo'))
-            #self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('sandbox.emprise_g1_parc'))
-
-            
-            
-          
+            """                  
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
             self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText(None))
@@ -433,6 +385,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_section.setCurrentIndex(self.cb_voiefer.findText(None))
 
             self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
+
             """
 
     def blockGroupBox(self):
@@ -1820,7 +1773,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
                                 --Ajout des colonnes taux
                                     --Calcul du taux de bâtiment militaire
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%3$s'', pm.{33}) 
                                                         AND pm.id in (Select pm.id
@@ -1830,61 +1783,61 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                     ', 'vm_i_surf_acti', 'vm_i_pai_milit', v_geom)
                                 into v_tomilit;
                                         --Calcul du taux de bâtiment présent sur la parcelle
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.geom, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.geom) 
                                                     ', 'vm_i_bati', v_geom)
                                 into v_tobati;
                                         --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indif', v_geom)
                                 into v_tobatimaison;
                                         --Calcul du taux de présence de bâtiment remarquable
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_rem', v_geom)
                                 into v_tobatire;
                                         --Calcul du taux de présence de bâtiments agricole
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.nature in (''Bâtiment agricole'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indus', v_geom)
                                 into v_tobatagri;
                                         --Calcul du taux de présence de serres
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.nature in (''Serre'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indus', v_geom)
                                 into v_toserre;
                                         --Calcul du taux de présence de bâtiments industriel
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.nature in (''Bâtiment industriel'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indus', v_geom)
                                 into v_toindust;
                                         --Calcul du taux de présence de bâtiments commerciaux
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.nature in (''Bâtiment commercial'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indus', v_geom)
                                 into v_tocomer;
                                         --Calcul du taux de présence de bâtiments industriels ou commerciaux
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.categorie in (''Industriel ou commercial'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_surf_acti', v_geom)
                                 into v_tozic;
                                         --Calcul du taux de présence d'équipement de transport
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.categorie in (''Transport'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
@@ -1898,14 +1851,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                 into v_tovoiefer;
                                 if v_tovoiefer = 0 THEN
                                         --Si pas de voie férrées détéctées, recherche avec les aires de triage
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_aire_tri', v_geom)
                                 into v_tovoiefer;
                                 END IF;
                                         --Calcul du taux de présence de carrières
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%3$s'', pm.{33}) 
                                                         AND pm.id in (Select pm.id
@@ -1915,13 +1868,13 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                     ','vm_i_surf_acti',  'vm_i_pai_indus_com', v_geom)
                                 into v_tocarrier;
                                         --Calcul du taux de présence de cimetières
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_cime', v_geom)
                                 into v_tocime;
                                         --Calcul du taux de présence d'équipement sportif
-                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_terrain_sport', v_geom)
@@ -1929,7 +1882,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     
                                 IF v_tosport = 0 THEN
                                             --Si pas d'équipement trouvés, on recherche avec les données IGN terrain de sport
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where categorie = ''Sport''
                                                         AND st_intersects(''%2$s'', pm.{33}) 
@@ -1937,7 +1890,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                 into v_tosport;
                                 END IF;
                                         --Calcul du taux de présence d'aménagement loisir
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%3$s'', pm.{33})
                                                         AND pm.id in (Select pm.id 
@@ -1947,14 +1900,14 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                                     ', 'vm_i_surf_acti', 'vm_i_pai_cul_lois', v_geom)
                                 into v_toloisir;
                                         --Calcul du taux de présence des parcelles agricoles
-                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.geom, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.geom) 
                                                     ', 'vm_i_rpga', v_geom)
                                 into v_toagri;
                                     If v_toagri = 0 Then
                                             --Si pas de correspondance, on recherche aussi avec les zone de végétation peupleraies et verger
-                                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                        execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where nature in (''Verger'', ''Peupleraie'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
@@ -1963,21 +1916,21 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     END IF;
 
                                         --Calcul du taux de présence de végétation qui ne sont pas verger ou peupleraie
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where nature not in (''Verger'', ''Peupleraie'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_zveget', v_geom)
                                 into v_toveget;
                                         --Calcul de présence des surface en eau permanentes
-                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.{33}, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer, 0)
                                                         From %1$s pm
                                                         Where regime = ''Permanent'' 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_surf_eau', v_geom)
                                 into v_toeau;
                                         --Calcul du taux de présence de l'eau des données edigeoo geo_tronfluv
-                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.geom, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
                                                         From %1$s pm
                                                         Where  st_intersects(''%2$s'', pm.geom) 
                                                     ', 'vm_i_tronfluv', v_geom)
@@ -1987,7 +1940,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     v_toeau = v_temp_toeau;
                                 End if;
                                         --Calcul du taux de présence de l'eau des données edigeo geo_tsurf
-                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
+                                    execute format ('Select coalesce(((st_area(st_safe_intersection(st_union(st_buffer(pm.geom, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer,0)
                                                         From %1$s pm
                                                         Where  st_intersects(''%2$s'', pm.geom) 
                                                     ', 'vm_i_tsurf', v_geom)
@@ -1997,12 +1950,12 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     v_toeau = v_temp_toeau;
                                 End if;
                                     --Calcul du taux de présence des routes secondaire
-                                Select ((st_area(st_safe_intersection(st_union(pm.geom), v_geom))*100)/st_area(v_geom))::integer
+                                Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.geom, 0.001)), v_geom))*100)/st_area(v_geom))::integer
                                                         From tt_secondaire pm
                                                         Where  st_intersects(v_geom, pm.geom)       
                                 into v_toroute;
                                         --Calcul du taux de présence des routes edigeo geo_tronroute
-                                    execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                    execute format ('Select ((st_area(st_safe_intersection(st_union(st_buffer(pm.geom, 0.001)), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where  st_intersects(''%2$s'', pm.geom) 
                                                     ', 'vm_i_tronroute', v_geom)
