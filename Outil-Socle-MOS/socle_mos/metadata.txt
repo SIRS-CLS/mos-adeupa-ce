@@ -1,0 +1,113 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Socle-MOS
+qgisMinimumVersion=2.0
+qgisMaximumVersion=2.99
+description=Outil de génération et de croisement de modes d'occupation du sol
+version=0.7.4
+<<<<<<< HEAD
+author=Corentin Falcone (SIRS) 
+email=corentin.falcone@sirs-fr.com
+
+about=Ce plugin propose 3 grandes fonctionnalités : 
+	- Constitution d'un socle de mode d'occupation des sols à l'échelle parcellaire (t0)
+	- Mise à jour géométrique et attributaire (t+1) sur un socle
+	- Création d'un millésime attributaire sur une date antérieure (t-1)existant
+
+tracker=http://projet.sirs-fr.com/project/nicolasrochard-adeupa/issues
+repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+changelog=
+  Version 0.7.4
+   * Correction du problème d'union des entités du RPGA
+   * Correction de l'affichage des noms des couches en doublon
+  Version 0.7.3
+   * Correction de des noms des champs dans l'interface de création
+   * Correction des noms des couches dupliquées dans le cas où plusieurs champs de géométries sont présents.
+  Version 0.7.2
+   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis
+  Version 0.7.1
+   * Correction de l'affichage de la progression qui s'affichait à 100% sans que le processus ne soit terminé.
+  Version 0.7
+   * Import - Interface de comparaison de socle t0 (multi date) et t+1
+ 
+# Tags are comma separated with spaces allowed
+tags=socle, mos, ocs, parcelle, processing, postgis, python
+
+homepage=https://www.sirs-fr.com/ 
+category=Plugins
+icon=./icons/icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
+=======
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Socle-MOS
+qgisMinimumVersion=2.0
+qgisMaximumVersion=2.99
+description=Outil de génération et de croisement de modes d'occupation du sol
+version=0.7.3
+=======
+>>>>>>> dev
+author=Corentin Falcone (SIRS) 
+email=corentin.falcone@sirs-fr.com
+
+about=Ce plugin propose 3 grandes fonctionnalités : 
+	- Constitution d'un socle de mode d'occupation des sols à l'échelle parcellaire (t0)
+	- Mise à jour géométrique et attributaire (t+1) sur un socle
+	- Création d'un millésime attributaire sur une date antérieure (t-1)existant
+
+tracker=http://projet.sirs-fr.com/project/nicolasrochard-adeupa/issues
+repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+changelog=
+  Version 0.7.4
+   * Correction de l'union des entités du RPGA.
+   * Correction de l'affichage des couches en doublon.
+  Version 0.7.3
+   * Correction de des noms des champs dans l'interface de création.
+   * Correction des noms des couches dupliquées dans le cas où plusieurs champs de géométries sont présents.
+  Version 0.7.2
+   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis.
+  Version 0.7.1
+   * Correction de l'affichage de la progression qui s'affichait à 100% sans que le processus ne soit terminé.
+  Version 0.7
+   * Import - Interface de comparaison de socle t0 (multi date) et t+1.
+ 
+# Tags are comma separated with spaces allowed
+tags=socle, mos, ocs, parcelle, processing, postgis, python
+
+homepage=https://www.sirs-fr.com/ 
+category=Plugins
+icon=./icons/icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
