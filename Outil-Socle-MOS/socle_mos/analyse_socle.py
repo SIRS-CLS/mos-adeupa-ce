@@ -161,7 +161,7 @@ class Analyse_mos(QDialog, Ui_interface_analyse):
             self.relation_district = QSqlTableModel(self, db)
 
             queryTable = QSqlQuery(db)
-            queryTable.prepare("Select f_table_schema || '.' || f_table_name as tname from geometry_columns order by f_table_schema, f_table_name;")
+            queryTable.prepare("Select distinct f_table_schema || '.' || f_table_name as tname from geometry_columns order by tname;")
             if queryTable.exec_():       
                 while queryTable.next():
                     self.cb_geobati.addItem(queryTable.value(0))
