@@ -153,8 +153,6 @@ class RepairSocle(QDialog, Ui_interface_repair):
 
     def chargeTable(self):
         self.cb_table.clear()
-
-
         db = self.connexion()
             #Connexion à la base de données
         if (not db.open()):
@@ -172,17 +170,23 @@ class RepairSocle(QDialog, Ui_interface_repair):
                     self.cb_table.addItem(queryTable.value(0))
 
     def repairGeom(self):
-        db = self.connexion()
+	temp = QTimer
+	self.lbl_etat.setText(u'Recherche des réparations en cours...')
+	temp.singleShot(100, self.funSqlRepair)
+
+    def funSqlRepair(self):
+	db = self.connexion()
             #Connexion à la base de données
         wschema_table = self.cb_schema.currentText() +'.' + self.cb_table.currentText()
         self.conn = psycopg2.connect(host=self.host, port=self.port, user=self.username, dbname=self.database, password=self.pwd )
         cur = self.conn.cursor()
         self.addFunctionSafe()
             #Execution de la suite de requête de création du socle
-        cur.execute(u"""
+	cur.execute(u"""
                     update {0} 
                     SET geom=ST_Safe_Repair(geom)::geometry(Polygon,2154)  
                     WHERE ST_ISValid(geom) is FALSE;""".format(wschema_table))
+
         self.lbl_etat.setText(u'Terminé')
         cur.close()    
         self.conn.commit()
