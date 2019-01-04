@@ -51,7 +51,7 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
 
 
 
-    global nomchamp_code4_2005, nomchamp_code4_2018, nomchamp_subdi_sirs, nomchamp_revise, nomchamp_control
+    global nomchamp_code4_2005, nomchamp_code4_2012, nomchamp_code4_2018, nomchamp_subdi_sirs, nomchamp_revise, nomchamp_control
     global control_classe1, control_classe2, control_classe3, control_classe4, control_classe5, control_classe6, control_classe7, control_classe8, control_classe9, control_classe10
     global control_classe11, control_classe12, control_classe13, control_classe14, control_classe15, control_classe16, control_classe17, control_classe18, control_classe19, control_classe20
     global control_classe21, control_classe22, control_classe23, control_classe24, control_classe25, control_classe26, control_classe27, control_classe28, control_classe29, control_classe30
@@ -61,18 +61,20 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
 
     global control_pushButtonSurface
 
-    global control_code4_2005, control_code4_2018, control_subdi_sirs
-    global control_surface, control_remarque_2018, control_remarque_2005
-    global control_rb2005, control_rb2018
+    global control_code4_2005, control_code4_2012, control_code4_2018, control_subdi_sirs
+    global control_surface, control_remarque_2018, control_remarque_2012, control_remarque_2005
+    global control_rb2005, control_rb2012, control_rb2018
 
     
 
 
     
     nomchamp_code4_2005 = "code4_2005"
+    nomchamp_code4_2012 = "code4_2012"
     nomchamp_code4_2018 = "code4_2018"
     nomchamp_subdi_sirs = "subdi_sirs"
     nomchamp_remarque_2018 = "remarque_2018"
+    nomchamp_remarque_2012 = "remarque_2012"
     nomchamp_remarque_2005 = "remarque_2005"
     
 
@@ -84,9 +86,11 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
     # definition des variables qui pointent vers les textboxes des codes par annee . Attention, il faut que le nom des controles soient le meme que le nom des champs attributaires
     
     control_code4_2005 = myDialog.findChild(QWidget, nomchamp_code4_2005)
+    control_code4_2012 = myDialog.findChild(QWidget, nomchamp_code4_2012)
     control_code4_2018 = myDialog.findChild(QWidget, nomchamp_code4_2018)
     control_subdi_sirs = myDialog.findChild(QWidget, nomchamp_subdi_sirs)
     control_remarque_2018= myDialog.findChild(QWidget, nomchamp_remarque_2018)
+    control_remarque_2012= myDialog.findChild(QWidget, nomchamp_remarque_2012)
     control_remarque_2005= myDialog.findChild(QWidget, nomchamp_remarque_2005)
 
     
@@ -97,6 +101,7 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
     # definition des variables qui pointent vers les radio boutons par annee
     
     control_rb2005 = myDialog.findChild(QWidget, "rb2005")
+    control_rb2012 = myDialog.findChild(QWidget, "rb2012")
     control_rb2018 = myDialog.findChild(QWidget, "rb2018")
 
            
@@ -279,6 +284,11 @@ def on_buttonx(checked, lst):
         idx = layer.fieldNameIndex(nomchamp_code4_2005)
         applique_style_gras_et_couleur_rouge_au_texte(control_code4_2005)
         control_code4_2005.setText(control_classe_x.text())
+
+    if control_rb2012.isChecked() is True:
+        idx = layer.fieldNameIndex(nomchamp_code4_2012)
+        applique_style_gras_et_couleur_rouge_au_texte(control_code4_2012)
+        control_code4_2012.setText(control_classe_x.text())
     
     if control_rb2018.isChecked() is True:
         idx = layer.fieldNameIndex(nomchamp_code4_2018)
