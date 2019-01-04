@@ -57,6 +57,8 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
     global control_classe21, control_classe22, control_classe23, control_classe24, control_classe25, control_classe26, control_classe27, control_classe28, control_classe29, control_classe30
     global control_classe31, control_classe32, control_classe33, control_classe34, control_classe35, control_classe36, control_classe37, control_classe38
 
+    global control_classe45, control_classe46, control_classe47, control_classe48, control_classe49 # 5 codes supplementaires pour le Pays de Brest
+
     global control_classe39, control_classe40, control_classe41, control_classe42, control_classe43, control_classe44  # subdi_sirs = a, b, c, d, e ou f
 
     global control_pushButtonSurface
@@ -145,6 +147,12 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
     control_classe37 = myDialog.findChild(QWidget, "classe37")
     control_classe38 = myDialog.findChild(QWidget, "classe38")
 
+    control_classe45 = myDialog.findChild(QWidget, "classe45")
+    control_classe46 = myDialog.findChild(QWidget, "classe46")
+    control_classe47 = myDialog.findChild(QWidget, "classe47")
+    control_classe48 = myDialog.findChild(QWidget, "classe48")
+    control_classe49 = myDialog.findChild(QWidget, "classe49")
+
     control_classe39 = myDialog.findChild(QWidget, "classe39")
     control_classe40 = myDialog.findChild(QWidget, "classe40")
     control_classe41 = myDialog.findChild(QWidget, "classe41")
@@ -204,6 +212,12 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
         control_classe36.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe36]))
         control_classe37.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe37]))
         control_classe38.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe38]))
+
+        control_classe45.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe45]))
+        control_classe46.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe46]))
+        control_classe47.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe47]))
+        control_classe48.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe48]))
+        control_classe49.clicked.connect(lambda checked: on_buttonx(checked, [layer,feature,control_classe49]))
 
         control_classe39.clicked.connect(lambda checked: on_button39(checked, lst))
         control_classe40.clicked.connect(lambda checked: on_button40(checked, lst))
@@ -498,4 +512,9 @@ def deconnexions():
     control_classe42.clicked.disconnect()
     control_classe43.clicked.disconnect()
     control_classe44.clicked.disconnect()
+    control_classe45.clicked.disconnect()
+    control_classe46.clicked.disconnect()
+    control_classe47.clicked.disconnect()
+    control_classe48.clicked.disconnect()
+    control_classe49.clicked.disconnect()
     
