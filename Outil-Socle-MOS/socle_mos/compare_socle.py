@@ -564,7 +564,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
                         code4_{1}, 
                         lib4_{1},
                         remarque_{1},
-                        (st_dump(st_collectionextract(st_union(geom),3))).geom::geometry(Polygon,2154) as geom
+                        (st_dump(st_collectionextract(st_union(st_buffer(geom,0.001)),3))).geom::geometry(Polygon,2154) as geom
                     From vm_temp_compare mos
                     where {12}code4_{0}{13} in (1224, 1222, 1221, 1223, 1225, 1226)
                     Group by code4_{1}, code_insee, lib4_{1}, remarque_{1} , subdi_sirs --,nom_commune
