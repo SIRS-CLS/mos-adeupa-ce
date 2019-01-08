@@ -15,4 +15,4 @@ URL dépôt externe de SIRS : http://qgis.sirs-fr.com/qgis_repo_sirs_dev/plugins
 | 03/12/2018  | 0.7.2   | bugfix des polygones de végétation trop importants sur la partie non cadastrée |
 | 04/12/2018  | 0.7.3   | bugfix interface graphique socle + sélection de la table des fichiers fonciers |
 | 02/01/2019  | 0.7.4   | bugfix de l'union des entités du RPGA + affichage des couches en doublon |
-
+| 07/01/2019  | 0.7.5   | bugfix de l'union des entités dans l'interface comparaison + affichage de l'interface réparation |
