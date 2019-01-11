@@ -1,4 +1,4 @@
--- pour créer des couches par millésimes, il suffit de faire une copie de la couche générées et
+-- pour créer des couches par millésimes, il suffit de faire une copie des couches générées et
 -- de supprimer les champs code4_xxxx, liv4_xxxx, et remarque_xxxx des années xxxx inutiles
 
 
