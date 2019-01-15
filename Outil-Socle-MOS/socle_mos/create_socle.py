@@ -307,46 +307,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     self.cb_schema.addItem(querySchema.value(0))
                     self.cb_schema_geom.addItem(querySchema.value(0))
 
-            self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_29.geo_parcelle'))
-            self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_29.geo_subdfisc'))
-            self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_29.geo_tronroute'))
-            self.cb_tronfluv.setCurrentIndex(self.cb_tronfluv.findText('cadastre_edigeo_29.geo_tronfluv'))
-            self.cb_tsurf.setCurrentIndex(self.cb_tsurf.findText('cadastre_edigeo_29.geo_tsurf'))
-            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText('cadastre_edigeo_29.geo_batiment'))
-            self.cb_rpga.setCurrentIndex(self.cb_rpga.findText('data_exo.rpga_d22_d29_d35_d56_2016'))
-            self.cb_finess.setCurrentIndex(self.cb_finess.findText('data_exo.etablissements_finess_france'))
-            self.cb_res_sport.setCurrentIndex(self.cb_res_sport.findText('data_exo.res_d22_d29_2017'))
-            self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText('ff_d29_2017.d29_2017_pnb10_parcelle'))
-            self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('data_exo.communes_pays_brest_bd_parcellaire_2018'))
-            self.cb_pai_cult.setCurrentIndex(self.cb_pai_cult.findText('ign_d29_2017.pai_culture_loisirs'))
-            self.cb_paitransp.setCurrentIndex(self.cb_paitransp.findText('ign_d29_2017.pai_transport'))
-            self.cb_paisante.setCurrentIndex(self.cb_paisante.findText('ign_d29_2017.pai_sante'))
-            self.cb_pairel.setCurrentIndex(self.cb_pairel.findText('ign_d29_2017.pai_religieux'))
-            self.cb_paimilit.setCurrentIndex(self.cb_paimilit.findText('ign_d29_2017.pai_administratif_militaire'))
-            self.cb_paiens.setCurrentIndex(self.cb_paiens.findText('ign_d29_2017.pai_science_enseignement'))
-            self.cb_paicom.setCurrentIndex(self.cb_paicom.findText('ign_d29_2017.pai_industriel_commercial'))
-            self.cb_paisport.setCurrentIndex(self.cb_paisport.findText('ign_d29_2017.pai_sport'))
-            self.cb_paitransfo.setCurrentIndex(self.cb_paitransfo.findText('ign_d29_2017.poste_transformation'))
-            self.cb_terrainsport.setCurrentIndex(self.cb_terrainsport.findText('ign_d29_2017.terrain_sport'))
-            self.cb_cime.setCurrentIndex(self.cb_cime.findText('ign_d29_2017.cimetiere'))
-            self.cb_zoneveget.setCurrentIndex(self.cb_zoneveget.findText('ign_d29_2017.zone_vegetation'))
-            self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('data_exo.communes_pays_brest_bd_topo_2018'))
-            self.cb_route.setCurrentIndex(self.cb_route.findText('ign_d29_2017.route'))
-            self.cb_ipli.setCurrentIndex(self.cb_ipli.findText('data_exo.ipli_france_1977'))
-            self.cb_remarquable.setCurrentIndex(self.cb_remarquable.findText('ign_d29_2017.bati_remarquable'))
-            self.cb_indust.setCurrentIndex(self.cb_indust.findText('ign_d29_2017.bati_industriel'))
-            self.cb_indif.setCurrentIndex(self.cb_indif.findText('ign_d29_2017.bati_indifferencie'))
-            self.cb_surf_eau.setCurrentIndex(self.cb_surf_eau.findText('ign_d29_2017.surface_eau'))
-            self.cb_pt_eau.setCurrentIndex(self.cb_pt_eau.findText('ign_d29_2017.point_eau'))
-            self.cb_surf_acti.setCurrentIndex(self.cb_surf_acti.findText('ign_d29_2017.surface_activite'))
-            self.cb_triage.setCurrentIndex(self.cb_triage.findText('ign_d29_2017.aire_triage'))
-            self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText('ign_d29_2017.troncon_voie_ferree'))
-            self.cb_section.setCurrentIndex(self.cb_voiefer.findText('cadastre_edigeo_29.geo_section'))
-
-            self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
-            self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText('sandbox'))
-
-            """                  
+                             
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
             self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText(None))
@@ -383,10 +344,9 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_triage.setCurrentIndex(self.cb_triage.findText(None))
             self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText(None))
             self.cb_section.setCurrentIndex(self.cb_voiefer.findText(None))
-
             self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
+            self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText(None))
 
-            """
 
     def blockGroupBox(self):
         if self.cbx_etape1.isChecked():
