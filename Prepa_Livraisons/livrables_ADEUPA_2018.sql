@@ -10,8 +10,9 @@
 
 
 --correction du champ tex
-UPDATE production.mos_lannion_2008_2015_2018_prod
-Set section = tex, tex = null where section is null;
+UPDATE production.mos_guimgamp_2008_2018_prod
+Set section = tex, tex = section where tex in (Select distinct tex from cadastre_edigeo_22.geo_section);
+
 
 --- Recalcul de l'identifiant id_mos pour les polygones hors cadastre
 UPDATE production.mos_guimgamp_2008_2018_prod SET id_mos = CONCAT(code_insee , 'NC', gid::varchar) WHERE num_parc = 'NC' ;
@@ -310,7 +311,7 @@ LEFT JOIN data_exo.communes_bd_parcellaire_d22_2017 bdparc22 ON ocs.code_insee =
 
 --correction du champ tex
 UPDATE production.mos_lannion_2008_2015_2018_prod
-Set section = tex, tex = null where section is null;
+Set section = tex, tex = section where tex in (Select distinct tex from cadastre_edigeo_22.geo_section);
 
 
 --- Recalcul de l'identifiant id_mos pour les polygones hors cadastre
@@ -480,7 +481,7 @@ LEFT JOIN data_exo.communes_bd_parcellaire_d22_2017 bdparc22 ON ocs.code_insee =
 
 --correction du champ tex
 UPDATE production.mos_morlaix_2005_2015_2018_prod
-Set section = tex, tex = null where section is null;
+Set section = tex, tex = section where tex in (Select distinct tex from cadastre_edigeo_29.geo_section);
 
 ALTER TABLE production.mos_morlaix_2005_2015_2018_prod ALTER COLUMN code_insee SET DATA TYPE VARCHAR(255);
 ALTER TABLE production.mos_morlaix_2005_2015_2018_prod ALTER COLUMN subdi_sirs SET DATA TYPE VARCHAR(255);
@@ -671,7 +672,7 @@ LEFT JOIN data_exo.communes_bd_parcellaire_d29_2017 bdparc29 ON ocs.code_insee =
 
 --correction du champ tex
 UPDATE production.mos_pays_brest_2005_2012_2018_prod
-Set section = tex, tex = null where section is null;
+Set section = tex, tex = section where tex in (Select distinct tex from cadastre_edigeo_29.geo_section);
 
 ALTER TABLE production.mos_pays_brest_2005_2012_2018_prod ALTER COLUMN code_insee SET DATA TYPE VARCHAR(255);
 ALTER TABLE production.mos_pays_brest_2005_2012_2018_prod ALTER COLUMN subdi_sirs SET DATA TYPE VARCHAR(255);
