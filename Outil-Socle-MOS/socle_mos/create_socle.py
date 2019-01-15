@@ -890,8 +890,8 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     slow_surf float,
                                     idu character varying,
                                     num_parc character varying,
-                                    section character varying,
-                                    tex character varying                                                                                                   
+                                    tex character varying,
+                                    section character varying,                                                                                                   
                                 );
 
                             For v_geomF, v_inseeF, v_surfF, v_idF in Select geom, new_insee, surf_area, uq_gid from tt_fuse LOOP

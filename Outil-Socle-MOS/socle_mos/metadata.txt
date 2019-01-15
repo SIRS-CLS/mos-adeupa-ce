@@ -11,7 +11,7 @@ name=Socle-MOS
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Outil de génération et de croisement de modes d'occupation du sol
-version=0.7.5
+version=0.7.6
 author=Corentin Falcone (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
@@ -28,6 +28,8 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.7.6
+   * Correction d'un bug attribuant les valeurs des sections dans le champ tex
   Version 0.7.5
    * Correction de l'union des entités dans l'interface de comparaison
    * Modification de l'affichage de l'interface de réparation : Statut d'état en cours et terminé.
@@ -39,8 +41,6 @@ changelog=
    * Correction des noms des couches dupliquées dans le cas où plusieurs champs de géométries sont présents.
   Version 0.7.2
    * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis.
-  Version 0.7.1
-   * Correction de l'affichage de la progression qui s'affichait à 100% sans que le processus ne soit terminé.
  
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
