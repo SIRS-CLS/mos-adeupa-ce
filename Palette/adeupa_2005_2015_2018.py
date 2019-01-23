@@ -51,7 +51,7 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
 
 
 
-    global nomchamp_code4_2005, nomchamp_code4_2015, nomchamp_code4_2018, nomchamp_subdi_sirs, nomchamp_revise, nomchamp_control
+    global nomchamp_code4_2005, nomchamp_code4_2015, nomchamp_code4_2018, nomchamp_subdi_sirs, nomchamp_vu
     global control_classe1, control_classe2, control_classe3, control_classe4, control_classe5, control_classe6, control_classe7, control_classe8, control_classe9, control_classe10
     global control_classe11, control_classe12, control_classe13, control_classe14, control_classe15, control_classe16, control_classe17, control_classe18, control_classe19, control_classe20
     global control_classe21, control_classe22, control_classe23, control_classe24, control_classe25, control_classe26, control_classe27, control_classe28, control_classe29, control_classe30
@@ -63,7 +63,7 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
 
     global control_pushButtonSurface
 
-    global control_code4_2005, control_code4_2015, control_code4_2018, control_subdi_sirs
+    global control_code4_2005, control_code4_2015, control_code4_2018, control_subdi_sirs, control_vu
     global control_surface, control_remarque_2018, control_remarque_2015, control_remarque_2005
     global control_rb2005, control_rb2015, control_rb2018
 
@@ -78,7 +78,7 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
     nomchamp_remarque_2018 = "remarque_2018"
     nomchamp_remarque_2015 = "remarque_2015"
     nomchamp_remarque_2005 = "remarque_2005"
-    
+    nomchamp_vu = "vu"
 
 
     #geom = feature.geometry()
@@ -95,7 +95,8 @@ def ouvrir_formulaire_adeupa(dialog, layer, feature):
     control_remarque_2015= myDialog.findChild(QWidget, nomchamp_remarque_2015)
     control_remarque_2005= myDialog.findChild(QWidget, nomchamp_remarque_2005)
 
-    
+    control_vu= myDialog.findChild(QWidget, nomchamp_vu)
+
     control_surface = myDialog.findChild(QWidget, 'surf_m2')
     
     
@@ -283,6 +284,12 @@ def renseignement_multiple(layer):
             # val_remarque2018 = control_remarque_2018.toPlainText()
             # layer.changeAttributeValue(feat, idchampremarque2018, val_remarque2018)
             
+            applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+            control_vu.setText('1')
+            idchampvu = layer.fieldNameIndex(nomchamp_vu)
+            layer.changeAttributeValue(feat, idchampvu, '1')
+            
+            
 
             #layer.triggerRepaint()
         layer.endEditCommand()
@@ -320,6 +327,8 @@ def on_buttonx(checked, lst):
     
     val = control_classe_x.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
     
     #feature = lst[1]
     # renseignement_multiple(layer, idx, valocs, valrevise)
@@ -341,6 +350,9 @@ def on_button39(checked, lst):
     
     val = control_classe39.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
+
     #feature = lst[1]
     #renseignement_multiple(layer, idx, val)
     #layer.removeSelection()
@@ -357,6 +369,9 @@ def on_button40(checked, lst):
     
     val = control_classe40.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
+
     #feature = lst[1]
     #renseignement_multiple(layer, idx, val)
     #layer.removeSelection()
@@ -373,6 +388,9 @@ def on_button41(checked, lst):
 
     val = control_classe41.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
+
     #feature = lst[1]
     #renseignement_multiple(layer, idx, val)
     #layer.removeSelection()
@@ -390,6 +408,9 @@ def on_button42(checked, lst):
 
     val = control_classe42.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
+
     #feature = lst[1]
     #renseignement_multiple(layer, idx, val)
     #layer.removeSelection()
@@ -408,6 +429,9 @@ def on_button43(checked, lst):
 
     val = control_classe43.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
+
     #feature = lst[1]
     #renseignement_multiple(layer, idx, val)
     #layer.removeSelection()
@@ -426,6 +450,9 @@ def on_button44(checked, lst):
 
     val = control_classe44.text()
     
+    applique_style_gras_et_couleur_rouge_au_texte(control_vu)
+    control_vu.setText('1')
+
     #feature = lst[1]
     #renseignement_multiple(layer, idx, val)
     #layer.removeSelection()
