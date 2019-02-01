@@ -8,6 +8,7 @@ from create_socle import *
 from repair_socle import *
 from analyse_socle import *
 from compare_socle import *
+from evolution_socle import *
 
 class socle_mos:
     def __init__(self, iface):
@@ -30,7 +31,10 @@ class socle_mos:
         iconRepair = QIcon(os.path.dirname(__file__) + "/repair.png")
         self.repairSocle = QAction(iconRepair, u"Réparer les géométries", self.interface.mainWindow())
         QObject.connect(self.repairSocle, SIGNAL("triggered()"), self.gereActionRepair)
-
+        
+        iconEvol = QIcon(os.path.dirname(__file__) + "/repair.png")
+        self.evolSocle = QAction(iconEvol, u"Réaliser une évolution", self.interface.mainWindow())
+        QObject.connect(self.evolSocle, SIGNAL("triggered()"), self.gereActionEvol)
 
         self.menuSocle = QMenu(u"Socle MOS")
         self.menuSocle.setIcon(QIcon(os.path.dirname(__file__) + "/icon.png"))
@@ -38,6 +42,7 @@ class socle_mos:
         self.menuSocle.addAction(self.compareSocle)
         self.menuSocle.addAction(self.analyseSocle)
         self.menuSocle.addAction(self.repairSocle)
+        self.menuSocle.addAction(self.evolSocle)
         self.interface.pluginMenu().addMenu(self.menuSocle)
 
 
@@ -47,6 +52,7 @@ class socle_mos:
         self.toolbarSocle.addAction(self.compareSocle)
         self.toolbarSocle.addAction(self.analyseSocle)
         self.toolbarSocle.addAction(self.repairSocle)
+        self.toolbarSocle.addAction(self.evolSocle)
 
     def unload(self):
         self.interface.mainWindow().menuBar().removeAction(self.menuSocle.menuAction())
@@ -75,6 +81,13 @@ class socle_mos:
 
     def gereActionAnalyse(self):
         dlg = Analyse_mos(self.interface)
+        # dlg.show() # ligne à mettre en commentaire pour avoir une fenêtre modale
+        result = dlg.exec_()
+        if result:
+            pass
+
+    def gereActionEvol(self):
+        dlg = Evolution_mos(self.interface)
         # dlg.show() # ligne à mettre en commentaire pour avoir une fenêtre modale
         result = dlg.exec_()
         if result:
