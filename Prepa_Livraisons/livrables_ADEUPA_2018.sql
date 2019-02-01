@@ -490,7 +490,7 @@ ALTER TABLE production.mos_morlaix_2005_2015_2018_prod ALTER COLUMN id_mos SET D
 
 
 --- Recalcul de l'identifiant id_mos pour les polygones hors cadastre
-UPDATE production.mos_morlaix_2005_2015_2018_prod SET id_mos = CONCAT(LEFT(code_insee,5) , 'NC', fid::varchar) WHERE num_parc = 'NC' ;
+UPDATE production.mos_morlaix_2005_2015_2018_prod SET id_mos = CONCAT(LEFT(code_insee,5) , 'NC', gid::varchar) WHERE num_parc = 'NC' ;
 -- Recalcul de l'identifiant id_mos pour inclure la subivision SIRS
 UPDATE production.mos_morlaix_2005_2015_2018_prod SET id_mos = CONCAT(LEFT(code_insee,2), idu, subdi_sirs) WHERE num_parc <> 'NC' AND subdi_sirs <> '' ;
 
@@ -681,7 +681,7 @@ ALTER TABLE production.mos_pays_brest_2005_2012_2018_prod ALTER COLUMN id_mos SE
 
 
 --- Recalcul de l'identifiant id_mos pour les polygones hors cadastre
-UPDATE production.mos_pays_brest_2005_2012_2018_prod SET id_mos = CONCAT(LEFT(code_insee,5) , 'NC', fid::varchar) WHERE num_parc = 'NC' ;
+UPDATE production.mos_pays_brest_2005_2012_2018_prod SET id_mos = CONCAT(LEFT(code_insee,5) , 'NC', gid::varchar) WHERE num_parc = 'NC' ;
 -- Recalcul de l'identifiant id_mos pour inclure la subivision SIRS
 UPDATE production.mos_pays_brest_2005_2012_2018_prod SET id_mos = CONCAT(LEFT(code_insee,2), idu, subdi_sirs) WHERE num_parc <> 'NC' AND subdi_sirs <> '' ;
 
