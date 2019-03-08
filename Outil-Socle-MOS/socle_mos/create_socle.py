@@ -307,7 +307,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     self.cb_schema.addItem(querySchema.value(0))
                     self.cb_schema_geom.addItem(querySchema.value(0))
 
-                             
+ 
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
             self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
             self.cb_subparc.setCurrentIndex(self.cb_subparc.findText(None))
@@ -346,6 +346,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
             self.cb_section.setCurrentIndex(self.cb_voiefer.findText(None))
             self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
             self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText(None))
+
 
 
     def blockGroupBox(self):
@@ -851,7 +852,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                                     idu character varying,
                                     num_parc character varying,
                                     tex character varying,
-                                    section character varying,                                                                                                   
+                                    section character varying                                                                                                   
                                 );
 
                             For v_geomF, v_inseeF, v_surfF, v_idF in Select geom, new_insee, surf_area, uq_gid from tt_fuse LOOP
@@ -2822,6 +2823,4 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
                     language 'plpgsql' immutable strict parallel safe;""")
         cur.close()
         self.conn.commit()
-
-
 
