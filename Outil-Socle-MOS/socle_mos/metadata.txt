@@ -11,7 +11,7 @@ name=Socle-MOS
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Outil de génération et de croisement de modes d'occupation du sol
-version=0.7.6
+version=0.8.0
 author=Corentin Falcone (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
@@ -28,6 +28,9 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.8.0
+   * Ajout du module d'évolution attributaire : Calcul des évolutions avec les fichiers fonciers
+   * Ajout du module d'évolution géométrique : Réafectation des nouvelles géométries à l'aide d'un nouveau socle et de l'ancien livrable
   Version 0.7.6
    * Correction d'un bug attribuant les valeurs des sections dans le champ tex
   Version 0.7.5
@@ -36,12 +39,7 @@ changelog=
   Version 0.7.4
    * Correction de l'union des entités du RPGA.
    * Correction de l'affichage des couches en doublon.
-  Version 0.7.3
-   * Correction de des noms des champs dans l'interface de création.
-   * Correction des noms des couches dupliquées dans le cas où plusieurs champs de géométries sont présents.
-  Version 0.7.2
-   * Correction du traitement de la zone hors cadastre : Regroupement par communes pour éviter les entités trop importantes pour le traitement de postgis.
- 
+
 # Tags are comma separated with spaces allowed
 tags=socle, mos, ocs, parcelle, processing, postgis, python
 
@@ -53,4 +51,3 @@ experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
-

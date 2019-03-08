@@ -56,6 +56,7 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         self.connect(self.cb_schema, SIGNAL("activated(int)"), self.canStart)
         self.connect(self.cb_table, SIGNAL("activated(int)"), self.canStart)
         self.connect(self.cb_ff_parcelle, SIGNAL("activated(int)"), self.canStart)
+        self.connect(self.le_table_desti, SIGNAL("textChanged(QString)"), self.canStart)
 
 
     def connexion(self):
@@ -94,9 +95,6 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         for c in dbpluginclass.connections():
             self.cb_connexion.addItem( str(c.connectionName()))
             self.connectionDbList.append(str(c.connectionName()))
-
-
-
         QApplication.restoreOverrideCursor()
 
     def getConInfo(self):
@@ -771,9 +769,9 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         self.pb_avancement.setValue(20)
         temp = QTimer 
             #Lancement de la fonction d'analyse      
-        temp.singleShot(100, self.analyseSocle)
+        temp.singleShot(100, self.evolMos)
 
-    def analyseSocle(self):
+    def evolMos(self):
         #Fonction calculant les évolution entre l'année t0 et l'année t-1
         #Prend en compte les données des ficheirs foncier sur les dates de construction des bâtiments
         #Dans le cas où des données bâtiments à la date t-1 sont utilisées on calcul la surface de recouvrant sur la parcelle 
