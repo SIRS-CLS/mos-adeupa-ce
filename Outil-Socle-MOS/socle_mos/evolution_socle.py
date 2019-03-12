@@ -56,7 +56,8 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         self.connect(self.cb_schema, SIGNAL("activated(int)"), self.canStart)
         self.connect(self.cb_table, SIGNAL("activated(int)"), self.canStart)
         self.connect(self.cb_ff_parcelle, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.le_table_desti, SIGNAL("textChanged(QString)"), self.canStart)
+        self.connect(self.le_table_desti, SIGNAL("editingFinished()"), self.canStart)
+        self.connect(self.le_annee, SIGNAL("editingFinished()"), self.canStart)
 
 
     def connexion(self):
@@ -224,6 +225,9 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
 
     def canStart(self):
         #Fonction analysant si le programme peu être exécuté (tous les champs sont remplis) ou non
+        if len(self.le_annee.text()) != 4:
+            QMessageBox.critical(self, "Erreur", u"L'année doit se composer de 4 chiffres", QMessageBox.Ok)
+
         if self.cb_ff_parcelle.currentText() == '' or self.le_annee.text() == '' or self.cb_table.currentText() == '' or self.cb_schema_desti.currentText() == '' or self.le_table_desti.text() == '':
             self.pb_start.setEnabled(False)
         else:

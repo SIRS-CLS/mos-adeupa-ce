@@ -12,7 +12,7 @@ from db_manager.db_plugins.plugin import (
     DBPlugin,
     Schema,
     Table,
-    BaseErrorgit 
+    BaseError
 )
 from db_manager.db_plugins import createDbPlugin
 from db_manager.dlg_db_error import DlgDbError

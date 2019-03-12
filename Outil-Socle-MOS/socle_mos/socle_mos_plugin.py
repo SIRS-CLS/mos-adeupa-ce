@@ -46,9 +46,9 @@ class socle_mos:
         self.menuSocle.addAction(self.createSocle)
         self.menuSocle.addAction(self.compareSocle)
         self.menuSocle.addAction(self.analyseSocle)
-        self.menuSocle.addAction(self.repairSocle)
         self.menuSocle.addAction(self.evolSocle)
         self.menuSocle.addAction(self.evolGeomSocle)
+        self.menuSocle.addAction(self.repairSocle)
         self.interface.pluginMenu().addMenu(self.menuSocle)
 
 
@@ -57,9 +57,9 @@ class socle_mos:
         self.toolbarSocle.addAction(self.createSocle)
         self.toolbarSocle.addAction(self.compareSocle)
         self.toolbarSocle.addAction(self.analyseSocle)
-        self.toolbarSocle.addAction(self.repairSocle)
         self.toolbarSocle.addAction(self.evolSocle)
         self.toolbarSocle.addAction(self.evolGeomSocle)
+        self.toolbarSocle.addAction(self.repairSocle)
 
     def unload(self):
         self.interface.mainWindow().menuBar().removeAction(self.menuSocle.menuAction())

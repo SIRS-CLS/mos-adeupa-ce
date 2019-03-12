@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>627</height>
+    <width>505</width>
+    <height>605</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -17,12 +17,31 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mise à jour des géométries</string>
+   <string>Mise à jour des géométries ultérieures (t+1)</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_info">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 157, 157);</string>
+     </property>
+     <property name="text">
+      <string>Fonctionnalité en développement à ne pas utiliser en production.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -117,7 +136,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>Origine</string>
+      <string>Dernier MOS réalisé par PIAO</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -159,9 +178,25 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>Nouvelles géométries</string>
+      <string>Nouveau socle géométrique</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_info_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(189, 223, 255);</string>
+        </property>
+        <property name="text">
+         <string>La couche ne doit présenter aucun problème de topologie</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <layout class="QFormLayout" name="formLayout_3">
         <property name="fieldGrowthPolicy">
@@ -234,10 +269,10 @@
   <zorder>pb_avancement</zorder>
   <zorder>lbl_etape</zorder>
   <zorder>pb_dbConnect</zorder>
-  <zorder></zorder>
   <zorder>groupBox_2</zorder>
   <zorder>groupBox_3</zorder>
   <zorder>groupBox_4</zorder>
+  <zorder>label_info</zorder>
  </widget>
  <resources/>
  <connections/>

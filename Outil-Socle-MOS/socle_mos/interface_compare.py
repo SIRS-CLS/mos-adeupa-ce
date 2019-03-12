@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface_compare.ui'
 #
-# Created: Thu Nov 15 08:42:14 2018
-#      by: PyQt4 UI code generator 4.10.2
+# Created by: PyQt4 UI code generator 4.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,11 +25,17 @@ except AttributeError:
 class Ui_interface_compare(object):
     def setupUi(self, interface_compare):
         interface_compare.setObjectName(_fromUtf8("interface_compare"))
-        interface_compare.resize(578, 309)
+        interface_compare.resize(578, 331)
         interface_compare.setMaximumSize(QtCore.QSize(16777215, 16777215))
         interface_compare.setSizeGripEnabled(True)
         self.verticalLayout = QtGui.QVBoxLayout(interface_compare)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.label_info = QtGui.QLabel(interface_compare)
+        self.label_info.setStyleSheet(_fromUtf8("\n"
+"background-color: rgb(255, 254, 190);"))
+        self.label_info.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_info.setObjectName(_fromUtf8("label_info"))
+        self.verticalLayout.addWidget(self.label_info)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.label = QtGui.QLabel(interface_compare)
@@ -91,9 +96,10 @@ class Ui_interface_compare(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 541, 112))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 545, 118))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.gridLayout_2 = QtGui.QGridLayout(self.scrollAreaWidgetContents_2)
+        self.gridLayout_2.setMargin(0)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
@@ -172,6 +178,10 @@ class Ui_interface_compare(object):
         self.cb_table_t1.setSizePolicy(sizePolicy)
         self.cb_table_t1.setObjectName(_fromUtf8("cb_table_t1"))
         self.gridLayout.addWidget(self.cb_table_t1, 1, 1, 1, 1)
+        self.cb_table_t1.raise_()
+        self.cb_schema_t1.raise_()
+        self.label_27.raise_()
+        self.label_26.raise_()
         self.verticalLayout_3.addWidget(self.groupBox_4)
         self.gridLayout_2.addLayout(self.verticalLayout_3, 0, 1, 1, 1)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
@@ -192,12 +202,19 @@ class Ui_interface_compare(object):
         self.pb_avancement.setProperty("value", 24)
         self.pb_avancement.setObjectName(_fromUtf8("pb_avancement"))
         self.verticalLayout.addWidget(self.pb_avancement)
+        self.pb_start.raise_()
+        self.pb_avancement.raise_()
+        self.lbl_etape.raise_()
+        self.pb_dbConnect.raise_()
+        self.scrollArea.raise_()
+        self.label_info.raise_()
 
         self.retranslateUi(interface_compare)
         QtCore.QMetaObject.connectSlotsByName(interface_compare)
 
     def retranslateUi(self, interface_compare):
         interface_compare.setWindowTitle(_translate("interface_compare", "Ajout d\'un nouveau millésime (t+1)", None))
+        self.label_info.setText(_translate("interface_compare", "Ne fonctionne que sur les couches automatiques (hors PIAO)", None))
         self.label.setText(_translate("interface_compare", "Sélectionner la connexion à la base de données", None))
         self.pb_dbConnect.setText(_translate("interface_compare", "Connecter", None))
         self.label_2.setText(_translate("interface_compare", "Schéma destination", None))

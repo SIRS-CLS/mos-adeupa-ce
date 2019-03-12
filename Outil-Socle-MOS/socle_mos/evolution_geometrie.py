@@ -240,7 +240,7 @@ class EvolGeom_mos(QDialog, Ui_interface_evolgeom):
                 create temp table vm_temp_insert_new_geom as
                     select * from tt_temp_new_geom where surf_perc_new > 1.5 and surf_perc > 1.5 and indic_con < 4 
                                                    and ( surf_perc < 99) 
-                                                    and (surf_perc_new + surf_perc > 50);
+                                                    and (old_subdi_sirs is null);
 
                     -- Récupération des anciennes données avec les nouvelles géométries                        
                 drop table if exists tt_old_to_new_geom;
