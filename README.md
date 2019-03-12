@@ -17,3 +17,4 @@ URL dépôt externe de SIRS : http://qgis.sirs-fr.com/qgis_repo_sirs_dev/plugins
 | 02/01/2019  | 0.7.4   | bugfix de l'union des entités du RPGA + affichage des couches en doublon |
 | 07/01/2019  | 0.7.5   | bugfix de l'union des entités dans l'interface comparaison + affichage de l'interface réparation |
 | 15/01/2019  | 0.7.6   | bugfix de l'attribution les valeurs des sections dans le champ tex dans certains cas |
+| 12/03/2019  | 0.8.0   | Ajout de module d'évolution géométrique (beta) et attributaire pour remplacer la comparaison (cas de PIAO) |
