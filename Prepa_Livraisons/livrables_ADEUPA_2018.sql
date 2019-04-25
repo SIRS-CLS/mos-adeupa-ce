@@ -1834,3 +1834,169 @@ OWNER TO adeupa_user;
 
 
 
+
+
+
+----- CC HAut-Léon et CC Pays de Landivisiau
+DROP TABLE IF EXISTS livrables.livr_cc_haut_leon_cc_pays_landivisiau_2005_2015_2018;
+
+CREATE TABLE  livrables.livr_cc_haut_leon_cc_pays_landivisiau_2005_2015_2018 AS
+
+
+WITH 
+ sel AS(
+
+SELECT 
+   
+  ocs.geom::geometry(MultiPolygon,2154) AS geom,
+  ocs.to_milit,
+  ocs.to_bati,
+  ocs.to_batire,
+  ocs.to_batagri,
+  ocs.to_serre, 
+  ocs.to_indust,
+  ocs.to_comer,
+  --ocs.to_zic, 
+  --ocs.to_transp, 
+  --ocs.to_voiefer, 
+  --ocs.to_carrier, 
+  --ocs.to_cime, 
+  ocs.to_sport,
+  ocs.to_loisir,
+  ocs.to_agri,
+  ocs.to_veget, 
+  ocs.to_eau,
+  ocs.to_route,
+  ocs.to_batimaison,
+  ocs.pre_scol,
+  ocs.pre_sante,
+  ocs.pre_eqadmi, 
+  ocs.pre_o_nrj,
+  ocs.pre_transp,
+  ocs.pre_sploi,
+  ocs.prob_jardin,
+  ocs.m_fonction,
+  ocs.idu,
+  ocs.num_parc,
+  ocs.tex,
+  ocs.section,
+  ocs.code_insee, 
+  ocs.id_mos,
+  ocs.subdi_sirs,
+  ocs.code4_2005,
+  ocs.remarque_2005, 
+  ocs.code4_2015,
+  ocs.remarque_2015, 
+  ocs.code4_2018,
+  ocs.remarque_2018
+
+
+ 
+ 
+FROM production.mos_haut_leon_2005_2015_2018_prod ocs
+GROUP BY
+  ocs.geom,
+  ocs.to_milit,
+  ocs.to_bati,
+  ocs.to_batire,
+  ocs.to_batagri,
+  ocs.to_serre, 
+  ocs.to_indust,
+  ocs.to_comer,
+  --ocs.to_zic, 
+  --ocs.to_transp, 
+  --ocs.to_voiefer, 
+  --ocs.to_carrier, 
+  --ocs.to_cime, 
+  ocs.to_sport,
+  ocs.to_loisir,
+  ocs.to_agri,
+  ocs.to_veget, 
+  ocs.to_eau,
+  ocs.to_route,
+  ocs.to_batimaison,
+  ocs.pre_scol,
+  ocs.pre_sante,
+  ocs.pre_eqadmi, 
+  ocs.pre_o_nrj,
+  ocs.pre_transp,
+  ocs.pre_sploi,
+  ocs.prob_jardin,
+  ocs.m_fonction,
+  ocs.idu,
+  ocs.num_parc,
+  ocs.tex,
+  ocs.section,
+  ocs.code_insee, 
+  ocs.id_mos,
+  ocs.subdi_sirs,
+  ocs.code4_2005,
+  ocs.remarque_2005,
+  ocs.code4_2015,
+  ocs.remarque_2015, 
+  ocs.code4_2018,
+  ocs.remarque_2018
+)
+SELECT
+  ROW_NUMBER() OVER()::integer as gid,
+  ocs.geom::geometry(MultiPolygon,2154) AS geom,
+  ocs.to_milit::integer,
+  ocs.to_bati::integer,
+  ocs.to_batire::integer,
+  ocs.to_batagri::integer,
+  ocs.to_serre::integer, 
+  ocs.to_indust::integer,
+  ocs.to_comer::integer,
+  NULL::integer as to_zic, 
+  NULL::integer as to_transp, 
+  NULL::integer as to_voiefer, 
+  NULL::integer as to_carrier, 
+  NULL::integer as to_cime, 
+  ocs.to_sport::integer,
+  ocs.to_loisir::integer,
+  ocs.to_agri::integer,
+  ocs.to_veget::integer as to_veget, 
+  ocs.to_eau::integer,
+  ocs.to_route::integer,
+  ocs.to_batimaison::integer as to_batimai,
+  ocs.pre_scol::integer,
+  ocs.pre_sante::integer,
+  ocs.pre_eqadmi::integer, 
+  ocs.pre_o_nrj::integer,
+  ocs.pre_transp::integer,
+  ocs.pre_sploi::integer,
+  ocs.prob_jardin::integer as prob_jardi,
+  ocs.m_fonction::character varying(255),
+  ocs.idu::character varying(50),
+  ocs.num_parc::character varying(50),
+  ocs.tex::character varying(20),
+  ocs.section::character varying(2),
+  ocs.code_insee::character varying(5), 
+  bdparc29.nom_com::character varying(255) as nomcommune,
+  ocs.id_mos::character varying(50),
+  ocs.subdi_sirs::character varying(5),
+  ocs.code4_2005::integer,
+  nomenclature05.libelle_n4::character varying(75) as lib4_2005,
+  ocs.remarque_2005::character varying(255) as remarque05,
+  ocs.code4_2015::integer,
+  nomenclature15.libelle_n4::character varying(75) as lib4_2015,
+  ocs.remarque_2015::character varying(255) as remarque15,
+  ocs.code4_2018::integer,
+  nomenclature18.libelle_n4::character varying(75) as lib4_2018,
+  ocs.remarque_2018::character varying(255) as remarque18,
+  ST_Area(ocs.geom)::double precision as surface_m2,
+  ST_Perimeter(ocs.geom)::double precision as perimetre
+
+FROM
+  sel as ocs
+ 
+LEFT JOIN production.nomenclature_niv4 nomenclature05 ON ocs.code4_2005 = nomenclature05.code_n4
+LEFT JOIN production.nomenclature_niv4 nomenclature15 ON ocs.code4_2015 = nomenclature15.code_n4
+LEFT JOIN production.nomenclature_niv4 nomenclature18 ON ocs.code4_2018 = nomenclature18.code_n4
+LEFT JOIN data_exo.communes_bd_parcellaire_d29_2017 bdparc29 ON ocs.code_insee = bdparc29.code_insee
+
+
+;
+
+ALTER TABLE livrables.livr_cc_haut_leon_cc_pays_landivisiau_2005_2015_2018
+OWNER TO adeupa_user;
