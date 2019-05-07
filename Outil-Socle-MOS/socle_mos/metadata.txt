@@ -7,15 +7,15 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Socle-MOS
+name=MOS ADEUPA
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
-description=Outil de génération et de croisement de modes d'occupation du sol
-version=0.8.0
+description=Outil de génération et de croisement de modes d'occupation du sol de l’ADEUPa Brest Bretagne
+version=0.8.1
 author=Corentin Falcone (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
-about=Ce plugin propose 3 grandes fonctionnalités : 
+about=Ce plugin financé par l’ADEUPa Brest Bretagne propose 3 grandes fonctionnalités :
 	- Constitution d'un socle de mode d'occupation des sols à l'échelle parcellaire (t0)
 	- Mise à jour géométrique et attributaire (t+1) sur un socle
 	- Création d'un millésime attributaire sur une date antérieure (t-1)existant
@@ -30,9 +30,9 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 changelog=
   Version 0.8.0
    * Ajout du module d'évolution attributaire : Calcul des évolutions t+1 avec les fichiers fonciers.
-   * Ajout du module d'évolution géométrique : Réafectation des nouvelles géométries à l'aide d'un nouveau socle géoémtrique et du dernier livrable PIAO.
+   * Ajout du module d'évolution géométrique : Réaffectation des nouvelles géométries à l'aide d'un nouveau socle géométrique et du dernier livrable PIAO.
    * Module d'évolution géométrique en version beta, des ajustements sont nécessaire pour parfaitement mettre à jour la base cadastrale.
-   * Modification de l'affichage de l'outil de comparaison de socle. Ce dernier n'est fonctionnel que sur des génération automatiques sans travail de PIAO.
+   * Modification de l'affichage de l'outil de comparaison de socle. Ce dernier n'est fonctionnel que sur des générations automatiques sans travail de PIAO.
   Version 0.7.6
    * Correction d'un bug attribuant les valeurs des sections dans le champ tex.
   Version 0.7.5
