@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from qgis.PyQt.QtWidgets import *
-from PyQt4.QtSql import *
+from PyQt5.QtSql import *
 from qgis.core import *
 from qgis.gui import *
 import os, sys
@@ -18,10 +18,10 @@ from db_manager.db_plugins import createDbPlugin
 from db_manager.dlg_db_error import DlgDbError
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
-from interface_compare import *
+from .interface_compare import *
 
 class Compare_mos(QDialog, Ui_interface_compare):
-    def __init__(self, interface):
+    def __init__(self, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.host = None
@@ -37,7 +37,7 @@ class Compare_mos(QDialog, Ui_interface_compare):
         self.lbl_etape.setText(None)
         
             #Déclenchement de la création du socle
-        self.connect(self.pb_start, SIGNAL("clicked()"), self.start)
+        self.pb_start.clicked.connect(self.start)
 
             #initialisation du bouton de commencement en inclickable
         self.pb_start.setEnabled(False)
@@ -46,16 +46,16 @@ class Compare_mos(QDialog, Ui_interface_compare):
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
         self.updateConnectionList()
 
-        self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.chargeSchema)
+        self.pb_dbConnect.clicked.connect(self.chargeSchema)
 
-        self.connect(self.cb_schema_t1, SIGNAL("activated(int)"), self.chargeTable0)
-        self.connect(self.cb_schema_t0, SIGNAL("activated(int)"), self.chargeTable1)
+        self.cb_schema_t1.activated.connect(self.chargeTable0)
+        self.cb_schema_t0.activated.connect(self.chargeTable1)
       
             #Déclenchement de la vérification de la totalité des champs rentrés pour lancer le programme
-        self.connect(self.cb_schema_t0, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_schema_t1, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_table_t1, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_table_t0, SIGNAL("activated(int)"), self.canStart)
+        self.cb_schema_t0.activated.connect(self.canStart)
+        self.cb_schema_t1.activated.connect(self.canStart)
+        self.cb_table_t1.activated.connect(self.canStart)
+        self.cb_table_t0.activated.connect(self.canStart)
 
 
     def connexion(self):

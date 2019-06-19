@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from qgis.PyQt.QtWidgets import *
-from PyQt4.QtSql import *
+from PyQt5.QtSql import *
 from qgis.core import *
 from qgis.gui import *
 import os, sys
@@ -18,10 +18,10 @@ from db_manager.db_plugins import createDbPlugin
 from db_manager.dlg_db_error import DlgDbError
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
-from interface_evolution import *
+from .interface_analyse import *
 
-class Evolution_mos(QDialog, Ui_interface_evolution):
-    def __init__(self, interface):
+class Analyse_mos(QDialog, Ui_interface_analyse):
+    def __init__(self, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.host = None
@@ -34,30 +34,29 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
 
         self.pb_avancement.setValue(False)
         self.lbl_etape.setText(None)
-
+        
             #Déclenchement de la création du socle
-        self.connect(self.pb_start, SIGNAL("clicked()"), self.start)
+        self.pb_start.clicked.connect(self.start)
 
             #initialisation du bouton de commencement en inclickable
         self.pb_start.setEnabled(False)
+        self.rb_geom.setChecked(True)
 
             #Déclenchement du chargement des données de la base dans les combobox
-        self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.chargeSchema)
-        self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.charge)
+        self.pb_dbConnect.clicked.connect(self.chargeSchema)
+        self.pb_dbConnect.clicked.connect(self.charge)
 
 
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
         self.updateConnectionList()
 
-        self.connect(self.cb_schema, SIGNAL("activated(int)"), self.chargeTable)
+        self.cb_schema.activated.connect(self.chargeTable)
       
             #Déclenchement de la vérification de la totalité des champs rentrés pour lancer le programme
-        self.connect(self.cb_schema_desti, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_schema, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_table, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_ff_parcelle, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.le_table_desti, SIGNAL("editingFinished()"), self.canStart)
-        self.connect(self.le_annee, SIGNAL("editingFinished()"), self.canStart)
+        self.cb_schema_desti.activated.connect(self.canStart)
+        self.cb_schema.activated.connect(self.canStart)
+        self.cb_table.activated.connect(self.canStart)
+        self.cb_ff_parcelle.activated.connect(self.canStart)
 
 
     def connexion(self):
@@ -96,6 +95,9 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         for c in dbpluginclass.connections():
             self.cb_connexion.addItem( str(c.connectionName()))
             self.connectionDbList.append(str(c.connectionName()))
+
+
+
         QApplication.restoreOverrideCursor()
 
     def getConInfo(self):
@@ -145,6 +147,7 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         #initialise les combo box avec la liste des schema + table de la base
 
             #Initialisation vide des combobox        
+        self.cb_geobati.clear()
         self.cb_ff_parcelle.clear()
         db = self.connexion()
 
@@ -161,14 +164,24 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
             queryTable.prepare("Select distinct f_table_schema || '.' || f_table_name as tname from geometry_columns order by tname;")
             if queryTable.exec_():       
                 while queryTable.next():
+                    self.cb_geobati.addItem(queryTable.value(0))
                     self.cb_ff_parcelle.addItem(queryTable.value(0))
+                    self.cb_indust.addItem(queryTable.value(0))
+                    self.cb_batirem.addItem(queryTable.value(0))
+                    self.cb_bati_indif.addItem(queryTable.value(0))
 
         
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
+            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText(None))
             self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText(None))
+            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText(None))
             self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText('ff_d29_2015.d29_2015_pnb10_parcelle'))
             self.cb_schema.setCurrentIndex(self.cb_schema.findText('sandbox'))
-            self.cb_table.setCurrentIndex(self.cb_table.findText('morlaix_{0}_clean'))
+            self.cb_table.setCurrentIndex(self.cb_table.findText('morlaix_2018_clean'))
+
+            self.cb_indust.setCurrentIndex(self.cb_indust.findText(None))
+            self.cb_batirem.setCurrentIndex(self.cb_batirem.findText(None))
+            self.cb_bati_indif.setCurrentIndex(self.cb_bati_indif.findText(None))
 
 
     def chargeSchema(self):
@@ -225,9 +238,6 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
 
     def canStart(self):
         #Fonction analysant si le programme peu être exécuté (tous les champs sont remplis) ou non
-        if len(self.le_annee.text()) != 4:
-            QMessageBox.critical(self, "Erreur", u"L'année doit se composer de 4 chiffres", QMessageBox.Ok)
-
         if self.cb_ff_parcelle.currentText() == '' or self.le_annee.text() == '' or self.cb_table.currentText() == '' or self.cb_schema_desti.currentText() == '' or self.le_table_desti.text() == '':
             self.pb_start.setEnabled(False)
         else:
@@ -239,7 +249,35 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         #Fonction de lancement du programme
         self.lbl_etape.setText(u'Etape 1/2')
         self.pb_start.setEnabled(False)
-        self.pb_avancement.setValue(0)        
+        self.pb_avancement.setValue(0)
+
+            #Attribution du champ geometrie
+        if self.rb_geom.isChecked():
+            self.geom = 'geom'
+        else:
+            self.geom = 'the_geom'
+
+            #Recherche des couches présentes au lancement de l'analyse
+        if self.cb_geobati.currentText() == '':
+            self.geo_bati = 'none'
+        else:
+            self.geo_bati = self.cb_geobati.currentText()
+
+        if self.cb_indust.currentText() == '':
+            self.indust = 'none'
+        else: 
+            self.indust = self.cb_indust.currentText()
+
+        if self.cb_batirem.currentText() == '':
+            self.bati_rem = 'none'
+        else:
+            self.bati_rem = self.cb_batirem.currentText()
+
+        if self.cb_bati_indif.currentText() == '':
+            self.bati_indif = 'none'
+        else:
+            self.bati_indif = self.cb_bati_indif.currentText()
+        
 
         self.conn = psycopg2.connect(host=self.host, port=self.port, user=self.username, dbname=self.database, password=self.pwd )
 
@@ -702,7 +740,7 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         cur.execute(u"""Select column_name
                         from information_schema.columns 
                         where table_schema||'.'||table_name  = '{0}.{1}'  
-                        and column_name like 'code4%'
+                        and column_name like 'code4%' 
                         order by column_name desc 
 
                     """.format(self.cb_schema.currentText(),
@@ -773,9 +811,9 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
         self.pb_avancement.setValue(20)
         temp = QTimer 
             #Lancement de la fonction d'analyse      
-        temp.singleShot(100, self.evolMos)
+        temp.singleShot(100, self.analyseSocle)
 
-    def evolMos(self):
+    def analyseSocle(self):
         #Fonction calculant les évolution entre l'année t0 et l'année t-1
         #Prend en compte les données des ficheirs foncier sur les dates de construction des bâtiments
         #Dans le cas où des données bâtiments à la date t-1 sont utilisées on calcul la surface de recouvrant sur la parcelle 
@@ -815,184 +853,236 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
             #Lancement de l'analyse
         cur5 = self.conn.cursor()
         cur5.execute(u"""
-                --Création de la table en sortie sans les dates
-                drop table if exists {41}.{42};
-                Create table {41}.{42} as  
-                    (select 
-                        to_milit,
-                        to_bati,
-                        to_batire,
-                        to_batagri,
-                        to_serre,
-                        to_indust,
-                        to_comer,
-                        to_sport,
-                        to_loisir,
-                        to_agri,
-                        to_veget,
-                        to_eau,
-                        to_route,
-                        to_batimaison,
-                        pre_scol,
-                        pre_sante,
-                        pre_eqadmi,
-                        pre_o_nrj,
-                        pre_transp,
-                        pre_sploi,
-                        prob_jardin,
-                        m_fonction,
-                        idu,
-                        num_parc,
-                        tex,
-                        section,
-                        code_insee,
-                        nom_commune,
-                        gid,
-                        id_mos,
-                        subdi_sirs, 
-                        geom
-                        from {2}.{3}
-                );
-                alter table  {41}.{42} add constraint pk_{42}_1 primary key (gid);
-                create index idx_{42}_1 on {41}.{42} using gist(geom);
+                Create or replace function public.fun_bati_evol(i_socle_c text, 
+                                                                i_bati_t1 text, 
+                                                                i_foncier text,
+                                                                i_bati_indus text,
+                                                                i_bati_rem text,
+                                                                i_bati_indif text
+                                                                )
+                Returns void AS
+                    --Fonction de calcul des évolutions de construction sur le territoire
+                    --Met en correlation les fichiers fonciers et bâtiments edigeo
+                    --Entrée : - Socle de base année t0 
+                    --         - Batiment t-1 edigeo
+                    --         - Fichiers fonciers t0
+                    --         - Années t0
+                    --         - Année t-1 
+                    $BODY$
+                        DECLARE
+                            v_geom geometry(polygon,2154); -- Géométrie du socle
+                            v_id_mos character varying; -- code idu du socle
+                            v_gid integer; -- identifiant du socle
+                            v_code4 integer; -- Code de l'année courante
+                            v_lib4 character varying; -- libellé de l'année courante
+                            
+                            v_tobati integer;-- Taux de présence de bati sur la parcelle à l'année t0
 
-                DO 
-                    LANGUAGE plpgsql
-                $BODY$
-                    DECLARE
-                        v_annee character varying;
-                        v_datatype character varying;
-                    BEGIN
-                        For v_annee, v_datatype in Select right(column_name,4), data_type from information_schema.columns where table_schema||'.'||table_name  = '{2}.{3}' and column_name like 'code4%' order by column_name asc LOOP
-                            execute format('Alter table {41}.{42} add column code4_%1$s integer;
-                                            Alter table {41}.{42} add column lib4_%1$s character varying;
-                                            Alter table {41}.{42} add column remarque_%1$s character varying;
+                            v_tobati_old integer;-- Taux de bâtiment sur la parcelle
+                            v_evol boolean;--Définit si il y a évolution ou non
+                            v_tourbain integer; -- Taux d'urbain sur les parcelles en évolution
+                            v_mfonction character varying;-- Type de bâtiment sur la parcelle
 
-                                            update {41}.{42} x set 
-                                                    code4_%1$s = y.code4_%1$s,
-                                                    lib4_%1$s = y.lib4_%1$s,
-                                                    remarque_%1$s = y.remarque_%1$s
-                                                    from {2}.{3} y
-                                                    Where y.gid = x.gid
-                                            ', v_annee);
-                        END LOOP;
-                        Alter table {41}.{42} add column code4_{0} integer;
-                        Alter table {41}.{42} add column lib4_{0} character varying;
-                        Alter table {41}.{42} add column remarque_{0} character varying;
+                            v_tobatire integer; --Taux de bâtiment remarquable sur la parcelle
+                            v_tobatagri integer; -- Taux de bâtiment agricole sur la parcelle
+                            v_toindust integer; --Taux de bâtiment industriel sur la parcelle
+                            v_tocomer integer; -- Taux de bâtiment commercial sur la parcelle
+                            v_tobatimaison integer; -- Taux de batiment maison (bati indiferencie)
 
-                        Alter table {41}.{42} add column surface_m2 double precision;                        
-                        Alter table {41}.{42} add column perimetre double precision;
-                    END;
-                $BODY$;
 
-                Create or replace function public.fun_evol_t0_t1(
-                                                            i_socle_c text,
-                                                            i_foncier text
-                                                        )
-                    Returns void AS
-                    --Fonction de calcul des aménagements présents sur les parcelles
-                    --Met en correlation de nombreuses données recouvrant ou non une parcelle en indiquant la surface de recouvrement, ou si une présence est constaté
-                $BODY$
-                    DECLARE                      
-                        v_socle_total record; --Données du socle parcourues
-                        v_mfonction character varying; --Type de bâtiment sur la parcelle
-                        v_gravelius integer; -- Identification de la forme de la parcelle
-                    BEGIN
-                            --Récupération des données à corréler sur l'emprise
-                           
-                            execute format ('
-                                    drop table if exists vm_i_foncier;
-                                    create temporary table vm_i_foncier as 
-                                    select cegb.* 
-                                    from %1$s cegb 
-                                    join %2$s emp on st_intersects(cegb.geomloc, emp.geom)
-                                    Where tlocdomin != ''AUCUN LOCAL'';
-                                    Create index idx_vm_i_foncier on vm_i_foncier using gist(geomloc);
-                                    ', i_foncier, i_socle_c);
+                            v_yearMax integer;--Année de construction du dernier bâtiment de la parcelle
+                            v_yearMin integer; -- Année de constrauction du premier bâtiment de la parcelle
+                            v_newCode4 integer; -- Nouveau code à attributer pour l'ancienne date
+                            v_newLib4 character varying;-- Nouveau libellé à attribuer pour l'ancienne date
 
-                                                                                          
-                            --Parcours de toutes les parcelles pour affecter les calcul de présence qui lui sont propre
-                            -- Les calculs sont stockés dans des variables puis insérés en fin de boucle dans la table
-                        For v_socle_total IN execute format('Select * From %1$s sc;', i_socle_c) LOOP
-                            execute format ('Select tlocdomin
+
+                        BEGIN            
+                                --Parcours de toutes les parcelles pour affecter les calcul de présence qui lui sont propre
+                                --Les calculs sont stockés dans des variables puis insérés en fin de boucle dans la table
+                             execute format ('
+                                    drop table if exists {41}.{42};   
+                                    create table {41}.{42} as (
+                                        Select {7} as to_milit,
+                                                {8} as to_bati,
+                                                {9} as to_batire,
+                                                {10} as to_batagri,
+                                                {11} as to_serre,
+                                                {12} as to_indust,
+                                                {13} as to_comer,
+                                                {14} as to_sport,
+                                                {15} as to_loisir,
+                                                {16} as to_agri,
+                                                {17} as to_veget,
+                                                {18} as to_eau,
+                                                {19} as to_route,
+                                                {20} as to_batimaison,
+                                                {21} as pre_scol,
+                                                {22} as pre_sante,
+                                                {23} as pre_eqadmi,
+                                                {24} as pre_o_nrj,
+                                                {25} as pre_transp,
+                                                {26} as pre_sploi,
+                                                {27} as prob_jardin,
+                                                {28} as m_fonction,
+                                                0::integer as to_bati_old,
+                                                0::integer as to_urbain, 
+                                                False::boolean as est_evol,
+                                                {29} as idu,
+                                                {30} as num_parc,
+                                                {31} as tex,
+                                                {32} as section,
+                                                {33} as code_insee,
+                                                {46} as nom_commune,
+                                                gid,
+                                                geom,
+                                                {34} as id_mos,
+                                                {35} as subdi_sirs,
+                                                0::integer as code4_{0},
+                                                null::character varying as lib4_{0},
+                                                null::character varying as remarque_{0},
+                                                {36} as code4_{1},
+                                                {37} as lib4_{1},
+                                                {38} as remarque_{1},
+                                                {39} as surface_m2,
+                                                {40} as perimetre
+                                            From %1$s   
+                                    );
+                                    Alter table {41}.{42} add constraint pk_{41}_{42} PRIMARY KEY (gid);
+                                    create index idx_{41}_{42} on {41}.{42} using gist(geom);
+                            ', i_socle_c);
+
+                            For v_geom, v_gid, v_id_mos, v_code4, v_lib4, v_tobati IN execute format('Select geom, gid, {34}, {36}, {37}, {8} From %1$s sc;', i_socle_c) LOOP
+                                        --calcul d'évolution par fichiers foncier : Date de première et dernière création de bâtiment sur la parcelle
+                                    execute format('Select jannatmin, jannatmax
+                                                From %1$s f
+                                                Where f.idpar = ''%2$s'';',i_foncier, v_id_mos)
+                                into v_yearMin, v_yearMax;
+                                v_tobati_old = 0;
+
+                                if v_yearMin = -1  and v_yearMax = -1 then
+                                    v_evol = FALSE;
+                                elsif v_yearMin > {0} then
+                                    --Evolution détecté : date de première création posterieur à t-1
+                                    v_evol = TRUE;
+                                else 
+                                    --Pas d'évolution : aucune date, ou bâtiment déjà existant, ou pas de bâtiment
+                                            --Calcul du taux de bâtiment présent sur la parcelle avec les données bati t-1
+                                    if i_bati_t1 != 'none' then
+                                        execute format ('Select ((st_area(st_safe_intersection(st_union(pm.geom), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
-                                                        Where st_intersects(pm.geomloc, ''%2$s'')
-                                                        order by tlocdomin desc
-                                                    ', 'vm_i_foncier', v_socle_total.geom)
-                                into v_mfonction;
-                            if st_area(v_socle_total.geom) < 25 then
-                                execute format('
-                                    update %1$s 
-                                        set code4_{0} = code4_{1},
-                                            lib4_{0} =  lib4_{1}
-                                            where gid = %2$s
-                                ',i_socle_c, v_socle_total.gid);
+                                                        Where st_intersects(''%2$s'', pm.geom) 
+                                                    ', i_bati_t1, v_geom)
+                                    into v_tobati_old;
+                                    end if;
 
-                            elsif (st_perimeter(v_socle_total.geom)/(2 * sqrt(3.14* st_area(v_socle_total.geom)))) > 3 then
-                                execute format('
-                                    update %1$s 
-                                        set code4_{0} = code4_{1},
-                                            lib4_{0} =  lib4_{1}
-                                            where gid = %2$s
-                                ',i_socle_c, v_socle_total.gid);
+                                    if i_bati_indif != 'none' then
 
-                            elsif v_mfonction = 'MAISON' or v_mfonction = 'DEPENDANCE' then
-                                if v_socle_total.code4_{1} = 1412 then
-                                    execute format('
-                                        update %1$s 
-                                            set code4_{0} = code4_{1},
-                                                lib4_{0} =  lib4_{1}
-                                                where gid = %2$s
-                                    ',i_socle_c, v_socle_total.gid);
-                                else
-                                    execute format('
-                                        update %1$s 
-                                            set code4_{0} = 1112,
-                                                lib4_{0} =  ''Habitat individuel''
-                                                where gid = %2$s
-                                    ',i_socle_c, v_socle_total.gid);
+                                                --Calcul du taux de maison présentes sur la parcelles (bati indiferencie)
+                                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{6}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                        From %1$s pm
+                                                        Where st_intersects(''%2$s'', pm.{6}) 
+                                                    ', i_bati_indif, v_geom)
+                                        into v_tobatimaison;
+                                        if v_tobati_old < v_tobatimaison then
+                                            v_tobati_old = v_tobatimaison;
+                                        end if;
+
+                                    end if;
+
+                                    if i_bati_rem != 'none' then
+                                                --Calcul du taux de présence de bâtiment remarquable
+                                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{6}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                                From %1$s pm
+                                                                Where st_intersects(''%2$s'', pm.{6}) 
+                                                            ', i_bati_rem, v_geom)
+                                        into v_tobatire;
+                                        if v_tobati_old < v_tobatire then
+                                            v_tobati_old = v_tobatire;
+                                        end if;
+                                    end if;
+
+                                    if i_bati_indus != 'none' then
+                                                --Calcul du taux de présence de bâtiments agricole
+                                            execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{6}), ''%2$s''))*100)/st_area(''%2$s''))::integer
+                                                                From %1$s pm
+                                                                Where st_intersects(''%2$s'', pm.{6}) 
+                                                            ', i_bati_indus, v_geom)
+                                        into v_tobatagri;
+                                        if v_tobati_old < v_tobatagri then
+                                            v_tobati_old = v_tobatagri;
+                                        end if;
+                                    end if;
+
+                                    if i_bati_indus != 'none' or i_bati_rem != 'none' or i_bati_indif != 'none' or i_bati_t1 != 'none' then
+                                        if v_tobati > 70 and v_tobati_old < 2 then
+                                            --Evolution détecté : présence de bâtiment en t0 sans présence de bâtiment en t-1
+                                            v_evol = TRUE;
+                                        else
+                                            v_evol = FALSE;
+                                        end if;
+                                    else 
+                                        v_evol = FALSE;
+                                    end if;
+
                                 end if;
 
-                            elsif v_mfonction = 'APPARTEMENT' then
-                                execute format('
-                                    update %1$s 
-                                        set code4_{0} = 1113,
-                                            lib4_{0} =  ''Habitat collectif''
-                                            where gid = %2$s
-                                ',i_socle_c, v_socle_total.gid);
+                                if v_evol then
+                                    --Pour toutes les évolutions détectés, on cherche à attribuer le code terrain vacant ou terre agricole
+                                            --Recherche de taux de présence d'urbanisation dans un rayon de 10m de la parcelle 
+                                        execute format('With tmpBuffer as (
+                                                            Select (st_dump(st_collectionextract(st_safe_difference(st_buffer(geom,10), geom),3))).geom::geometry(polygon,2154) as geom
+                                                            From %1$s
+                                                            Where gid = %2$s
+                                                        ), tmpUrbain as (
+                                                            Select st_union(a.geom) as geom
+                                                            FROM %1$s a
+                                                            Join tmpBuffer t on st_intersects(a.geom, t.geom)
+                                                            Where code4_2018 in (''1112'', ''1113'', ''1114'', ''1213'', ''1214'', ''1215'', ''1211'', ''1212'')
+                                                        ) 
+                                                            Select ((st_area(st_safe_intersection(a.geom, t.geom))*100)/st_area(t.geom))::integer
+                                                            From tmpBuffer t,tmpUrbain a
+                                                    ', i_socle_c, v_gid)
+                                    into v_tourbain;
+                                    
 
-                            elsif v_mfonction = 'MIXTE' then 
-                                execute format('
-                                    update %1$s 
-                                        set code4_{0} = 1114,
-                                            lib4_{0} =  ''Urbain mixte (habitat/activité tertiaire)''
-                                            where gid = %2$s
-                                ',i_socle_c, v_socle_total.gid);
+                                    if v_tourbain > 40 then
+                                        --Si il y a plus de 50/100  d'urbanisation, alors c'était un terrain vacant
+                                        v_newCode4 = 1333;
+                                        v_newLib4 = 'Terrain vacant à vocation autre';
+                                    else
+                                        --Sinon, c'était une terre agricole
+                                        v_newCode4 = 2511;
+                                        v_newLib4 = 'Terre agricole';
+                                    end if;
+                                else
+                                    --Si il n'y a pas eu d'évolution détécté, alors on récupère les anciens codes 
+                                    v_newCode4 = v_code4;
+                                    v_newLib4 = v_lib4;
+                                    v_tourbain = 0;
+                                end if;
 
-                            else 
-                                execute format('
-                                    update %1$s 
-                                        set code4_{0} = code4_{1},
-                                            lib4_{0} =  lib4_{1}
-                                            where gid = %2$s
-                                ',i_socle_c, v_socle_total.gid);
-                            end if;
-                        END LOOP;
-                    RETURN;
-                    END;
-                $BODY$
-                    LANGUAGE 'plpgsql';
+                                    update {41}.{42}
+                                    Set est_evol = v_evol,
+                                        code4_{0} = v_newCode4,
+                                        lib4_{0} = v_newLib4 ,
+                                        to_urbain = v_tourbain ,
+                                        to_bati_old = v_tobati_old
+                                    where gid = v_gid;                                    
 
-                    select fun_evol_t0_t1('{41}.{42}', '{5}');
+                            END LOOP;
+                        RETURN;
+                        END;
+                    $BODY$
+                        LANGUAGE 'plpgsql';
 
-                    update {41}.{42} set surface_m2 = st_area(geom), perimetre = st_perimeter(geom);
+                    select fun_bati_evol('{2}.{3}', '{4}', '{5}', '{43}', '{44}', '{45}' );
 
                     """.format(
-                        yearCode_t1,#0
-                        yearCode_t0[0],#1
-                        self.cb_schema.currentText(),#2
-                        self.cb_table.currentText(),#3
-                        None,#4
+                        yearCode_t1,
+                        yearCode_t0[0],
+                        self.cb_schema.currentText(),
+                        self.cb_table.currentText(),
+                        self.geo_bati,#4
                         self.cb_ff_parcelle.currentText(),
                         self.geom,
                         self.to_milit[0],#7
@@ -1031,9 +1121,9 @@ class Evolution_mos(QDialog, Ui_interface_evolution):
                         self.perimetre[0],#40
                         self.cb_schema_desti.currentText(),#41
                         self.le_table_desti.text(),#42
-                        None,#43
-                        None,#44
-                        None,#45
+                        self.indust,#43
+                        self.bati_rem,#44
+                        self.bati_indif,#45
                         self.nom_com[0]#46
                         )
                     )

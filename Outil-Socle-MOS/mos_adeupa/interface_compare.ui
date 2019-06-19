@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>578</width>
-    <height>331</height>
+    <width>750</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -135,8 +135,8 @@ background-color: rgb(255, 254, 190);</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>545</width>
-        <height>118</height>
+        <width>717</width>
+        <height>122</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
