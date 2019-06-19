@@ -2335,162 +2335,162 @@ class Create_mos(QDialog, Ui_interface_socle):
                             v_code4 = 0;
 
                             if v_socle.to_milit >= 20 then
-                                v_code4 = 1110;
+                                v_code4 = 1;
                                 v_lib4 = 'Défense (Espace naturel)';
 
                             elsif v_socle.m_fonction = 'MAISON' or v_socle.m_fonction = 'DEPENDANCE' then
                                 if v_socle.to_voiefer > 5 then
-                                    v_code4 = 1221;
+                                    v_code4 = 1;
                                     v_lib4 = 'Infrastructure de transport';
                                 elsif v_socle.to_agri > 50 Then 
-                                    v_code4 = 2511;
+                                    v_code4 = 2;
                                     v_lib4 = 'Terre agricole';
                                 else
-                                    v_code4 = 1112;
+                                    v_code4 = 1;
                                     v_lib4 = 'Habitat individuel';
                                 end if;
    
                             elsif v_socle.m_fonction = 'APPARTEMENT' then
-                                v_code4 = 1113;
+                                v_code4 = 1;
                                 v_lib4 = 'Habitat collectif';
 
                             elsif v_socle.m_fonction = 'MIXTE' then
-                                v_code4 = 1114;
+                                v_code4 = 1;
                                 v_lib4 = 'Urbain mixte (habitat/activité tertiaire)';
 
                             elsif v_socle.to_carrier > 40 then
-                                v_code4 = 1311;
+                                v_code4 = 1;
                                 v_lib4 = 'Carrière';
 
                             elsif v_socle.to_cime > 40 then
-                                v_code4 = 1411;
+                                v_code4 = 1;
                                 v_lib4 = 'Cimetière';
 
                             elsif v_socle.to_batimaison > 30 then
                                 if v_socle.pre_scol > 0  then
-                                    v_code4 = 1213;
+                                    v_code4 = 1;
                                     v_lib4 = 'Equipement d''enseignement';
                                 elsif v_socle.pre_sante > 0 then
-                                    v_code4 = 1214;
+                                    v_code4 = 1;
                                     v_lib4 = 'Equipement de santé';
                                 elsif v_socle.to_voiefer > 5 then
-                                    v_code4 = 1221;
+                                    v_code4 = 1;
                                     v_lib4 = 'Infrastructure de transport';
                                 elsif v_socle.to_agri > 50 Then 
-                                    v_code4 = 2511;
+                                    v_code4 = 2;
                                     v_lib4 = 'Terre agricole';
                                 else
-                                    v_code4 = 1112;
+                                    v_code4 = 1;
                                     v_lib4 = 'Habitat individuel';
                                 end if;
 
                             elsif v_socle.to_batire > 50 then
-                                v_code4 = 1122;
+                                v_code4 = 1;
                                 v_lib4 = 'Bâtiment remarquable';
 
                             elsif v_socle.to_batagri >= 20 then
-                                v_code4 = 1131;
+                                v_code4 = 1;
                                 v_lib4 = 'Bâtiment agricole';
 
                             elsif v_socle.to_serre >= 20 then
-                                v_code4 = 2121;
+                                v_code4 = 2;
                                 v_lib4 = 'Serre';
 
                             elsif v_socle.pre_scol > 0 then
-                                v_code4 = 1213;
+                                v_code4 = 1;
                                 v_lib4 = 'Equipement d''enseignement';
 
                             elsif v_socle.pre_sante > 0 then
-                                v_code4 = 1214;
+                                v_code4 = 1;
                                 v_lib4 = 'Equipement de santé';
 
                             elsif v_socle.pre_eqadmi > 0 then
-                                v_code4 = 1215;
+                                v_code4 = 1;
                                 v_lib4 = 'Autre équipement local, administration';
 
                             elsif v_socle.pre_o_nrj > 0 then
-                                v_code4 = 1216;
+                                v_code4 = 1;
                                 v_lib4 = 'Equipement pour eau, assainissement, énergie';
 
                             elsif v_socle.to_sport > 50 or v_socle.to_loisir > 50 or v_socle.pre_sploi = 1 then
                                 if v_socle.to_bati > 50 then
-                                    v_code4 = 1422;
+                                    v_code4 = 1;
                                     v_lib4 = 'Equipement sportif (construit)';
                                 else
-                                    v_code4 = 1421;
+                                    v_code4 = 1;
                                     v_lib4 = 'Sport et loisir';
                                 end if;
                             
                             elsif v_socle.pre_sploi = 2 then
-                                v_code4 = 1422;
+                                v_code4 = 1;
                                 v_lib4 = 'Equipement sportif (construit)';
 
                             elsif v_socle.prob_jardin > 0 then
                                 if v_socle.to_agri > 50 then
-                                    v_code4 = 2511;
+                                    v_code4 = 2;
                                     v_lib4 = 'Terre agricole';
                                 elsif v_socle.to_veget > 50 then
-                                    v_code4 = 3261;
+                                    v_code4 = 3;
                                     v_lib4 = 'Espace boisé';
                                 else
-                                    v_code4 = 1412;
+                                    v_code4 = 1;
                                     v_lib4 = 'Parc et jardin';
                                 end if;
                             elsif v_socle.to_agri > 50 then
-                                v_code4 = 2511;
+                                v_code4 = 2;
                                 v_lib4 = 'Terre agricole';
                             elsif v_socle.to_veget > 50 then
-                                    v_code4 = 3261;
+                                    v_code4 = 3;
                                     v_lib4 = 'Espace boisé';                               
                             elsif v_socle.m_fonction = '' and v_socle.to_bati > 50  then
-                                v_code4 = 1115;
+                                v_code4 = 1;
                                 v_lib4 = 'Bâti divers';
 
 
 
                             elsif v_socle.m_fonction = 'ACTIVITE' or v_socle.to_zic >= 20 or v_socle.to_comer >= 20 or v_socle.to_indust >= 20 or v_socle.to_bati > 50 then
                                 if v_socle.to_indust >= 20 then
-                                    v_code4 = 1212;
+                                    v_code4 = 1;
                                     v_lib4 = 'Activité autre que tertiaire';
                                 elsif v_socle.to_comer >= 20 then
-                                    v_code4 = 1217;
+                                    v_code4 = 1;
                                     v_lib4 = 'Surface commerciale';
                                 elseif v_socle.to_zic >= 20 then
-                                    v_code4 = 121;
+                                    v_code4 = 1;
                                     v_lib4 = '';
                                 else 
-                                    v_code4 = 1115;
+                                    v_code4 = 1;
                                     v_lib4 = 'Bâti divers';
                                 end if;
 
                             elsif v_socle.to_voiefer > 5 or v_socle.pre_transp = 1 then
-                                v_code4 = 1221;
+                                v_code4 = 1;
                                 v_lib4 = 'Infrastructure de transport';
 
                             elsif v_socle.to_route > 50 then
-                                v_code4 = 1222;
+                                v_code4 = 1;
                                 v_lib4 = 'Voie desserte habitat';
                             elsif v_socle.to_eau > 50 then
-                                v_code4 = 5121;
+                                v_code4 = 5;
                                 v_lib4 = 'Plan d''eau';
 
                             else 
-                                v_code4 = 3251;
+                                v_code4 = 3;
                                 v_lib4 = 'Espace naturel';
 
                             end if;
 
-                            if v_code4 = 3251 and v_socle.to_batimaison > 10 then
+                            if v_code4 = 3 and v_socle.to_batimaison > 10 then
                                   Select count(*)
                                             From {0}.{1} pm
                                             Where idu = v_socle.idu
                                             and m_fonction = 'MAISON'
                                 into v_is_maison;
                                 if v_is_maison > 0 then
-                                    v_code4 = 1112;
+                                    v_code4 = 1;
                                     v_lib4 = 'Habitat individuel';
                                 end if;
-                            elsif v_code4 = 3251 and  v_socle.to_batimaison > 1 then
+                            elsif v_code4 = 3 and  v_socle.to_batimaison > 1 then
                                   Select count(*)
                                             From {0}.{1} pm
                                             Where idu = v_socle.idu

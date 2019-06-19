@@ -6,11 +6,6 @@ from qgis.core import *
 import os
 from .resources import *
 from .create_socle import *
-from .repair_socle import *
-from .analyse_socle import *
-from .compare_socle import *
-from .evolution_socle import *
-from .evolution_geometrie import *
 
 class Mos_Adeupa:
     def __init__(self, iface):
@@ -133,49 +128,14 @@ class Mos_Adeupa:
 
     def initGui(self):
 
-        icon_path = ':plugins/socle_mos/icon_socle.png'
+        icon_path = ':plugins/mos_adeupa/icons/icon_socle.png'
         self.add_action(
             icon_path,
             text=self.tr(u'Réaliser un socle'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
-        icon_path = ':plugins/socle_mos/compare.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Comparer les socles'),
-            callback=self.runActionCompare,
-            parent=self.iface.mainWindow())
-
-        icon_path = ':plugins/socle_mos/analyse.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Réaliser une rétroévolution'),
-            callback=self.runActionAnalyse,
-            parent=self.iface.mainWindow())
-
-        icon_path = ':plugins/socle_mos/repair.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Réparer les géométries'),
-            callback=self.runActionRepair,
-            parent=self.iface.mainWindow())
-
-        icon_path = ':plugins/socle_mos/evol.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Réaliser une évolution attributaire'),
-            callback=self.runActionEvol,
-            parent=self.iface.mainWindow())
-
-        icon_path = ':plugins/socle_mos/geomevol.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Réaliser une évolution géométrique'),
-            callback=self.runActionEvolGeom,
-            parent=self.iface.mainWindow())
-
-
+      
 
         # iconCreateSocle = QIcon(os.path.dirname(__file__) + "/icon_socle.png")
         # self.createSocle = QAction(iconCreateSocle, u"Réaliser un socle", self.interface.mainWindow())
@@ -201,26 +161,6 @@ class Mos_Adeupa:
         # self.evolGeomSocle = QAction(iconEvol, u"Réaliser une évolution géométrique", self.interface.mainWindow())
         # QObject.connect(self.evolGeomSocle, SIGNAL("triggered()"), self.gereActionEvolGeom)
 
-        # self.menuSocle = QMenu(u"Socle MOS")
-        # self.menuSocle.setIcon(QIcon(os.path.dirname(__file__) + "/icon.png"))
-        # self.menuSocle.addAction(self.createSocle)
-        # self.menuSocle.addAction(self.compareSocle)
-        # self.menuSocle.addAction(self.analyseSocle)
-        # self.menuSocle.addAction(self.evolSocle)
-        # self.menuSocle.addAction(self.evolGeomSocle)
-        # self.menuSocle.addAction(self.repairSocle)
-        # self.interface.pluginMenu().addMenu(self.menuSocle)
-
-
-        # self.toolbarSocle = self.interface.addToolBar(u"socle_mos");
-        # self.toolbarSocle.setObjectName("barreOutilsocle__mos")
-        # self.toolbarSocle.addAction(self.createSocle)
-        # self.toolbarSocle.addAction(self.compareSocle)
-        # self.toolbarSocle.addAction(self.analyseSocle)
-        # self.toolbarSocle.addAction(self.evolSocle)
-        # self.toolbarSocle.addAction(self.evolGeomSocle)
-        # self.toolbarSocle.addAction(self.repairSocle)
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
@@ -236,96 +176,6 @@ class Mos_Adeupa:
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
 
         self.dlg = Create_mos()
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def runActionRepair(self):
-        """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-
-        self.dlg = RepairSocle()
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def runActionCompare(self):
-        """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-
-        self.dlg = Compare_mos()
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def runActionAnalyse(self):
-        """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-
-        self.dlg = Analyse_mos()
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def runActionEvol(self):
-        """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-
-        self.dlg = Evolution_mos()
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def runActionEvolGeom(self):
-        """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-
-        self.dlg = EvolGeom_mos()
 
         # show the dialog
         self.dlg.show()

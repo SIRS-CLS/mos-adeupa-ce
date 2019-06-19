@@ -1,12 +1,6 @@
 <RCC>
-    <qresource prefix="/plugins/socle_mos" >
-        <file>compare.png</file>
-        <file>icon.png</file>
-        <file>icon_socle.png</file>
-        <file>repair.png</file>
-        <file>stat.png</file>
-        <file>evol.png</file>
-        <file>analyse.png</file>
-        <file>geomevol.png</file>
+    <qresource prefix="/plugins/mos_adeupa" >
+        <file>icons/icon.png</file>
+        <file>icons/icon_socle.png</file>
     </qresource>
 </RCC>
