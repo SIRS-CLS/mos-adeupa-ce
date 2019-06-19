@@ -8,10 +8,9 @@
 
 [general]
 name=MOS ADEUPA
-qgisMinimumVersion=2.0
-qgisMaximumVersion=2.99
+qgisMinimumVersion=3.4
 description=Outil de génération et de croisement de modes d'occupation du sol de l’ADEUPa Brest Bretagne
-version=0.8.1
+version=1.0.0
 author=Corentin Falcone (SIRS) 
 email=corentin.falcone@sirs-fr.com
 
@@ -28,6 +27,8 @@ repository=http://git.sirs-fr.com/projet/adeupa/tree/master/Outil-Socle-MOS
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 1.0.0
+   * Migration du plugin en version 3.X
   Version 0.8.0
    * Ajout du module d'évolution attributaire : Calcul des évolutions t+1 avec les fichiers fonciers.
    * Ajout du module d'évolution géométrique : Réaffectation des nouvelles géométries à l'aide d'un nouveau socle géométrique et du dernier livrable PIAO.

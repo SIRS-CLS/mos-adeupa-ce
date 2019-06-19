@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from qgis.PyQt.QtWidgets import *
-from PyQt4.QtSql import *
+from PyQt5.QtSql import *
 from qgis.core import *
 from qgis.gui import *
 import os, sys
@@ -18,10 +18,10 @@ from db_manager.db_plugins import createDbPlugin
 from db_manager.dlg_db_error import DlgDbError
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
-from interface_evolgeom import *
+from .interface_evolgeom import *
 
 class EvolGeom_mos(QDialog, Ui_interface_evolgeom):
-    def __init__(self, interface):
+    def __init__(self, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.host = None
@@ -36,26 +36,26 @@ class EvolGeom_mos(QDialog, Ui_interface_evolgeom):
         self.lbl_etape.setText(None)
 
             #Déclenchement de la création du socle
-        self.connect(self.pb_start, SIGNAL("clicked()"), self.start)
+        self.pb_start.clicked.connect(self.start)
 
             #initialisation du bouton de commencement en inclickable
         self.pb_start.setEnabled(False)
 
             #Déclenchement du chargement des données de la base dans les combobox
-        self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.chargeSchema)
+        self.pb_dbConnect.clicked.connect(self.chargeSchema)
 
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
         self.updateConnectionList()
 
-        self.connect(self.cb_schema_origin, SIGNAL("activated(int)"), self.chargeTableOrigin)
-        self.connect(self.cb_schema_new, SIGNAL("activated(int)"), self.chargeTableNew)
+        self.cb_schema_origin.activated.connect(self.chargeTableOrigin)
+        self.cb_schema_new.activated.connect(self.chargeTableNew)
             #Déclenchement de la vérification de la totalité des champs rentrés pour lancer le programme
-        self.connect(self.cb_schema_desti, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_schema_origin, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_table_origin, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_schema_new, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.cb_table_new, SIGNAL("activated(int)"), self.canStart)
-        self.connect(self.le_table_desti, SIGNAL("textChanged(QString)"), self.canStart)
+        self.cb_schema_desti.activated.connect(self.canStart)
+        self.cb_schema_origin.activated.connect(self.canStart)
+        self.cb_table_origin.activated.connect(self.canStart)
+        self.cb_schema_new.activated.connect(self.canStart)
+        self.cb_table_new.activated.connect(self.canStart)
+        self.le_table_desti.textChanged.connect(self.canStart)
 
     def updateConnectionList(self):
         #Récupère les informations des connexion aux bases POSTGRES de QGIS

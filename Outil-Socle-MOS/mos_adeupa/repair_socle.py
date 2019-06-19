@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from qgis.PyQt.QtWidgets import *
-from PyQt4.QtSql import *
+from PyQt5.QtSql import *
 from qgis.core import *
 from qgis.gui import *
 import os, sys
@@ -18,10 +18,10 @@ from db_manager.db_plugins import createDbPlugin
 from db_manager.dlg_db_error import DlgDbError
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
-from interface_repair import *
+from .interface_repair import *
 
 class RepairSocle(QDialog, Ui_interface_repair):
-    def __init__(self, interface):
+    def __init__(self, parent=None):
         QDialog.__init__(self)
         self.setupUi(self)
         self.host = None
@@ -33,9 +33,9 @@ class RepairSocle(QDialog, Ui_interface_repair):
         self.lbl_etat.setText(None)
 
 
-        self.connect(self.pb_connect, SIGNAL("clicked()"), self.chargeSchema)
-        self.connect(self.cb_schema, SIGNAL("activated(int)"), self.chargeTable)
-        self.connect(self.pb_repair, SIGNAL("clicked()"), self.repairGeom)
+        self.pb_connect.clicked.connect(self.chargeSchema)
+        self.cb_schema.activated.connect(self.chargeTable)
+        self.pb_repair.clicked.connect(self.repairGeom)
       
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
         self.updateConnectionList()
@@ -170,23 +170,26 @@ class RepairSocle(QDialog, Ui_interface_repair):
                     self.cb_table.addItem(queryTable.value(0))
 
     def repairGeom(self):
-	temp = QTimer
-	self.lbl_etat.setText(u'Recherche des réparations en cours...')
-	temp.singleShot(100, self.funSqlRepair)
+    	temp = QTimer
+    	self.lbl_etat.setText('Recherche des réparations en cours...')
+    	temp.singleShot(100, self.funSqlRepair)
 
     def funSqlRepair(self):
-	db = self.connexion()
+        db = self.connexion()
             #Connexion à la base de données
         wschema_table = self.cb_schema.currentText() +'.' + self.cb_table.currentText()
         self.conn = psycopg2.connect(host=self.host, port=self.port, user=self.username, dbname=self.database, password=self.pwd )
         cur = self.conn.cursor()
         self.addFunctionSafe()
             #Execution de la suite de requête de création du socle
-	cur.execute(u"""
-                    update {0} 
-                    SET geom=ST_Safe_Repair(geom)::geometry(Polygon,2154)  
-                    WHERE ST_ISValid(geom) is FALSE;""".format(wschema_table))
-
+        sql = """
+            update {0} 
+                SET geom=ST_Safe_Repair(geom)::geometry(Polygon,2154)  
+                WHERE ST_ISValid(geom) is FALSE;
+        """.format(
+                wschema_table
+            )
+        cur.execute(sql)
         self.lbl_etat.setText(u'Terminé')
         cur.close()    
         self.conn.commit()

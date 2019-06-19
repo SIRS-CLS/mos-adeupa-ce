@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from qgis.PyQt.QtWidgets import *
-from PyQt4.QtSql import *
+from PyQt5.QtSql import *
 from qgis.core import *
 from qgis.gui import *
 import os, sys
@@ -18,11 +18,12 @@ from db_manager.db_plugins import createDbPlugin
 from db_manager.dlg_db_error import DlgDbError
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
-from interface_socle import *
+from .interface_socle import *
 
-class Createsocle__mos(QDialog, Ui_interface_socle):
-    def __init__(self, interface):
-        QDialog.__init__(self)
+class Create_mos(QDialog, Ui_interface_socle):
+    def __init__(self,  parent=None):
+        super(Create_mos, self).__init__(parent)
+
         self.setupUi(self)
         self.host = None
         self.port = None
@@ -39,66 +40,66 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         self.gb_genere.setEnabled(False)
         
             #Déclenchement de la création du socle
-        self.connect(self.pb_start, SIGNAL("clicked()"), self.start)
+        self.pb_start.clicked.connect(self.start)
 
             #initialisation du bouton de commencement en inclickable
         self.pb_start.setEnabled(False)
         self.rb_geom.setChecked(True)
 
             #Déclenchement du chargement des données de la base dans les combobox
-        self.connect(self.pb_dbConnect, SIGNAL("clicked()"), self.charge)
+        self.pb_dbConnect.clicked.connect(self.charge)
 
-        self.connect(self.cb_schema_geom, SIGNAL("activated(int)"), self.chargeTableGeom)
+        self.cb_schema_geom.activated.connect(self.chargeTableGeom)
             #Lancement de la liste des connexions QGIS au lancement de la fenêtre
         self.updateConnectionList()
 
-        self.connect(self.cbx_etape1, SIGNAL("stateChanged(int)"), self.blockGroupBox)
-        self.connect(self.cbx_etape2, SIGNAL("stateChanged(int)"), self.blockGroupBox)
-        self.connect(self.cbx_etape3, SIGNAL("stateChanged(int)"), self.blockGroupBox)
+        self.cbx_etape1.stateChanged.connect(self.blockGroupBox)
+        self.cbx_etape2.stateChanged.connect(self.blockGroupBox)
+        self.cbx_etape3.stateChanged.connect(self.blockGroupBox)
 
 
             #Déclenchement de la vérification de la totalité des champs rentrés pour lancer le programme
-        self.connect(self.cb_parcelle, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_subparc, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_tronroute, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_tronfluv, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_tsurf, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_geobati, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_rpga, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_finess, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_res_sport, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_ff_parcelle, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_parcellaire, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_pai_cult, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paitransp, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paisante, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_pairel, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paimilit, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paiens, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paicom, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paisport, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_paitransfo, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_cime, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_terrainsport, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_zoneveget, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_parcelle_bdtopo, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_route, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_ipli, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_remarquable, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_indust, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_indif, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_surf_eau, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_pt_eau, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_surf_acti, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_triage, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_voiefer, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_schema, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_section, SIGNAL("currentIndexChanged(int)"), self.canStart)
-        self.connect(self.cb_couche_geom, SIGNAL("currentIndexChanged(int)"), self.canStart)
+        self.cb_parcelle.currentIndexChanged.connect(self.canStart)
+        self.cb_subparc.currentIndexChanged.connect(self.canStart)
+        self.cb_tronroute.currentIndexChanged.connect(self.canStart)
+        self.cb_tronfluv.currentIndexChanged.connect(self.canStart)
+        self.cb_tsurf.currentIndexChanged.connect(self.canStart)
+        self.cb_geobati.currentIndexChanged.connect(self.canStart)
+        self.cb_rpga.currentIndexChanged.connect(self.canStart)
+        self.cb_finess.currentIndexChanged.connect(self.canStart)
+        self.cb_res_sport.currentIndexChanged.connect(self.canStart)
+        self.cb_ff_parcelle.currentIndexChanged.connect(self.canStart)
+        self.cb_parcellaire.currentIndexChanged.connect(self.canStart)
+        self.cb_pai_cult.currentIndexChanged.connect(self.canStart)
+        self.cb_paitransp.currentIndexChanged.connect(self.canStart)
+        self.cb_paisante.currentIndexChanged.connect(self.canStart)
+        self.cb_pairel.currentIndexChanged.connect(self.canStart)
+        self.cb_paimilit.currentIndexChanged.connect(self.canStart)
+        self.cb_paiens.currentIndexChanged.connect(self.canStart)
+        self.cb_paicom.currentIndexChanged.connect(self.canStart)
+        self.cb_paisport.currentIndexChanged.connect(self.canStart)
+        self.cb_paitransfo.currentIndexChanged.connect(self.canStart)
+        self.cb_cime.currentIndexChanged.connect(self.canStart)
+        self.cb_terrainsport.currentIndexChanged.connect(self.canStart)
+        self.cb_zoneveget.currentIndexChanged.connect(self.canStart)
+        self.cb_parcelle_bdtopo.currentIndexChanged.connect(self.canStart)
+        self.cb_route.currentIndexChanged.connect(self.canStart)
+        self.cb_ipli.currentIndexChanged.connect(self.canStart)
+        self.cb_remarquable.currentIndexChanged.connect(self.canStart)
+        self.cb_indust.currentIndexChanged.connect(self.canStart)
+        self.cb_indif.currentIndexChanged.connect(self.canStart)
+        self.cb_surf_eau.currentIndexChanged.connect(self.canStart)
+        self.cb_pt_eau.currentIndexChanged.connect(self.canStart)
+        self.cb_surf_acti.currentIndexChanged.connect(self.canStart)
+        self.cb_triage.currentIndexChanged.connect(self.canStart)
+        self.cb_voiefer.currentIndexChanged.connect(self.canStart)
+        self.cb_schema.currentIndexChanged.connect(self.canStart)
+        self.cb_section.currentIndexChanged.connect(self.canStart)
+        self.cb_couche_geom.currentIndexChanged.connect(self.canStart)
 
 
-        self.connect(self.le_destination, SIGNAL("textChanged(QString)"), self.canStart)
-        self.connect(self.le_annee, SIGNAL("textChanged(QString)"), self.canStart)
+        self.le_destination.textChanged.connect(self.canStart)
+        self.le_annee.textChanged.connect(self.canStart)
 
     def connexion(self):
         #Fonction de récupération des données de connexion à la base
@@ -309,42 +310,42 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
 
  
                 #initialisation des combo box avec la valeur nulle, pour pouvoir voir l'avancement de notre saisie
-            self.cb_parcelle.setCurrentIndex(self.cb_subparc.findText(None))
-            self.cb_subparc.setCurrentIndex(self.cb_subparc.findText(None))
-            self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText(None))
-            self.cb_tronfluv.setCurrentIndex(self.cb_tronfluv.findText(None))
-            self.cb_tsurf.setCurrentIndex(self.cb_tsurf.findText(None))
-            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText(None))
-            self.cb_rpga.setCurrentIndex(self.cb_rpga.findText(None))
-            self.cb_finess.setCurrentIndex(self.cb_finess.findText(None))
-            self.cb_res_sport.setCurrentIndex(self.cb_res_sport.findText(None))
-            self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText(None))
-            self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText(None))
-            self.cb_pai_cult.setCurrentIndex(self.cb_pai_cult.findText(None))
-            self.cb_paitransp.setCurrentIndex(self.cb_paitransp.findText(None))
-            self.cb_paisante.setCurrentIndex(self.cb_paisante.findText(None))
-            self.cb_pairel.setCurrentIndex(self.cb_pairel.findText(None))
-            self.cb_paimilit.setCurrentIndex(self.cb_paimilit.findText(None))
-            self.cb_paiens.setCurrentIndex(self.cb_paiens.findText(None))
-            self.cb_paicom.setCurrentIndex(self.cb_paicom.findText(None))
-            self.cb_paisport.setCurrentIndex(self.cb_paisport.findText(None))
-            self.cb_paitransfo.setCurrentIndex(self.cb_paitransfo.findText(None))
-            self.cb_terrainsport.setCurrentIndex(self.cb_terrainsport.findText(None))
-            self.cb_cime.setCurrentIndex(self.cb_cime.findText(None))
-            self.cb_zoneveget.setCurrentIndex(self.cb_zoneveget.findText(None))
-            self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText(None))
-            self.cb_route.setCurrentIndex(self.cb_route.findText(None))
-            self.cb_ipli.setCurrentIndex(self.cb_ipli.findText(None))
-            self.cb_remarquable.setCurrentIndex(self.cb_remarquable.findText(None))
-            self.cb_indust.setCurrentIndex(self.cb_indust.findText(None))
-            self.cb_indif.setCurrentIndex(self.cb_indif.findText(None))
-            self.cb_surf_eau.setCurrentIndex(self.cb_surf_eau.findText(None))
-            self.cb_pt_eau.setCurrentIndex(self.cb_pt_eau.findText(None))
-            self.cb_surf_acti.setCurrentIndex(self.cb_surf_acti.findText(None))
-            self.cb_triage.setCurrentIndex(self.cb_triage.findText(None))
-            self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText(None))
-            self.cb_section.setCurrentIndex(self.cb_voiefer.findText(None))
-            self.cb_schema.setCurrentIndex(self.cb_schema.findText(None))
+            self.cb_parcelle.setCurrentIndex(self.cb_parcelle.findText('cadastre_edigeo_22.geo_parcelle'))
+            self.cb_subparc.setCurrentIndex(self.cb_subparc.findText('cadastre_edigeo_22.geo_subdfisc'))
+            self.cb_tronroute.setCurrentIndex(self.cb_tronroute.findText('cadastre_edigeo_22.geo_tronfluv'))
+            self.cb_tronfluv.setCurrentIndex(self.cb_tronfluv.findText('cadastre_edigeo_22.geo_tronfluv'))
+            self.cb_tsurf.setCurrentIndex(self.cb_tsurf.findText('cadastre_edigeo_22.geo_tsurf'))
+            self.cb_geobati.setCurrentIndex(self.cb_geobati.findText('cadastre_edigeo_22.geo_batiment'))
+            self.cb_rpga.setCurrentIndex(self.cb_rpga.findText('data_exo.rpga_d22_d29_d35_d56_2016'))
+            self.cb_finess.setCurrentIndex(self.cb_finess.findText('data_exo.etablissements_finess_france'))
+            self.cb_res_sport.setCurrentIndex(self.cb_res_sport.findText('data_exo.res_d22_d29_2017'))
+            self.cb_ff_parcelle.setCurrentIndex(self.cb_ff_parcelle.findText('ff_d22_2017.d22_2017_pnb10_parcelle'))
+            self.cb_parcellaire.setCurrentIndex(self.cb_parcellaire.findText('data_exo.emprise_test3'))
+            self.cb_pai_cult.setCurrentIndex(self.cb_pai_cult.findText('ign_d22_2017.pai_culture_loisirs'))
+            self.cb_paitransp.setCurrentIndex(self.cb_paitransp.findText('ign_d22_2017.pai_transport'))
+            self.cb_paisante.setCurrentIndex(self.cb_paisante.findText('ign_d22_2017.pai_sante'))
+            self.cb_pairel.setCurrentIndex(self.cb_pairel.findText('ign_d22_2017.pai_religieux'))
+            self.cb_paimilit.setCurrentIndex(self.cb_paimilit.findText('ign_d22_2017.pai_administratif_militaire'))
+            self.cb_paiens.setCurrentIndex(self.cb_paiens.findText('ign_d22_2017.pai_science_enseignement'))
+            self.cb_paicom.setCurrentIndex(self.cb_paicom.findText('ign_d22_2017.pai_industriel_commercial'))
+            self.cb_paisport.setCurrentIndex(self.cb_paisport.findText('ign_d22_2017.pai_sport'))
+            self.cb_paitransfo.setCurrentIndex(self.cb_paitransfo.findText('ign_d22_2017.poste_transformation'))
+            self.cb_terrainsport.setCurrentIndex(self.cb_terrainsport.findText('ign_d22_2017.terrain_sport'))
+            self.cb_cime.setCurrentIndex(self.cb_cime.findText('ign_d22_2017.cimetiere'))
+            self.cb_zoneveget.setCurrentIndex(self.cb_zoneveget.findText('ign_d22_2017.zone_vegetation'))
+            self.cb_parcelle_bdtopo.setCurrentIndex(self.cb_parcelle_bdtopo.findText('data_exo.emprise_topo_test3'))
+            self.cb_route.setCurrentIndex(self.cb_route.findText('ign_d22_2017.route'))
+            self.cb_ipli.setCurrentIndex(self.cb_ipli.findText('data_exo.ipli_france_1977'))
+            self.cb_remarquable.setCurrentIndex(self.cb_remarquable.findText('ign_d22_2017.bati_remarquable'))
+            self.cb_indust.setCurrentIndex(self.cb_indust.findText('ign_d22_2017.bati_industriel'))
+            self.cb_indif.setCurrentIndex(self.cb_indif.findText('ign_d22_2017.bati_indifferencie'))
+            self.cb_surf_eau.setCurrentIndex(self.cb_surf_eau.findText('ign_d22_2017.surface_eau'))
+            self.cb_pt_eau.setCurrentIndex(self.cb_pt_eau.findText('ign_d22_2017.point_eau'))
+            self.cb_surf_acti.setCurrentIndex(self.cb_surf_acti.findText('ign_d22_2017.surface_activite'))
+            self.cb_triage.setCurrentIndex(self.cb_triage.findText('ign_d22_2017.aire_triage'))
+            self.cb_voiefer.setCurrentIndex(self.cb_voiefer.findText('ign_d22_2017.troncon_voie_ferree'))
+            self.cb_section.setCurrentIndex(self.cb_voiefer.findText('cadastre_edigeo_22.geo_section'))
+            self.cb_schema.setCurrentIndex(self.cb_schema.findText('data_exo'))
             self.cb_schema_geom.setCurrentIndex(self.cb_schema_geom.findText(None))
 
 
@@ -638,7 +639,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         #Fonction de création du socle première étape
         #Réalise la géométrie du socle
             #Connexion à la base de données
-        print ('OKAY')
+        #print ('OKAY')
 
         self.addFunctionSafe()
 
@@ -2669,7 +2670,7 @@ class Createsocle__mos(QDialog, Ui_interface_socle):
         self.pb_start.setEnabled(True) 
         self.lbl_etape.setText(u'Terminé')
         self.pb_avancement.setValue(100)       
-        print 'Finally'
+        #print('Finally')
 
 
     def addFunctionSafe(self):
