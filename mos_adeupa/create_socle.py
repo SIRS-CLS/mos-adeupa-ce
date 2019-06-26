@@ -2430,8 +2430,8 @@ class Create_mos(QDialog, Ui_interface_socle):
                                     v_code4 = 2;
                                     v_lib4 = 'Agricole';
                                 elsif v_socle.to_veget > 50 then
-                                    v_code4 = 3;
-                                    v_lib4 = 'Espace boisé';
+                                    v_code4 = 4;
+                                    v_lib4 = 'Forêt';
                                 else
                                     v_code4 = 1;
                                     v_lib4 = 'Urbain';
@@ -2440,8 +2440,8 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 v_code4 = 2;
                                 v_lib4 = 'Agricole';
                             elsif v_socle.to_veget > 50 then
-                                    v_code4 = 3;
-                                    v_lib4 = 'Espace boisé';                               
+                                    v_code4 = 4;
+                                    v_lib4 = 'Forêt';                               
                             elsif v_socle.m_fonction = '' and v_socle.to_bati > 50  then
                                 v_code4 = 1;
                                 v_lib4 = 'Urbain';
@@ -2472,11 +2472,11 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 v_lib4 = 'Urbain';
                             elsif v_socle.to_eau > 50 then
                                 v_code4 = 5;
-                                v_lib4 = 'Eau;
+                                v_lib4 = 'Eau';
 
                             else 
                                 v_code4 = 3;
-                                v_lib4 = 'Espace naturel';
+                                v_lib4 = 'Naturel';
 
                             end if;
 
@@ -2502,7 +2502,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 end if;
                             end if;
 
-                            if v_code4 = 3251 then
+                            if v_code4 = 3 then
                                  Select count(*)
                                             From {0}.{1} pm
                                             Where idu = v_socle.idu
@@ -2522,7 +2522,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                     lib4_{2} = v_lib4
                                 Where gid = v_socle.gid;
                         END LOOP;
-                        For v_socle in Select * From {0}.{1} where idu != 'NC' and code4_{2} = 3251 LOOP
+                        For v_socle in Select * From {0}.{1} where idu != 'NC' and code4_{2} = 3 LOOP
 
                             if (st_perimeter(v_socle.geom)/(2 * sqrt(3.14* st_area(v_socle.geom)))) > 3 then
 
@@ -2579,26 +2579,16 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 Where gid = v_socle.gid;
 
                         End loop;
-                        For v_socle in Select * From {0}.{1} where idu != 'NC' and code4_2018 = 1 order by gid LOOP
-                            if (st_perimeter(v_socle.geom)/(2 * sqrt(3.14* st_area(v_socle.geom)))) > 3 then
-
-                                else 
-                                    update {0}.{1} 
-                                    set code4_{2} = 3251,
-                                        lib4_{2} = 'Espace naturel'
-                                        where gid = v_socle.gid;
-                                end if;
-                        end loop ;
 
                         For v_socle_nc in Select * from {0}.{1} where idu = 'NC' LOOP
 
                             if v_socle_nc.tex like 'Plage' then
-                                v_code4 = 3311;
-                                v_lib4 = 'Plage, dune et sable';
+                                v_code4 = 3;
+                                v_lib4 = 'Naturel';
 
                             elsif v_socle_nc.tex like 'Rochers, falaise' then
-                                v_code4 = 3321;
-                                v_lib4 = 'Rocher et falaise';
+                                v_code4 = 3;
+                                v_lib4 = 'Naturel';
 
                             elsif v_socle_nc.tex = 'primaire' then
                                 v_code4 = 1;
@@ -2638,8 +2628,8 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 v_lib4 = 'Agricole';
 
                             elsif v_socle_nc.tex = 'veget' then
-                                v_code4 = 3261;
-                                v_lib4 = 'Espace boisé';
+                                v_code4 = 4;
+                                v_lib4 = 'Forêt';
 
                             else 
                                 v_code4 = 1;

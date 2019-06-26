@@ -10,34 +10,14 @@
 
 ***
 
-## Ajouter le dépôt de plugin
+## Ajouter le plugin
 
-Configurer les dépôts supplémentaires :
-
-- Placez vous sur l’onglet __*Paramètres*__ dans la fenêtre __*Gestionnaire d’extensions*__ :
-
-![alt text](illustrations/plugin_manager_settings.png "Fonctionnement")
-
-- Cliquer sur __*Ajouter...*__ pour trouver et ajouter un nouveau dépôt.
-
-- Fournir un nom et une URL pour le nouveau dépôt et s'assurer que la case __*Activé*__ est cochée.
-
-![alt text](illustrations/new_plugins_setting.png "Fonctionnement")
-
-- Vous devriez voir maintenant le nouveau dépôt listé dans la liste des dépôts d’extension configurés :
-
-![alt text](illustrations/new_plugin_added.png "Fonctionnement")
-
-- Vous pouvez également sélectionner l’option pour afficher les extensions expérimentales en cochant la case __*Afficher les extensions expérimentales*__.
-
-- Si vous revenez sur l’onglet __*Non installées*__, vous verrez que des extensions supplémentaires sont disponibles à l’installation.
-
-- Pour installer une extension, cliquez simplement dessus dans la liste puis cliquez sur le bouton __*Installer l’extension*__.
+Dépot officiel QGIS : **Adeupa-MOS**
 
 ## Prérequis
 
 - **Champs** des couches en **minuscule**
-- Nom de la colonne de géométrie : **geom**
+- Nom de la colonne de géométrie : **geom** (pour les données IGN, possibilité d'avoir le champ __'*the_geom*'__)
 - Nom de la colonne clé primaire : **gid**
 - Importer les couches dans une **base de données postgres**
 - Créer une **connexion** à la **base de données** dans **QGIS**
@@ -88,7 +68,7 @@ La couche résultante se trouve dans le schéma **public** de la base de donnée
 #### <a id="mod1"> Correspondances de recouvrement </a>
 La correspondance de recouvrement utilise toutes les données pour attribuer un pourcentage de présence sur la parcelle générée par le socle géométrique. Une intersection entre le socle géométrique et la données référence est opéré pour identifier au mieux les valeurs possibles pour les parcelles de la couche. En fonction des résultats de ces intersection, la table attributaire se remplie en attribuant un pourcentage de présence.
 
-![alt text](illustrations/adeupa_create_socle.png "Interface création de socle")
+![alt text](illustrations/adeupa_table_attributaire.png "Interface création de socle")
 
 Les données nécessaire sont les suivantes:
   - Communes  __- BD Topo__
