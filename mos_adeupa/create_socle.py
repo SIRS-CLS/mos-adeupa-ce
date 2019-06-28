@@ -1360,16 +1360,16 @@ class Create_mos(QDialog, Ui_interface_socle):
                         
                         v_tomilit integer;--Taux debâtiments militaire sur la parcelle
                         v_tobati integer;-- Taux de bâtiment sur la parcelle
-                        v_tobatire integer; --Taux de bâtiment remarquable sur la parcelle
-                        v_tobatagri integer; -- Taux de bâtiment agricole sur la parcelle
-                        v_toserre integer; --Taux de serre sur la parcelle
+                        v_tobatire integer; --Taux de Urbain sur la parcelle
+                        v_tobatagri integer; -- Taux de Urbain sur la parcelle
+                        v_toAgricole integer; --Taux de Agricole sur la parcelle
                         v_toindust integer; --Taux de bâtiment industriel sur la parcelle
                         v_tocomer integer; -- Taux de bâtiment commercial sur la parcelle
                         v_tozic integer; -- Taux de de bâtiment industriel ou commercial sur la parcelle
                         v_totransp integer; -- Taux de transport sur la parcelle
                         v_tovoiefer integer; -- Taux de voies férrées sur la parcelle
-                        v_tocarrier integer; -- Taux de carrière sur la parcelle
-                        v_tocime integer; -- Taux de cimetière sur la parcelle
+                        v_tocarrier integer; -- Taux de Urbain sur la parcelle
+                        v_tocime integer; -- Taux de Urbain sur la parcelle
                         v_tosport integer; -- Taux terrain sport sur la parcelle
                         v_toloisir integer; -- Taux de loisir sur la parcelle
                         v_toagri integer; -- Taux de parcelles agricoles sur la parcelle
@@ -1385,8 +1385,8 @@ class Create_mos(QDialog, Ui_interface_socle):
                         v_presante integer; -- Présence d'équipement de santé sur la parcelle
                         v_preqadmi integer; -- présence d'équipement local, administration sur la parcelle
                         v_preonrj integer; -- Présence d'équipement eau assainissement énergie sur la parcelle
-                        v_pretransp integer; -- Présence d'infrastructure de transport sur la parcelle
-                        v_presploi integer; -- Présence sport et loisir
+                        v_pretransp integer; -- Présence d'Urbain sur la parcelle
+                        v_presploi integer; -- Présence Urbain
 
                         v_mfonction character varying;-- Type de bâtiment sur la parcelle
                         v_probjardin integer; --Probabilité de présence de jardin 0|1|2
@@ -1756,7 +1756,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                                         Where st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indif', v_geom)
                                 into v_tobatimaison;
-                                        --Calcul du taux de présence de bâtiment remarquable
+                                        --Calcul du taux de présence de Urbain
                                     execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where pm.nature in (''Chapelle'', ''Château'', ''Fort, blockhaus, casemate'', ''Monument'', ''Tour, donjon, moulin'', ''Arène ou théàtre antique'') 
@@ -1770,13 +1770,13 @@ class Create_mos(QDialog, Ui_interface_socle):
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indus', v_geom)
                                 into v_tobatagri;
-                                        --Calcul du taux de présence de serres
+                                        --Calcul du taux de présence de Agricoles
                                     execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
-                                                        Where pm.nature in (''Serre'') 
+                                                        Where pm.nature in (''Agricole'') 
                                                         AND st_intersects(''%2$s'', pm.{33}) 
                                                     ', 'vm_i_bati_indus', v_geom)
-                                into v_toserre;
+                                into v_toAgricole;
                                         --Calcul du taux de présence de bâtiments industriel
                                     execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
@@ -1819,7 +1819,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                                     ', 'vm_i_aire_tri', v_geom)
                                 into v_tovoiefer;
                                 END IF;
-                                        --Calcul du taux de présence de carrières
+                                        --Calcul du taux de présence de Urbains
                                     execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%3$s''))*100)/st_area(''%3$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%3$s'', pm.{33}) 
@@ -1829,7 +1829,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                                                         Where p2.nature = ''Carrière'' )
                                                     ','vm_i_surf_acti',  'vm_i_pai_indus_com', v_geom)
                                 into v_tocarrier;
-                                        --Calcul du taux de présence de cimetières
+                                        --Calcul du taux de présence de Urbains
                                     execute format ('Select ((st_area(st_safe_intersection(st_union(pm.{33}), ''%2$s''))*100)/st_area(''%2$s''))::integer
                                                         From %1$s pm
                                                         Where st_intersects(''%2$s'', pm.{33}) 
@@ -2092,7 +2092,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 v_tobati = null;
                                 v_tobatire = null; 
                                 v_tobatagri = null;
-                                v_toserre = null ;
+                                v_toAgricole = null ;
                                 v_toindust = null ;
                                 v_tocomer = null ;
                                 v_tozic = null ;
@@ -2155,7 +2155,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 v_tobati, 
                                 v_tobatire, 
                                 v_tobatagri, 
-                                v_toserre, 
+                                v_toAgricole, 
                                 v_toindust, 
                                 v_tocomer, 
                                 v_tozic, 
@@ -2336,147 +2336,147 @@ class Create_mos(QDialog, Ui_interface_socle):
 
                             if v_socle.to_milit >= 20 then
                                 v_code4 = 1;
-                                v_lib4 = 'Défense (Espace naturel)';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.m_fonction = 'MAISON' or v_socle.m_fonction = 'DEPENDANCE' then
                                 if v_socle.to_voiefer > 5 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Infrastructure de transport';
+                                    v_lib4 = 'Urbain';
                                 elsif v_socle.to_agri > 50 Then 
                                     v_code4 = 2;
-                                    v_lib4 = 'Terre agricole';
+                                    v_lib4 = 'Agricole';
                                 else
                                     v_code4 = 1;
-                                    v_lib4 = 'Habitat individuel';
+                                    v_lib4 = 'Urbain';
                                 end if;
    
                             elsif v_socle.m_fonction = 'APPARTEMENT' then
                                 v_code4 = 1;
-                                v_lib4 = 'Habitat collectif';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.m_fonction = 'MIXTE' then
                                 v_code4 = 1;
-                                v_lib4 = 'Urbain mixte (habitat/activité tertiaire)';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_carrier > 40 then
                                 v_code4 = 1;
-                                v_lib4 = 'Carrière';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_cime > 40 then
                                 v_code4 = 1;
-                                v_lib4 = 'Cimetière';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_batimaison > 30 then
                                 if v_socle.pre_scol > 0  then
                                     v_code4 = 1;
-                                    v_lib4 = 'Equipement d''enseignement';
+                                    v_lib4 = 'Urbain';
                                 elsif v_socle.pre_sante > 0 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Equipement de santé';
+                                    v_lib4 = 'Urbain';
                                 elsif v_socle.to_voiefer > 5 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Infrastructure de transport';
+                                    v_lib4 = 'Urbain';
                                 elsif v_socle.to_agri > 50 Then 
                                     v_code4 = 1;
-                                    v_lib4 = 'Terre agricole';
+                                    v_lib4 = 'Agricole';
                                 else
                                     v_code4 = 1;
-                                    v_lib4 = 'Habitat individuel';
+                                    v_lib4 = 'Urbain';
                                 end if;
 
                             elsif v_socle.to_batire > 50 then
                                 v_code4 = 1;
-                                v_lib4 = 'Bâtiment remarquable';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_batagri >= 20 then
                                 v_code4 = 1;
-                                v_lib4 = 'Bâtiment agricole';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_serre >= 20 then
                                 v_code4 = 2;
-                                v_lib4 = 'Serre';
+                                v_lib4 = 'Agricole';
 
                             elsif v_socle.pre_scol > 0 then
                                 v_code4 = 1;
-                                v_lib4 = 'Equipement d''enseignement';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.pre_sante > 0 then
                                 v_code4 = 1;
-                                v_lib4 = 'Equipement de santé';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.pre_eqadmi > 0 then
                                 v_code4 = 1;
-                                v_lib4 = 'Autre équipement local, administration';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.pre_o_nrj > 0 then
                                 v_code4 = 1;
-                                v_lib4 = 'Equipement pour eau, assainissement, énergie';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_sport > 50 or v_socle.to_loisir > 50 or v_socle.pre_sploi = 1 then
                                 if v_socle.to_bati > 50 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Equipement sportif (construit)';
+                                    v_lib4 = 'Urbain';
                                 else
                                     v_code4 = 1;
-                                    v_lib4 = 'Sport et loisir';
+                                    v_lib4 = 'Urbain';
                                 end if;
                             
                             elsif v_socle.pre_sploi = 2 then
                                 v_code4 = 1;
-                                v_lib4 = 'Equipement sportif (construit)';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.prob_jardin > 0 then
                                 if v_socle.to_agri > 50 then
                                     v_code4 = 2;
-                                    v_lib4 = 'Terre agricole';
+                                    v_lib4 = 'Agricole';
                                 elsif v_socle.to_veget > 50 then
                                     v_code4 = 4;
-                                    v_lib4 = 'Espace boisé';
+                                    v_lib4 = 'Forêt';
                                 else
                                     v_code4 = 1;
-                                    v_lib4 = 'Parc et jardin';
+                                    v_lib4 = 'Urbain';
                                 end if;
                             elsif v_socle.to_agri > 50 then
                                 v_code4 = 2;
-                                v_lib4 = 'Terre agricole';
+                                v_lib4 = 'Agricole';
                             elsif v_socle.to_veget > 50 then
                                     v_code4 = 4;
-                                    v_lib4 = 'Espace boisé';                               
+                                    v_lib4 = 'Forêt';                               
                             elsif v_socle.m_fonction = '' and v_socle.to_bati > 50  then
                                 v_code4 = 1;
-                                v_lib4 = 'Bâti divers';
+                                v_lib4 = 'Urbain';
 
 
 
                             elsif v_socle.m_fonction = 'ACTIVITE' or v_socle.to_zic >= 20 or v_socle.to_comer >= 20 or v_socle.to_indust >= 20 or v_socle.to_bati > 50 then
                                 if v_socle.to_indust >= 20 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Activité autre que tertiaire';
+                                    v_lib4 = 'Urbain';
                                 elsif v_socle.to_comer >= 20 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Surface commerciale';
+                                    v_lib4 = 'Urbain';
                                 elseif v_socle.to_zic >= 20 then
                                     v_code4 = 1;
-                                    v_lib4 = '';
+                                    v_lib4 = 'Urbain';
                                 else 
                                     v_code4 = 1;
-                                    v_lib4 = 'Bâti divers';
+                                    v_lib4 = 'Urbain';
                                 end if;
 
                             elsif v_socle.to_voiefer > 5 or v_socle.pre_transp = 1 then
                                 v_code4 = 1;
-                                v_lib4 = 'Infrastructure de transport';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle.to_route > 50 then
                                 v_code4 = 1;
-                                v_lib4 = 'Voie desserte habitat';
+                                v_lib4 = 'Urbain';
                             elsif v_socle.to_eau > 50 then
                                 v_code4 = 5;
-                                v_lib4 = 'Plan d''eau';
+                                v_lib4 = 'Eau';
 
                             else 
                                 v_code4 = 3;
-                                v_lib4 = 'Espace naturel';
+                                v_lib4 = 'Naturel';
 
                             end if;
 
@@ -2488,7 +2488,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 into v_is_maison;
                                 if v_is_maison > 0 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Habitat individuel';
+                                    v_lib4 = 'Urbain';
                                 end if;
                             elsif v_code4 = 3 and  v_socle.to_batimaison > 1 then
                                   Select count(*)
@@ -2498,7 +2498,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 into v_is_maison;
                                 if v_is_maison > 0 then
                                     v_code4 = 1;
-                                    v_lib4 = 'Parc et jardin';
+                                    v_lib4 = 'Urbain';
                                 end if;
                             end if;
 
@@ -2510,10 +2510,10 @@ class Create_mos(QDialog, Ui_interface_socle):
                                 into v_is_jardin;
                                 if v_is_jardin > 0 then
                                   v_code4 = 1;
-                                    v_lib4 = 'Parc et jardin';
+                                    v_lib4 = 'Urbain';
                                 elsif v_socle.to_bati > 30 Then
                                     v_code4 = 1;
-                                    v_lib4 = 'Bâti divers';
+                                    v_lib4 = 'Urbain';
                                 end if;
                             end if;  
 
@@ -2531,17 +2531,17 @@ class Create_mos(QDialog, Ui_interface_socle):
 
                                 if v_hab_act_geom1 not in (null) then
                                     v_code4 = 1;
-                                    v_lib4 = 'Voie desserte habitat';
+                                    v_lib4 = 'Urbain';
                                 else
                                     select st_union(geom) as geom From {0}.{1} where code4_{2} in (121, 1211, 1212, 1217) and  st_intersects(st_buffer(v_socle.geom, 2),geom)
                                     into v_hab_act_geom2;
 
                                     if v_hab_act_geom2 not in (null) then
                                         v_code4 = 1;
-                                        v_lib4 = 'Voie desserte activité';
+                                        v_lib4 = 'Urbain';
                                     else
                                         v_code4 = 12;
-                                        v_lib4 = 'Chemin-sentier';
+                                        v_lib4 = 'Urbain-temp';
                                     end if;
                                 end if;
                     
@@ -2554,10 +2554,10 @@ class Create_mos(QDialog, Ui_interface_socle):
                                     if st_area(st_intersection(st_buffer(v_socle.geom, 5), v_vac_geom1)) > 33 then
                                         if v_socle.to_batimaison > 50 Then
                                             v_code4 = 1;
-                                            v_lib4 = 'Habitat individuel';
+                                            v_lib4 = 'Urbain';
                                         else
                                             v_code4 = 1;
-                                            v_lib4 = 'Terrain vacant - habitat';
+                                            v_lib4 = 'Urbain';
                                         end if;
                                     end if;
                                 else
@@ -2567,7 +2567,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                                     if v_vac_geom2 not in (null) then
                                         if st_area(st_intersection(st_buffer(v_socle.geom, 5), v_vac_geom1)) > 33 then
                                             v_code4 = 1;
-                                            v_lib4 = 'Terrain vacant - activité';
+                                            v_lib4 = 'Urbain';
                                         end if;
                                     end if;
                                 end if;
@@ -2581,11 +2581,15 @@ class Create_mos(QDialog, Ui_interface_socle):
                         End loop;
                         For v_socle in Select * From {0}.{1} where idu != 'NC' and code4_{2} = 12 order by gid LOOP
                             if (st_perimeter(v_socle.geom)/(2 * sqrt(3.14* st_area(v_socle.geom)))) > 3 then
+                                update {0}.{1} 
+                                set code4_{2} = 1,
+                                    lib4_{2} = 'Urbain'
+                                    where gid = v_socle.gid;
 
                                 else 
                                     update {0}.{1} 
                                     set code4_{2} = 3,
-                                        lib4_{2} = 'Espace naturel'
+                                        lib4_{2} = 'Naturel'
                                         where gid = v_socle.gid;
                                 end if;
                         end loop ;
@@ -2594,15 +2598,15 @@ class Create_mos(QDialog, Ui_interface_socle):
 
                             if v_socle_nc.tex like 'Plage' then
                                 v_code4 = 3;
-                                v_lib4 = 'Plage, dune et sable';
+                                v_lib4 = 'Naturel';
 
                             elsif v_socle_nc.tex like 'Rochers, falaise' then
                                 v_code4 = 3;
-                                v_lib4 = 'Rocher et falaise';
+                                v_lib4 = 'Naturel';
 
                             elsif v_socle_nc.tex = 'primaire' then
                                 v_code4 = 1;
-                                v_lib4 = 'Infrastructure de transport';
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle_nc.tex = 'secondaire' then
                                 For v_secondaire_nc in Select st_union(st_buffer(geom,5)) as geom, code4_{2} From {0}.{1} 
@@ -2611,39 +2615,39 @@ class Create_mos(QDialog, Ui_interface_socle):
                                                                                                             Group by code4_{2} Loop
                                     if v_secondaire_nc.code4_{2} = 1114 then
                                         v_code4 = 1;
-                                        v_lib4 = 'Voie desserte mixte';
+                                        v_lib4 = 'Urbain';
                                     elsif v_secondaire_nc.code4_{2} in (1211, 1212, 1217) then
                                         v_code4 = 1;
-                                        v_lib4 = 'Voie desserte activité';
+                                        v_lib4 = 'Urbain';
                                     else
                                         v_code4 = 1;
-                                        v_lib4 = 'Voie desserte habitat';
+                                        v_lib4 = 'Urbain';
                                     end if;
                                 end loop;
                                 if v_code4 is null then
                                     v_code4 = 1;
-                                    v_lib4 = 'Infrastructure de transport';
+                                    v_lib4 = 'Urbain';
                                 end if;
 
                             elsif v_socle_nc.tex = 'chemin' then
-                                v_code4 = 12;
-                                v_lib4 = 'Chemin-sentier';
+                                v_code4 = 1;
+                                v_lib4 = 'Urbain';
 
                             elsif v_socle_nc.tex = 'hydro' then
                                 v_code4 = 5;
-                                v_lib4 = 'Réseau hydrographique';
+                                v_lib4 = 'Eau';
 
                             elsif v_socle_nc.tex = 'agricole' then
                                 v_code4 = 2;
-                                v_lib4 = 'Terre agricole';
+                                v_lib4 = 'Agricole';
 
                             elsif v_socle_nc.tex = 'veget' then
                                 v_code4 = 4;
-                                v_lib4 = 'Espace boisé';
+                                v_lib4 = 'Forêt';
 
                             else 
                                 v_code4 = 1;
-                                v_lib4 = 'Autre infrastructure';
+                                v_lib4 = 'Urbain';
 
                             end if;
 
