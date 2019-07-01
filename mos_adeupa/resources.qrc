@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/mos_adeupa" >
-        <file>icons/icon.png</file>
-        <file>icons/icon_socle.png</file>
-    </qresource>
-</RCC>

@@ -1,7 +1,7 @@
-# This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
-# information about a plugin. The old method of 
-# embedding metadata in __init__.py will 
+# This file contains metadata for your plugin. Since
+# version 2.0 of QGIS this is the proper way to supply
+# information about a plugin. The old method of
+# embedding metadata in __init__.py will
 # is no longer supported since version 2.0.
 
 # This file should be included when you package your plugin.# Mandatory items:
@@ -11,13 +11,13 @@ name=MOS-Adeupa-CE
 qgisMinimumVersion=3.4
 description=Allows user to generate a landuse with cross-referring data from different origins.
 version=1.0.0
-author=Corentin Falcone (SIRS) 
+author=Corentin Falcone (SIRS)
 email=corentin.falcone@sirs-fr.com
 
 about=This plugin, co-developed by ADEUPA and SIRS, generates a land use mode base at a simplified level. It is divided into 5 classes: urban, agricultural, natural, forest and water. It executes all processes in PostGreSQL/PostGIS.
 
-#tracker=
-repository=https://github.com/SIRS-CLS/mos-adeupa
+tracker=https://github.com/SIRS-CLS/mos-adeupa/issues
+repository=https://github.com/SIRS-CLS/mos-adeupa-ce
 # End of mandatory metadata
 
 # Recommended items:
@@ -28,9 +28,9 @@ changelog=
    * First community version
 
 # Tags are comma separated with spaces allowed
-tags=landuse, landcover, mos, ocs, parcel, processing, postgis, python
+tags=landuse, landcover, mos, ocs, parcel, processing, postgis, python, postgresql
 
-homepage=https://www.sirs-fr.com/ 
+homepage=https://www.sirs-fr.com/
 category=Plugins
 icon=./icons/icon.png
 # experimental flag

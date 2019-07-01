@@ -1,18 +1,20 @@
-# PLUGIN Adeupa-MOS - Génération de socle MOS
+# PLUGIN MOS-Adeupa-CE (Community Edition) - Génération de socle de mode d'occupation du sol
 
 ![alt text](./illustrations/signature_email.png "logo sirs")
-<img align="right" src="/illustrations/logo_adeupa.png" alt="logo Adeupa" width=100/>
+<img align="right" src="/illustrations/logo_adeupa.png" alt="logo Adeupa" width=300/>
 
 ***
 **QGIS Minimum Version : 3.0**
 
-**Dépot de plugin : `http://qgis.sirs-fr.com/qgis_repo_openig/plugins.xml`**
+**PostGreSQL Minimum Version : 9.6**
+
+**PostGIS Minimum Version : 2.4**
 
 ***
 
 ## Ajouter le plugin
 
-Dépot officiel QGIS : **Adeupa-MOS**
+Dépot officiel QGIS : https://plugins.qgis.org/plugins/ **MOS-Adeupa-CE**
 
 ## Prérequis
 
