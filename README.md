@@ -80,7 +80,7 @@ Les données nécessaire sont les suivantes:
   - Tronçon fleuve __- Edigeo__
   - Tsurf __- Edigeo__
   - Bâtiments __- Edigeo__
-  - Fichiers __- fonciers__
+  - Fichiers fonciers
   - RPGA
   - IPLI
   - FINESS
