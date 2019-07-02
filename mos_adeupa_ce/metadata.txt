@@ -16,7 +16,7 @@ email=corentin.falcone@sirs-fr.com
 
 about=This plugin, co-developed by ADEUPA and SIRS, generates a land use mode base at a simplified level. It is divided into 5 classes: urban, agricultural, natural, forest and water. It executes all processes in PostGreSQL/PostGIS.
 
-tracker=https://github.com/SIRS-CLS/mos-adeupa/issues
+tracker=https://github.com/SIRS-CLS/mos-adeupa-ce/issues
 repository=https://github.com/SIRS-CLS/mos-adeupa-ce
 # End of mandatory metadata
 
@@ -30,7 +30,7 @@ changelog=
 # Tags are comma separated with spaces allowed
 tags=landuse, landcover, mos, ocs, parcel, processing, postgis, python, postgresql
 
-homepage=https://www.sirs-fr.com/
+homepage=https://github.com/SIRS-CLS/mos-adeupa-ce
 category=Plugins
 icon=./icons/icon.png
 # experimental flag
