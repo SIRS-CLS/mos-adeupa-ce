@@ -971,7 +971,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                     drop table if exists vm_secondaire;
                     create temporary table vm_secondaire as
                     Select ROW_NUMBER() OVEr() as gid,  geom, nature
-                    From (select st_union(geom)::geometry(MultiPolygon,2154) as geom, nature
+                    From (select st_multi(st_union(geom))::geometry(MultiPolygon,2154) as geom, nature
                         From (
                             Select st_buffer(rs.{10}, largeur/2, 'endcap=square join=round')::geometry(Polygon,2154) as geom, 'secondaire'::character varying as nature
                             From {3} rs, {2} com
@@ -988,7 +988,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                     drop table if exists vm_chemin;
                     create temporary table vm_chemin as
                     Select ROW_NUMBER() OVEr() as gid,  geom, nature
-                    From (select st_union(geom)::geometry(MultiPolygon,2154) as geom, nature
+                    From (select st_multi(st_union(geom))::geometry(MultiPolygon,2154) as geom, nature
                         From (
                             Select st_buffer(c.{10}, 5.0/2)::geometry(Polygon,2154) as geom, 'Chemin'::character varying as nature
                             From {3} c, {2} com
@@ -1009,7 +1009,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                         Join {4} a on st_intersects(a.{10}, b.geom)
                         group by b.gid
                     ), tmp2 as (
-                        Select (st_dump(st_collectionextract(st_safe_intersection(t.geom, b.geom),3))).geom::geometry(polygon,2154) as geom, 'veget'::character varying as nature
+                        Select (st_dump(st_collectionextract(st_safe_intersection(t.geom, b.geom),3))).geom::geometry(Polygon,2154) as geom, 'veget'::character varying as nature
                         From vm_nc_lito b 
                         LEFT join tmp t on b.gid = t.gid
                         )
@@ -1023,7 +1023,7 @@ class Create_mos(QDialog, Ui_interface_socle):
                         --Récupération des surface en eau contenue dans l'meprise BD Parcellaire
                     drop table if exists vm_hydro;
                     create temporary table vm_hydro as
-                    Select ROW_NUMBER() OVEr() as gid, st_union(st_buffer(geom,0.001))::geometry(MultiPolygon,2154) as geom, nature
+                    Select ROW_NUMBER() OVEr() as gid, st_multi(st_union(st_buffer(geom,0.001)))::geometry(MultiPolygon,2154) as geom, nature
                     From (
                             Select (st_dump(st_collectionextract(st_safe_intersection(st_force2D(se.{10}), vmnc.geom),3))).geom::geometry(Polygon, 2154), 'hydro'::character varying as nature
                             From {5} se

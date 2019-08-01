@@ -10,6 +10,8 @@
 
 **PostGIS Minimum Version : 2.4**
 
+**IGN BD Topo Maximum Version : 2**
+
 ***
 
 ## Ajouter le plugin
