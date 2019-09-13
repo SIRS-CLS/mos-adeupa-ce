@@ -10,7 +10,7 @@
 name=MOS-Adeupa-CE
 qgisMinimumVersion=3.4
 description=Allows user to generate a landuse with cross-referring data from different origins.
-version=1.0.0
+version=1.0.1
 author=Corentin Falcone (SIRS)
 email=corentin.falcone@sirs-fr.com
 
@@ -24,6 +24,8 @@ repository=https://github.com/SIRS-CLS/mos-adeupa-ce
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 1.0.1
+   * Fix multipolygon issue on extent layer
   Version 1.0.0
    * First community version
 
