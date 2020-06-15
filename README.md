@@ -6,7 +6,7 @@
 ***
 **QGIS Minimum Version : 3.0**
 
-**PostGreSQL Minimum Version : 9.6**
+**PostGreSQL Minimum Version : 10.x**
 
 **PostGIS Minimum Version : 2.4**
 
